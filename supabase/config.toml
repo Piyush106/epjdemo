@@ -1,0 +1,9 @@
+# Supabase CLI config. Link the project once with:
+#   supabase link --project-ref azkkmylgtrpjsxdlyayb
+project_id = "azkkmylgtrpjsxdlyayb"
+
+# ingest-oai is invoked by pg_cron (not an end-user JWT), so JWT verification is
+# off; the function is gated by the INGEST_SECRET header instead. Deploy with:
+#   supabase functions deploy ingest-oai --no-verify-jwt
+[functions.ingest-oai]
+verify_jwt = false
