@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -26,11 +26,19 @@ interface Article {
 
 const PAGE_SIZE = 20;
 
-const Articles = () => {
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [loading, setLoading] = useState(true);
+interface ArticlesProps {
+  /** First page, fetched server-side and rendered into the initial HTML (SEO). */
+  initialArticles?: Article[];
+}
+
+const Articles = ({ initialArticles = [] }: ArticlesProps) => {
+  const [articles, setArticles] = useState<Article[]>(initialArticles);
+  const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
+  const [hasMore, setHasMore] = useState(initialArticles.length === PAGE_SIZE);
+  // Skip the first client fetch when the server already provided the unfiltered
+  // first page; only fetch on filter changes or "load more".
+  const didMount = useRef(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const activeJournal = searchParams.get("journal") || "";
 
@@ -70,9 +78,16 @@ const Articles = () => {
   }, [activeJournal]);
 
   useEffect(() => {
+    // On first mount, reuse the server-rendered list for the default (unfiltered)
+    // view instead of refetching — keeps the SSR data and avoids a flash.
+    if (!didMount.current) {
+      didMount.current = true;
+      if (!activeJournal && initialArticles.length) return;
+    }
     setArticles([]);
     setHasMore(true);
     fetchArticles(false, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeJournal]);
 
   return (
