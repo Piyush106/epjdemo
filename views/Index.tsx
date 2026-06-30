@@ -119,22 +119,26 @@ const Index = ({ initialJournals = [], initialArticles = [] }: IndexProps) => {
 
                     <div>
                       <h3 className="text-sm font-heading font-semibold text-foreground mb-2">Journal quick access</h3>
-                      <div className="flex flex-col sm:flex-row sm:flex-wrap gap-0 sm:gap-x-3 sm:gap-y-1 text-xs">
+                      {/* Abbreviations as separated pills so they never run together;
+                          title gives the full journal name on hover. */}
+                      <div className="flex flex-wrap gap-1.5">
                         {journals.map((j) => (
                           <a
                             key={j.abbrev}
-                            className="text-primary hover:underline py-2 sm:py-0 min-h-[44px] sm:min-h-0 flex items-center"
+                            className="inline-flex items-center rounded-sm border border-border px-2 py-1 text-xs font-medium text-primary hover:bg-muted transition-colors"
                             href={journalHomepage(j.external_url)}
                             target="_blank"
                             rel="noopener noreferrer"
+                            title={j.title}
                           >
                             {j.abbrev}
                           </a>
                         ))}
-                        <span className="hidden sm:inline text-muted-foreground self-center">|</span>
-                        <Link className="text-primary hover:underline py-2 sm:py-0 min-h-[44px] sm:min-h-0 flex items-center" to="/journals">Publisher journals list</Link>
-                        <span className="hidden sm:inline text-muted-foreground self-center">|</span>
-                        <Link className="text-primary hover:underline py-2 sm:py-0 min-h-[44px] sm:min-h-0 flex items-center" to="/contact">Editorial office</Link>
+                      </div>
+                      <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
+                        <Link className="text-primary hover:underline" to="/journals">Publisher journals list</Link>
+                        <span className="text-muted-foreground" aria-hidden="true">·</span>
+                        <Link className="text-primary hover:underline" to="/contact">Editorial office</Link>
                       </div>
                       <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
                         Journal archives and current issues are maintained on the respective journal websites. Links above open

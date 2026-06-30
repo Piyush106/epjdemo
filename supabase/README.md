@@ -83,3 +83,34 @@ Finally, in **Vercel → Project → Settings → Environment Variables**, add
   month (pg_cron has no true "every 72h"; this is the standard 3-day pattern).
 - oai_dc rarely carries clean volume/issue/pages; those are best-effort parsed
   from `dc:source` and may be null. Title/authors/abstract/DOI/URLs are reliable.
+
+---
+
+# notify-submission (manuscript submission emails)
+
+`supabase/functions/notify-submission/index.ts` sends the editor notification
+(with the manuscript attached) + author confirmation via **Resend**. It is
+invoked from the submit form via `supabase.functions.invoke("notify-submission")`,
+so JWT verification stays ON (the browser sends the anon key).
+
+## Deploy (one time)
+
+```bash
+# 1. Set the Resend secret(s)
+supabase secrets set \
+  RESEND_API_KEY="re_xxxxxxxxxxxxxxxxxxxx" \
+  EDITOR_EMAIL="editor@ep-journals.org" \
+  FROM_EMAIL="EP Journals Group <onboarding@resend.dev>"
+
+# 2. Deploy (JWT verification ON — invoked with the anon key)
+supabase functions deploy notify-submission
+```
+
+## Production sender (important)
+
+`onboarding@resend.dev` only delivers to the Resend account owner (test mode).
+For real delivery, **verify the ep-journals.org domain in Resend** (add the DNS
+records it gives you), then set `FROM_EMAIL="EP Journals Group <editor@ep-journals.org>"`
+and redeploy. The submit form already records the submission in
+`manuscript_submissions` and uploads the file to the `manuscript-files` bucket
+even if email fails, so a missing/unverified key never loses a submission.
