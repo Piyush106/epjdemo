@@ -6,9 +6,13 @@ import MetaTags from "@/components/MetaTags";
 import SchemaOrg from "@/components/SchemaOrg";
 import { Separator } from "@/components/ui/separator";
 import { useJournals } from "@/hooks/useJournals";
+import type { Journal } from "@/lib/types";
 
-const Journals = () => {
-  const { data: journals = [], isLoading } = useJournals();
+const Journals = ({ initialJournals = [] }: { initialJournals?: Journal[] }) => {
+  // Server-seeded so the full journal list is in the initial HTML (SEO).
+  const { data, isLoading } = useJournals();
+  const journals = data && data.length ? data : initialJournals;
+  const loading = isLoading && journals.length === 0;
 
   return (
     <div className="min-h-screen bg-background">
@@ -42,7 +46,7 @@ const Journals = () => {
 
             {/* Left Column - Journals List */}
             <div className="min-w-0">
-              {isLoading ? (
+              {loading ? (
                 <p className="text-sm text-muted-foreground">Loading journals…</p>
               ) : journals.length === 0 ? (
                 <p className="text-sm text-muted-foreground">No journals are currently active.</p>
