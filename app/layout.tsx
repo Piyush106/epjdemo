@@ -14,14 +14,8 @@ export const metadata: Metadata = {
   description: SITE.defaultDescription,
   alternates: { canonical: SITE.origin },
   robots: { index: true, follow: true },
-  icons: {
-    icon: [
-      { url: "/favicon.png", sizes: "32x32", type: "image/png" },
-      { url: "/favicon-192.png", sizes: "192x192", type: "image/png" },
-    ],
-    apple: "/apple-touch-icon.png",
-    shortcut: "/favicon.ico",
-  },
+  // Icons are provided by the App Router file conventions (app/favicon.ico,
+  // app/icon.png, app/apple-icon.png) — Next emits the correct <link> tags.
 };
 
 const organizationLd = {
@@ -30,7 +24,7 @@ const organizationLd = {
   "@id": `${SITE.origin}/#organization`,
   name: SITE.name,
   url: SITE.origin,
-  logo: { "@type": "ImageObject", url: `${SITE.origin}/favicon.png`, width: 512, height: 512 },
+  logo: { "@type": "ImageObject", url: `${SITE.origin}/icon-512.png`, width: 512, height: 512 },
   description:
     "EP Journals Group is an open access academic publisher operating six peer-reviewed, double-blind journals across engineering, economics, management, natural sciences, social sciences, and education. All articles are published under CC BY 4.0 and assigned Crossref DOIs.",
   email: SITE.email,

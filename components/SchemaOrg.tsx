@@ -23,7 +23,7 @@ const SchemaOrg = ({ type, data }: SchemaOrgProps) => {
     url: origin,
     logo: {
       "@type": "ImageObject",
-      url: `${origin}/favicon.png`,
+      url: `${origin}/icon-512.png`,
       width: 512,
       height: 512,
     },
