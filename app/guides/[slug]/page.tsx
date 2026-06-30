@@ -1,12 +1,21 @@
 import type { Metadata } from "next";
-import DynamicContentPage from "@/views/DynamicContentPage";
-import { buildMetadata } from "@/lib/seo";
+import { contentMeta, contentParams, ContentRoutePage } from "@/lib/contentRoute";
 
-export const metadata: Metadata = buildMetadata({
-  title: 'Guides',
-  description: 'Practical guides on scholarly publishing from EP Journals Group.',
-});
+// Pre-render every guide; refresh every 3 days.
+export const revalidate = 259200;
 
-export default function Page() {
-  return <DynamicContentPage category='guide' />;
+export function generateStaticParams() {
+  return contentParams("guide");
+}
+
+export async function generateMetadata(
+  { params }: { params: Promise<{ slug: string }> },
+): Promise<Metadata> {
+  const { slug } = await params;
+  return contentMeta("guide", slug);
+}
+
+export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  return <ContentRoutePage category="guide" slug={slug} />;
 }

@@ -1,12 +1,20 @@
 import type { Metadata } from "next";
-import DynamicContentPage from "@/views/DynamicContentPage";
-import { buildMetadata } from "@/lib/seo";
+import { contentMeta, contentParams, ContentRoutePage } from "@/lib/contentRoute";
 
-export const metadata: Metadata = buildMetadata({
-  title: 'Comparisons',
-  description: 'Comparisons to help researchers make informed publishing decisions.',
-});
+export const revalidate = 259200;
 
-export default function Page() {
-  return <DynamicContentPage category='comparison' />;
+export function generateStaticParams() {
+  return contentParams("comparison");
+}
+
+export async function generateMetadata(
+  { params }: { params: Promise<{ slug: string }> },
+): Promise<Metadata> {
+  const { slug } = await params;
+  return contentMeta("comparison", slug);
+}
+
+export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  return <ContentRoutePage category="comparison" slug={slug} />;
 }

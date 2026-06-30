@@ -63,3 +63,62 @@ export async function getAllArticleIds(): Promise<string[]> {
     .eq("status", "published");
   return (data as { id: string }[] | null)?.map((r) => r.id) ?? [];
 }
+
+// ---- content_pages (guides / comparisons / publishing / resources) ----------
+
+/** A loose shape for content_pages rows (jsonb columns kept flexible). */
+export interface ContentPageRow {
+  id: string;
+  slug: string;
+  category: string;
+  title: string;
+  subtitle: string | null;
+  summary: string | null;
+  meta_title: string | null;
+  meta_description: string;
+  keywords: string[] | null;
+  reading_time_minutes: number | null;
+  body_blocks: unknown[] | null;
+  body_html: string | null;
+  faqs: { question: string; answer: string }[] | null;
+  related_links: unknown[] | null;
+  last_updated: string;
+  status: string;
+  updated_at: string;
+}
+
+/** A single published content page by slug + category. */
+export async function getContentPage(
+  slug: string,
+  category: string,
+): Promise<ContentPageRow | null> {
+  const { data } = await supabase
+    .from("content_pages")
+    .select("*")
+    .eq("slug", slug)
+    .eq("category", category)
+    .eq("status", "published")
+    .maybeSingle();
+  return (data as ContentPageRow | null) ?? null;
+}
+
+/** Published slugs for one category — powers generateStaticParams. */
+export async function getContentSlugs(category: string): Promise<string[]> {
+  const { data } = await supabase
+    .from("content_pages")
+    .select("slug")
+    .eq("category", category)
+    .eq("status", "published");
+  return (data as { slug: string }[] | null)?.map((r) => r.slug) ?? [];
+}
+
+/** All published content pages (category + slug + lastmod) — powers the sitemap. */
+export async function getAllContentPages(): Promise<
+  { slug: string; category: string; updated_at: string }[]
+> {
+  const { data } = await supabase
+    .from("content_pages")
+    .select("slug, category, updated_at")
+    .eq("status", "published");
+  return (data as { slug: string; category: string; updated_at: string }[] | null) ?? [];
+}

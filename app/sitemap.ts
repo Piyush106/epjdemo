@@ -1,9 +1,17 @@
 import type { MetadataRoute } from "next";
 import { SITE } from "@/lib/seo";
-import { getAllArticleIds } from "@/lib/data";
+import { getAllArticleIds, getAllContentPages } from "@/lib/data";
 import { POLICIES } from "@/components/PolicyLayout";
 
 export const revalidate = 86400; // refresh sitemap daily
+
+// content_pages.category → URL base on this site.
+const CONTENT_BASE: Record<string, string> = {
+  guide: "/guides",
+  comparison: "/comparisons",
+  publishing: "/publishing",
+  "user-focused": "/resources",
+};
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = SITE.origin;
@@ -53,5 +61,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     articleEntries = [];
   }
 
-  return [...staticEntries, ...policyEntries, ...articleEntries];
+  let contentEntries: MetadataRoute.Sitemap = [];
+  try {
+    const pages = await getAllContentPages();
+    contentEntries = pages
+      .filter((p) => CONTENT_BASE[p.category])
+      .map((p) => ({
+        url: `${base}${CONTENT_BASE[p.category]}/${p.slug}`,
+        lastModified: p.updated_at ? new Date(p.updated_at) : new Date(),
+        changeFrequency: "monthly",
+        priority: 0.6,
+      }));
+  } catch {
+    contentEntries = [];
+  }
+
+  return [...staticEntries, ...policyEntries, ...articleEntries, ...contentEntries];
 }

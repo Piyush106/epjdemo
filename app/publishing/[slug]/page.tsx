@@ -1,12 +1,20 @@
 import type { Metadata } from "next";
-import DynamicContentPage from "@/views/DynamicContentPage";
-import { buildMetadata } from "@/lib/seo";
+import { contentMeta, contentParams, ContentRoutePage } from "@/lib/contentRoute";
 
-export const metadata: Metadata = buildMetadata({
-  title: 'Publishing',
-  description: 'Resources on the academic publishing process from EP Journals Group.',
-});
+export const revalidate = 259200;
 
-export default function Page() {
-  return <DynamicContentPage category='publishing' />;
+export function generateStaticParams() {
+  return contentParams("publishing");
+}
+
+export async function generateMetadata(
+  { params }: { params: Promise<{ slug: string }> },
+): Promise<Metadata> {
+  const { slug } = await params;
+  return contentMeta("publishing", slug);
+}
+
+export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  return <ContentRoutePage category="publishing" slug={slug} />;
 }

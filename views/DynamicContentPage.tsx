@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import GuidePage from "@/pages/guides/GuidePage";
@@ -42,15 +42,23 @@ const categoryLabel: Record<string, string> = {
 
 interface Props {
   category: "guide" | "comparison" | "publishing" | "user-focused";
+  /** Server-fetched page, rendered into the initial HTML (SSR/SEO). */
+  initialPage?: ContentPage | null;
 }
 
-const DynamicContentPage = ({ category }: Props) => {
+const DynamicContentPage = ({ category, initialPage = null }: Props) => {
   const { slug } = useParams<{ slug: string }>();
-  const [page, setPage] = useState<ContentPage | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState<ContentPage | null>(initialPage);
+  const [loading, setLoading] = useState(!initialPage);
   const [notFound, setNotFound] = useState(false);
+  const didMount = useRef(false);
 
   useEffect(() => {
+    // The server already provided this slug's page; don't refetch on mount.
+    if (!didMount.current) {
+      didMount.current = true;
+      if (initialPage && (!slug || slug === initialPage.slug)) return;
+    }
     let cancelled = false;
     const load = async () => {
       setLoading(true);
@@ -82,69 +90,8 @@ const DynamicContentPage = ({ category }: Props) => {
     };
   }, [slug, category]);
 
-  // JSON-LD injection
-  useEffect(() => {
-    if (!page) return;
-    const origin = typeof window !== "undefined" ? window.location.origin : "https://www.ep-journals.org";
-    const url = typeof window !== "undefined" ? window.location.href : undefined;
-    const isFAQ = Array.isArray(page.faqs) && page.faqs.length > 0;
-
-    // Category label + path for breadcrumb
-    const categoryPath: Record<string, { label: string; path: string }> = {
-      guide:         { label: "Guides",      path: "/guides" },
-      comparison:    { label: "Comparisons", path: "/comparisons" },
-      publishing:    { label: "Publishing",  path: "/publishing" },
-      "user-focused":{ label: "Resources",   path: "/resources" },
-    };
-    const cat = categoryPath[page.category] ?? { label: "Knowledge Centre", path: "/" };
-
-    const graph: any[] = [
-      {
-        "@type": "BreadcrumbList",
-        itemListElement: [
-          { "@type": "ListItem", position: 1, name: "Home",    item: origin },
-          { "@type": "ListItem", position: 2, name: cat.label, item: `${origin}${cat.path}` },
-          { "@type": "ListItem", position: 3, name: page.title },
-        ],
-      },
-      {
-        "@type": "WebPage",
-        "@id": url ? `${url}#webpage` : undefined,
-        name: page.title,
-        headline: page.title,
-        description: page.meta_description,
-        url,
-        dateModified: page.updated_at,
-        inLanguage: "en",
-        isPartOf: { "@type": "WebSite", "@id": `${origin}/#website`, name: "EP Journals Group", url: origin },
-        publisher: { "@type": "Organization", "@id": `${origin}/#organization`, name: "EP Journals Group" },
-        about: page.summary || page.meta_description,
-      },
-    ];
-    if (isFAQ) {
-      graph.push({
-        "@type": "FAQPage",
-        mainEntity: page.faqs!.map((f) => ({
-          "@type": "Question",
-          name: f.question,
-          acceptedAnswer: { "@type": "Answer", text: f.answer },
-        })),
-      });
-    }
-    const ld = { "@context": "https://schema.org", "@graph": graph };
-    const id = "ld-content-page";
-    let el = document.getElementById(id) as HTMLScriptElement | null;
-    if (!el) {
-      el = document.createElement("script");
-      el.id = id;
-      el.type = "application/ld+json";
-      document.head.appendChild(el);
-    }
-    el.textContent = JSON.stringify(ld);
-    return () => {
-      el?.remove();
-    };
-  }, [page]);
+  // JSON-LD is now emitted server-side (see lib/contentRoute.tsx) so crawlers
+  // see it in the initial HTML; no client-side injection here.
 
   if (loading) {
     return (
@@ -177,6 +124,7 @@ const DynamicContentPage = ({ category }: Props) => {
       ) : page.body_html ? (
         <div
           className="prose-academic"
+          suppressHydrationWarning
           dangerouslySetInnerHTML={{ __html: sanitizeHtml(page.body_html) }}
         />
       ) : null}

@@ -18,6 +18,12 @@ export const Link = forwardRef<HTMLAnchorElement, LinkProps>(function Link(
   { to, replace, state, ...rest },
   ref,
 ) {
+  // Defensive: a nullish/empty href makes next/link call url.format(undefined),
+  // which throws "Cannot destructure property 'auth'…" during SSR/SSG. Fall back
+  // to a plain anchor so a single bad link can't crash a prerendered page.
+  if (to == null || to === "") {
+    return <a ref={ref} {...rest} />;
+  }
   return <NextLink ref={ref} href={to} replace={replace} {...rest} />;
 });
 

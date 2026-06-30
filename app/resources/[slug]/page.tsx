@@ -1,12 +1,20 @@
 import type { Metadata } from "next";
-import DynamicContentPage from "@/views/DynamicContentPage";
-import { buildMetadata } from "@/lib/seo";
+import { contentMeta, contentParams, ContentRoutePage } from "@/lib/contentRoute";
 
-export const metadata: Metadata = buildMetadata({
-  title: 'Resources',
-  description: 'Author and reader resources from EP Journals Group.',
-});
+export const revalidate = 259200;
 
-export default function Page() {
-  return <DynamicContentPage category='user-focused' />;
+export function generateStaticParams() {
+  return contentParams("user-focused");
+}
+
+export async function generateMetadata(
+  { params }: { params: Promise<{ slug: string }> },
+): Promise<Metadata> {
+  const { slug } = await params;
+  return contentMeta("user-focused", slug);
+}
+
+export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  return <ContentRoutePage category="user-focused" slug={slug} />;
 }
