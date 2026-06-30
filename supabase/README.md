@@ -31,7 +31,7 @@ supabase/
 
 ```bash
 # 1. Link the project (from repo root)
-supabase link --project-ref azkkmylgtrpjsxdlyayb
+supabase link --project-ref uxvukpvbznddlzpjceeo
 
 # 2. Set the function's secrets (generate two long random strings first)
 supabase secrets set \
@@ -46,7 +46,7 @@ supabase functions deploy ingest-oai --no-verify-jwt
 # 4. Smoke-test it manually (should return JSON with a per-journal summary)
 curl -s -X POST \
   -H "x-ingest-secret: <random-string-A>" \
-  "https://azkkmylgtrpjsxdlyayb.supabase.co/functions/v1/ingest-oai" | jq
+  "https://uxvukpvbznddlzpjceeo.supabase.co/functions/v1/ingest-oai" | jq
 ```
 
 Then wire up the cron:
@@ -54,7 +54,7 @@ Then wire up the cron:
 ```sql
 -- 5. In the Supabase SQL editor, store the endpoint + secret in Vault (run once):
 select vault.create_secret(
-  'https://azkkmylgtrpjsxdlyayb.supabase.co/functions/v1/ingest-oai', 'oai_ingest_url'
+  'https://uxvukpvbznddlzpjceeo.supabase.co/functions/v1/ingest-oai', 'oai_ingest_url'
 );
 select vault.create_secret('<random-string-A>', 'oai_ingest_secret');
 ```

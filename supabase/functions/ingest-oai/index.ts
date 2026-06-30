@@ -91,28 +91,51 @@ function extractDoi(identifiers: string[]): string | null {
 }
 
 function extractArticleUrl(identifiers: string[]): string | null {
-  // OJS landing page is the version of record: .../article/view/<id>
-  const landing = identifiers.find((id) => /\/article\/view\/[^/]+\/?$/.test(id) || /\/article\/view\/\d+$/.test(id));
-  if (landing) return landing;
-  // fall back to any article/view URL even with a galley segment
-  const anyView = identifiers.find((id) => /\/article\/view\//.test(id) && /^https?:\/\//.test(id));
-  return anyView ?? null;
+  // OJS landing page (version of record) is .../article/view/<articleId> —
+  // one numeric segment. Two segments (.../view/<a>/<g>) is a galley, not the landing.
+  const landing = identifiers.find((id) => /^https?:\/\/.*\/article\/view\/\d+\/?$/.test(id));
+  if (landing) return landing.replace(/\/$/, "");
+  const anyView = identifiers.find((id) => /^https?:\/\/.*\/article\/view\//.test(id));
+  return anyView ? anyView.replace(/\/$/, "") : null;
 }
 
 function extractPdfUrl(identifiers: string[], relations: string[]): string | null {
-  const candidates = [...identifiers, ...relations];
-  // OJS galley download: .../article/download/<id>/<galley>  or a .pdf URL
-  const pdf = candidates.find((u) => /^https?:\/\//.test(u) && (/\/article\/download\//.test(u) || /\.pdf($|\?)/i.test(u)));
-  return pdf ?? null;
+  const candidates = [...relations, ...identifiers];
+  // Direct file: .../article/download/<a>/<g> or a .pdf URL.
+  const direct = candidates.find(
+    (u) => /^https?:\/\//.test(u) && (/\/article\/download\//.test(u) || /\.pdf($|\?)/i.test(u)),
+  );
+  if (direct) return direct;
+  // OJS exposes the galley as a view URL (.../article/view/<a>/<g>); the direct
+  // file is the same path with /view/ → /download/. That is the galley PDF.
+  const galley = candidates.find((u) => /^https?:\/\/.*\/article\/view\/\d+\/\d+\/?$/.test(u));
+  if (galley) return galley.replace("/article/view/", "/article/download/").replace(/\/$/, "");
+  return null;
+}
+
+function extractKeywords(subjects: string[]): string[] | null {
+  // OJS may emit one comma/semicolon-separated dc:subject, or several elements.
+  const out: string[] = [];
+  for (const s of subjects) {
+    for (const part of s.split(/[;,]/)) {
+      const k = part.trim();
+      if (k) out.push(k);
+    }
+  }
+  return out.length ? Array.from(new Set(out)) : null;
 }
 
 function parseVolumeIssuePages(sources: string[]): { volume: string | null; issue: string | null; pages: string | null } {
-  const src = sources.join(" ; ");
-  // e.g. "Journal of X; Vol 12 No 3 (2025); 45-58"
-  const vol = src.match(/\bVol(?:ume)?\.?\s*([\w]+)/i)?.[1] ?? null;
-  const iss = src.match(/\b(?:No|Issue)\.?\s*([\w]+)/i)?.[1] ?? null;
-  const pages = src.match(/\b(\d+\s*[-–]\s*\d+)\b/)?.[1]?.replace(/\s+/g, "") ?? null;
-  return { volume: vol, issue: iss, pages };
+  // The citation source carries the issue info + page range; sibling dc:source
+  // values are bare ISSNs (e.g. "3051-3782") — exclude them so they aren't read
+  // as a page range. The citation one contains ';' (or "Vol").
+  const citation = sources.find((s) => s.includes(";") || /vol/i.test(s)) ?? "";
+  const volume = citation.match(/\bVol(?:ume)?\.?\s*([\w]+)/i)?.[1] ?? null;
+  const issue = citation.match(/\b(?:No|Issue)\.?\s*([\w]+)/i)?.[1] ?? null;
+  // Pages live in the segment after the last ';', e.g. "...; 1-7".
+  const tail = citation.split(";").pop() ?? "";
+  const pages = tail.match(/(\d+\s*[-–]\s*\d+)/)?.[1]?.replace(/\s+/g, "") ?? null;
+  return { volume, issue, pages };
 }
 
 function normalizeDate(raw: string | null, fallback: string): string {
@@ -190,7 +213,7 @@ async function harvestJournal(journal: Journal, today: string): Promise<ArticleR
         title,
         authors: dcValues(rec, "creator").join(", "),
         abstract: dcValues(rec, "description").sort((a, b) => b.length - a.length)[0] ?? "",
-        keywords: dcValues(rec, "subject").length ? dcValues(rec, "subject") : null,
+        keywords: extractKeywords(dcValues(rec, "subject")),
         doi: extractDoi(identifiers),
         journal_abbrev: journal.abbrev,
         journal_name: journal.title,

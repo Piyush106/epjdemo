@@ -15,7 +15,7 @@ create extension if not exists pg_net;
 -- the same name errors; use vault.update_secret to change a value later).
 --
 --   select vault.create_secret(
---     'https://azkkmylgtrpjsxdlyayb.supabase.co/functions/v1/ingest-oai',
+--     'https://uxvukpvbznddlzpjceeo.supabase.co/functions/v1/ingest-oai',
 --     'oai_ingest_url'
 --   );
 --   select vault.create_secret('<your-INGEST_SECRET>', 'oai_ingest_secret');
