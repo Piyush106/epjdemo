@@ -267,25 +267,41 @@ Deno.serve(async (req: Request) => {
       const harvested = await harvestJournal(journal, today);
 
       // Existing rows for this journal → dedupe maps (doi primary, article_url fallback).
+      // We also keep the curated fields so the harvest never wipes data the feed
+      // lacks (e.g. hand-entered DOIs — the OJS oai_dc feed often omits them).
+      type ExistingRow = {
+        id: string; doi: string | null; article_url: string | null; pdf_url: string | null;
+        volume: string | null; issue: string | null; pages: string | null; keywords: string[] | null;
+      };
       const { data: existing } = await supabase
         .from("articles")
-        .select("id, doi, article_url")
+        .select("id, doi, article_url, pdf_url, volume, issue, pages, keywords")
         .eq("journal_abbrev", journal.abbrev);
 
-      const byDoi = new Map<string, string>();
-      const byUrl = new Map<string, string>();
-      for (const e of (existing ?? []) as { id: string; doi: string | null; article_url: string | null }[]) {
-        if (e.doi) byDoi.set(e.doi, e.id);
-        if (e.article_url) byUrl.set(e.article_url, e.id);
+      const byDoi = new Map<string, ExistingRow>();
+      const byUrl = new Map<string, ExistingRow>();
+      for (const e of (existing ?? []) as ExistingRow[]) {
+        if (e.doi) byDoi.set(e.doi, e);
+        if (e.article_url) byUrl.set(e.article_url, e);
       }
 
       let inserted = 0;
       let updated = 0;
       const toUpsert: ArticleRow[] = [];
       for (const row of harvested) {
-        const matchId = (row.doi && byDoi.get(row.doi)) || (row.article_url && byUrl.get(row.article_url)) || null;
-        if (matchId) {
-          toUpsert.push({ ...row, id: matchId });
+        const match = (row.doi && byDoi.get(row.doi)) || (row.article_url && byUrl.get(row.article_url)) || null;
+        if (match) {
+          // Preserve curated values when the feed doesn't provide them.
+          toUpsert.push({
+            ...row,
+            id: match.id,
+            doi: row.doi ?? match.doi,
+            pdf_url: row.pdf_url ?? match.pdf_url,
+            volume: row.volume ?? match.volume,
+            issue: row.issue ?? match.issue,
+            pages: row.pages ?? match.pages,
+            keywords: row.keywords ?? match.keywords,
+          });
           updated += 1;
         } else {
           toUpsert.push(row);
