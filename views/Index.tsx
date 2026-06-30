@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
 import { useJournals } from "@/hooks/useJournals";
+import type { Journal } from "@/lib/types";
 
 // Strip OJS /index.php/<slug> path so links go to the bare journal subdomain
 // (e.g. https://gjetr.ep-journals.org) instead of the OJS-internal URL.
@@ -27,8 +28,16 @@ import { useJournals } from "@/hooks/useJournals";
 const journalHomepage = (externalUrl: string) =>
   externalUrl.replace(/\/index\.php\/.*$/, "");
 
-const Index = () => {
-  const { data: journals = [] } = useJournals();
+interface IndexProps {
+  initialJournals?: Journal[];
+  initialArticles?: { id: string; title: string; authors: string; journal_abbrev: string; publication_date: string }[];
+}
+
+const Index = ({ initialJournals = [], initialArticles = [] }: IndexProps) => {
+  // Server passes journals so the table + links are in the initial HTML (SEO);
+  // useJournals refreshes on the client. SSR render uses initialJournals.
+  const { data } = useJournals();
+  const journals = data && data.length ? data : initialJournals;
 
   return (
     <div className="min-h-screen bg-background">
@@ -42,7 +51,7 @@ const Index = () => {
       <Header />
 
       {/* Recent Articles Slideshow */}
-      <RecentArticlesSlideshow />
+      <RecentArticlesSlideshow initialArticles={initialArticles} />
 
       {/* Submit Manuscript CTA */}
       <section className="border-b border-border bg-accent">

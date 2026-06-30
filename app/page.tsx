@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Index from "@/views/Index";
 import JsonLd from "@/components/JsonLd";
 import { SITE, buildMetadata } from "@/lib/seo";
-import { getJournals } from "@/lib/data";
+import { getJournals, getRecentArticles } from "@/lib/data";
 
 export const revalidate = 3600;
 
@@ -15,6 +15,9 @@ export const metadata: Metadata = buildMetadata({
 export default async function HomePage() {
   let journals: Awaited<ReturnType<typeof getJournals>> = [];
   try { journals = await getJournals(); } catch { journals = []; }
+
+  let recentArticles: Awaited<ReturnType<typeof getRecentArticles>> = [];
+  try { recentArticles = await getRecentArticles(10); } catch { recentArticles = []; }
 
   const itemListLd = {
     "@context": "https://schema.org",
@@ -38,7 +41,7 @@ export default async function HomePage() {
   return (
     <>
       <JsonLd data={itemListLd} />
-      <Index />
+      <Index initialJournals={journals} initialArticles={recentArticles} />
     </>
   );
 }

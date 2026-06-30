@@ -14,9 +14,9 @@ interface Article {
   publication_date: string;
 }
 
-const RecentArticlesSlideshow = () => {
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [loading, setLoading] = useState(true);
+const RecentArticlesSlideshow = ({ initialArticles = [] }: { initialArticles?: Article[] }) => {
+  const [articles, setArticles] = useState<Article[]>(initialArticles);
+  const [loading, setLoading] = useState(initialArticles.length === 0);
   const [error, setError] = useState<string | null>(null);
   const [current, setCurrent] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -24,6 +24,8 @@ const RecentArticlesSlideshow = () => {
   const journalMap = useMemo(() => buildJournalMap(journals), [journals]);
 
   useEffect(() => {
+    // Server already provided the recent articles → no client refetch needed.
+    if (initialArticles.length > 0) return;
     let cancelled = false;
     (async () => {
       const { data, error: queryError } = await fetchWithRetry<Article[]>(() =>
