@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getArticle, getJournalByAbbrev, getAllArticleIds } from "@/lib/data";
+import { getArticle, getJournalByAbbrev, getAllArticleIds, getRelatedArticles } from "@/lib/data";
 import { buildMetadata, SITE } from "@/lib/seo";
 import JsonLd from "@/components/JsonLd";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ArticleCite from "@/components/ArticleCite";
 
 // Pre-render article pages and refresh every 3 days, matching the ingestion cycle.
 // New articles added by the ingestion job are server-rendered on first request,
@@ -84,8 +85,10 @@ export default async function ArticlePage(
 
   const journal = await getJournalByAbbrev(article.journal_abbrev);
   const authors = authorList(article.authors);
+  const related = await getRelatedArticles(article.journal_abbrev, article.id, 5);
   const { first, last } = parsePages(article.pages);
   const fullTextUrl = article.article_url ?? article.pdf_url ?? undefined;
+  const citeUrl = article.article_url ?? `${SITE.origin}/articles/${article.id}`;
   const pubDate = new Date(article.publication_date);
   const formatted = pubDate.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
 
@@ -158,6 +161,39 @@ export default async function ArticlePage(
               The full peer-reviewed article and PDF are hosted on the journal&apos;s site (the version of record).
             </span>
           </p>
+        )}
+
+        <ArticleCite
+          title={article.title}
+          authors={authors}
+          journalName={article.journal_name}
+          year={article.publication_date.slice(0, 4)}
+          volume={article.volume}
+          issue={article.issue}
+          pages={article.pages}
+          doi={article.doi}
+          url={citeUrl}
+        />
+
+        {related.length > 0 && (
+          <section className="mt-10" aria-labelledby="related-heading">
+            <h2 id="related-heading" className="font-heading text-lg font-semibold text-foreground mb-3">
+              Related articles in {article.journal_abbrev}
+            </h2>
+            <ul className="space-y-3">
+              {related.map((r) => (
+                <li key={r.id} className="border-b border-border pb-3 last:border-0">
+                  <Link href={`/articles/${r.id}`} className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+                    {r.title}
+                  </Link>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {r.authors}
+                    {r.publication_date ? ` · ${new Date(r.publication_date).toLocaleDateString("en-GB", { month: "short", year: "numeric" })}` : ""}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </section>
         )}
 
         <p className="mt-10">

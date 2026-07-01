@@ -55,6 +55,23 @@ export async function getRecentArticles(limit = 12): Promise<Article[]> {
   return (data as Article[]) ?? [];
 }
 
+/** Other recent published articles from the same journal (for "related articles"). */
+export async function getRelatedArticles(
+  journalAbbrev: string,
+  excludeId: string,
+  limit = 5,
+): Promise<Article[]> {
+  const { data } = await supabase
+    .from("articles")
+    .select("*")
+    .eq("status", "published")
+    .eq("journal_abbrev", journalAbbrev)
+    .neq("id", excludeId)
+    .order("publication_date", { ascending: false })
+    .limit(limit);
+  return (data as Article[] | null) ?? [];
+}
+
 /** All article ids — used by generateStaticParams to pre-render article pages. */
 export async function getAllArticleIds(): Promise<string[]> {
   const { data } = await supabase

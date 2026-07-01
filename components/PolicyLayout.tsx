@@ -18,21 +18,21 @@ export type PolicyKey =
   | "diversity-inclusion"
   | "publisher-governance";
 
-// policyKey -> { route, label }
-const POLICIES: { key: PolicyKey; route: string; label: string }[] = [
-  { key: "publication-ethics", route: "publication-ethics", label: "Publication Ethics" },
-  { key: "research-integrity", route: "research-integrity", label: "Research Integrity" },
-  { key: "peer-review", route: "peer-review-process", label: "Peer Review Process" },
-  { key: "editorial-policies", route: "editorial-policies", label: "Editorial Policies" },
-  { key: "corrections-retractions", route: "corrections-retractions", label: "Corrections & Retractions" },
-  { key: "open-access", route: "open-access", label: "Open Access" },
-  { key: "copyright-licensing", route: "copyright-licensing", label: "Copyright & Licensing" },
-  { key: "archiving-preservation", route: "archiving-preservation", label: "Archiving & Preservation" },
-  { key: "author-responsibilities", route: "author-responsibilities", label: "Author Responsibilities" },
-  { key: "reviewer-guidelines", route: "reviewer-guidelines", label: "Reviewer Guidelines" },
-  { key: "editorial-workflow", route: "editorial-workflow", label: "Editorial Workflow" },
-  { key: "diversity-inclusion", route: "diversity-inclusion", label: "Diversity & Inclusion" },
-  { key: "publisher-governance", route: "publisher-governance", label: "Publisher Governance" },
+// policyKey -> { route, label, description }
+const POLICIES: { key: PolicyKey; route: string; label: string; description: string }[] = [
+  { key: "publication-ethics", route: "publication-ethics", label: "Publication Ethics", description: "COPE-aligned standards on misconduct, plagiarism, and authorship." },
+  { key: "research-integrity", route: "research-integrity", label: "Research Integrity", description: "Expectations for data, methods, and the integrity of the record." },
+  { key: "peer-review", route: "peer-review-process", label: "Peer Review Process", description: "Double-blind review by a minimum of two independent reviewers." },
+  { key: "editorial-policies", route: "editorial-policies", label: "Editorial Policies", description: "How editorial decisions are made and independence is preserved." },
+  { key: "corrections-retractions", route: "corrections-retractions", label: "Corrections & Retractions", description: "How the record is corrected, retracted, or flagged with concern." },
+  { key: "open-access", route: "open-access", label: "Open Access", description: "Immediate open access under CC BY 4.0, with authors retaining copyright." },
+  { key: "copyright-licensing", route: "copyright-licensing", label: "Copyright & Licensing", description: "Author copyright and the terms of the CC BY 4.0 licence." },
+  { key: "archiving-preservation", route: "archiving-preservation", label: "Archiving & Preservation", description: "Long-term preservation and DOI-based permanent access." },
+  { key: "author-responsibilities", route: "author-responsibilities", label: "Author Responsibilities", description: "What authors must confirm on originality, ethics, and disclosure." },
+  { key: "reviewer-guidelines", route: "reviewer-guidelines", label: "Reviewer Guidelines", description: "What reviewers assess and the conduct expected of them." },
+  { key: "editorial-workflow", route: "editorial-workflow", label: "Editorial Workflow", description: "The stages a manuscript passes through, with typical timelines." },
+  { key: "diversity-inclusion", route: "diversity-inclusion", label: "Diversity & Inclusion", description: "Non-discrimination and inclusive editorial practice across the portfolio." },
+  { key: "publisher-governance", route: "publisher-governance", label: "Publisher Governance", description: "How the publisher is administered and editorial autonomy is maintained." },
 ];
 
 interface PolicyLayoutProps {

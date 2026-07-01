@@ -31,9 +31,13 @@ export default function PoliciesIndex() {
             <Link
               key={p.route}
               href={`/policies/${p.route}`}
-              className="block border border-border bg-card p-4 rounded-sm hover:shadow-card transition-shadow"
+              className="group block border border-border bg-card p-4 rounded-sm hover:border-ep-orange hover:shadow-card transition-all"
             >
-              <span className="font-heading font-semibold text-foreground">{p.label}</span>
+              <span className="font-heading font-semibold text-foreground group-hover:text-ep-orange transition-colors">
+                {p.label}
+              </span>
+              <span className="mt-1 block text-xs text-muted-foreground leading-relaxed">{p.description}</span>
+              <span className="mt-2 inline-block text-xs text-primary">Read policy →</span>
             </Link>
           ))}
         </div>
