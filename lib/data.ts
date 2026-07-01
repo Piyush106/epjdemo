@@ -55,6 +55,15 @@ export async function getRecentArticles(limit = 12): Promise<Article[]> {
   return (data as Article[]) ?? [];
 }
 
+/** Count of published articles (for homepage trust stats). */
+export async function getPublishedArticleCount(): Promise<number> {
+  const { count } = await supabase
+    .from("articles")
+    .select("id", { count: "exact", head: true })
+    .eq("status", "published");
+  return count ?? 0;
+}
+
 /** Recent published articles for one journal (for the journal landing page). */
 export async function getJournalArticles(journalAbbrev: string, limit = 10): Promise<Article[]> {
   const { data } = await supabase

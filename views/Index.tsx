@@ -31,9 +31,10 @@ const journalHomepage = (externalUrl: string) =>
 interface IndexProps {
   initialJournals?: Journal[];
   initialArticles?: { id: string; title: string; authors: string; journal_abbrev: string; publication_date: string }[];
+  articleCount?: number;
 }
 
-const Index = ({ initialJournals = [], initialArticles = [] }: IndexProps) => {
+const Index = ({ initialJournals = [], initialArticles = [], articleCount = 0 }: IndexProps) => {
   // Server passes journals so the table + links are in the initial HTML (SEO);
   // useJournals refreshes on the client. SSR render uses initialJournals.
   const { data } = useJournals();
@@ -72,19 +73,38 @@ const Index = ({ initialJournals = [], initialArticles = [] }: IndexProps) => {
           <div className="grid lg:grid-cols-[1fr_340px] gap-8">
             {/* Left Column - Primary Editorial Content */}
             <div className="min-w-0">
-              {/* Page title (H1) — required for SEO; one H1 per page. */}
+              {/* Hero — institutional value proposition, primary actions, and live trust stats. */}
               <header className="mb-6">
-                <h1 className="text-xl sm:text-2xl font-heading font-semibold text-foreground mb-2 border-b border-border pb-2">
+                <h1 className="text-2xl sm:text-3xl font-heading font-semibold text-foreground mb-3">
                   Peer-Reviewed Open Access Journals — EP Journals Group
                 </h1>
-                <p className="text-sm text-muted-foreground leading-relaxed">
+                <p className="text-sm text-muted-foreground leading-relaxed mb-4">
                   EP Journals Group is an open access publisher of six peer-reviewed academic journals covering engineering,
-                  economics and finance, management, natural sciences, social sciences, and education and finance. Every
-                  published article is freely available under a Creative Commons Attribution 4.0 (CC BY 4.0) licence, undergoes
-                  double-blind peer review by two independent reviewers, and receives a CrossRef DOI for permanent citation.
-                  Authors retain full copyright. <Link to="/submit" className="text-primary hover:underline">Submit a manuscript</Link>
-                  {" "}or browse our <Link to="/articles" className="text-primary hover:underline">peer-reviewed articles</Link>.
+                  economics and finance, management, natural sciences, social sciences, and education. Every published article
+                  is freely available under a Creative Commons Attribution 4.0 (CC BY 4.0) licence, undergoes double-blind peer
+                  review by two independent reviewers, and receives a CrossRef DOI for permanent citation. Authors retain full copyright.
                 </p>
+                <div className="flex flex-wrap gap-3 mb-5">
+                  <Link to="/articles" className="inline-flex items-center bg-primary text-primary-foreground px-5 py-2.5 text-sm font-medium rounded-sm hover:bg-primary-hover transition-colors">
+                    Browse{articleCount ? ` ${articleCount}` : ""} articles &rarr;
+                  </Link>
+                  <Link to="/submit" className="inline-flex items-center border border-border bg-card px-5 py-2.5 text-sm font-medium rounded-sm hover:bg-muted transition-colors">
+                    Submit a manuscript
+                  </Link>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-border border border-border rounded-sm overflow-hidden">
+                  {[
+                    { n: journals.length || 6, l: "Peer-reviewed journals" },
+                    { n: articleCount || "—", l: "Published articles" },
+                    { n: "CC BY 4.0", l: "Open access licence" },
+                    { n: "Crossref", l: "DOI on every article" },
+                  ].map((s) => (
+                    <div key={s.l} className="bg-card px-3 py-3 text-center">
+                      <div className="text-base font-heading font-semibold text-ep-orange leading-tight">{s.n}</div>
+                      <div className="text-[11px] text-muted-foreground leading-tight mt-0.5">{s.l}</div>
+                    </div>
+                  ))}
+                </div>
               </header>
 
               {/* Dense navigation hub (policy + journal quick access) */}
