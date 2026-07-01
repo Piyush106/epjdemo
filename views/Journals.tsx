@@ -117,14 +117,10 @@ const Journals = ({ initialJournals = [] }: { initialJournals?: Journal[] }) => 
                         </p>
                         <p>
                           <strong>Submit Manuscript:</strong>{" "}
-                          {journal.submission_url ? (
-                            <>
-                              <a href={journal.submission_url} target="_blank" rel="noopener noreferrer" className="text-ep-orange hover:underline">
-                                Online Submission System
-                              </a>
-                              {" "}or email to{" "}
-                            </>
-                          ) : null}
+                          <Link to="/submit" className="text-ep-orange hover:underline">
+                            Submission form
+                          </Link>
+                          {" "}or email to{" "}
                           <a href={`mailto:${journal.contact_email}`} className="text-ep-orange hover:underline">
                             {journal.contact_email}
                           </a>

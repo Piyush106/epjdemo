@@ -87,9 +87,9 @@ export default async function JournalPage({ params }: { params: Promise<{ abbrev
             <a href={site} target="_blank" rel="noopener noreferrer" className="inline-flex items-center bg-primary text-primary-foreground px-4 py-2 text-sm font-medium rounded-sm hover:bg-primary-hover">
               Visit journal site &rarr;
             </a>
-            <a href={journal.submission_url || "/submit"} target={journal.submission_url ? "_blank" : undefined} rel="noopener noreferrer" className="inline-flex items-center border border-border bg-card px-4 py-2 text-sm font-medium rounded-sm hover:bg-muted">
+            <Link href="/submit" className="inline-flex items-center border border-border bg-card px-4 py-2 text-sm font-medium rounded-sm hover:bg-muted">
               Submit to this journal
-            </a>
+            </Link>
           </div>
         </div>
       </section>
