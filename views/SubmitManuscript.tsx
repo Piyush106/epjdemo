@@ -43,6 +43,9 @@ const SubmitManuscript = () => {
   const [file, setFile] = useState<File | null>(null);
   const [comments, setComments] = useState("");
   const [declaration, setDeclaration] = useState(false);
+  // Anti-spam: honeypot field (bots fill it; humans never see it) + form-open time.
+  const [website, setWebsite] = useState("");
+  const mountedAt = useRef<number>(Date.now());
 
   const validateFile = (f: File): string | null => {
     if (!ACCEPTED_TYPES.includes(f.type) && !f.name.match(/\.(pdf|docx)$/i)) {
@@ -72,6 +75,13 @@ const SubmitManuscript = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Anti-spam: silently drop bot submissions (honeypot filled, or submitted
+    // implausibly fast). Show success so bots get no signal; nothing is recorded.
+    if (website || Date.now() - mountedAt.current < 3000) {
+      setSubmitted(true);
+      return;
+    }
 
     if (!journal || !authorName || !email || !affiliation || !paperTitle || !abstract || !file || !declaration) {
       toast({ title: "Missing fields", description: "Please complete all required fields.", variant: "destructive" });
@@ -202,6 +212,17 @@ const SubmitManuscript = () => {
           <p className="text-xs text-muted-foreground mb-6">Fields marked with * are required.</p>
 
           <form onSubmit={handleSubmit} className="space-y-8">
+            {/* Honeypot — hidden from real users; bots that fill it are silently dropped. */}
+            <input
+              type="text"
+              name="website"
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              value={website}
+              onChange={(e) => setWebsite(e.target.value)}
+              style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }}
+            />
             {/* A. Journal Selection */}
             <fieldset className="space-y-3">
               <legend className="text-sm font-heading font-semibold text-foreground border-b border-border pb-1 w-full mb-2">
