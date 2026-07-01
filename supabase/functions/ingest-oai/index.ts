@@ -346,5 +346,30 @@ Deno.serve(async (req: Request) => {
     console.warn("SITE_URL / REVALIDATE_SECRET unset — skipping revalidation");
   }
 
+  // Failure alert: if any journal errored, email the editorial office so a
+  // silent cron failure doesn't go unnoticed.
+  const errored = Object.entries(summary).filter(([, s]) => s.error);
+  const resendKey = Deno.env.get("RESEND_API_KEY");
+  if (errored.length && resendKey) {
+    try {
+      const rows = errored
+        .map(([abbrev, s]) => `<li><b>${abbrev}</b>: ${String(s.error).replace(/</g, "&lt;")}</li>`)
+        .join("");
+      await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          from: Deno.env.get("FROM_EMAIL") ?? "EP Journals Group <editor@ep-journals.org>",
+          to: [Deno.env.get("EDITOR_EMAIL") ?? "editor@ep-journals.org"],
+          subject: `⚠ OAI ingestion: ${errored.length} journal(s) failed`,
+          html: `<p>The scheduled article ingestion reported errors for ${errored.length} journal(s):</p>
+                 <ul>${rows}</ul><p>Ran at ${new Date().toISOString()}.</p>`,
+        }),
+      });
+    } catch (e) {
+      console.error(`alert email failed: ${e instanceof Error ? e.message : String(e)}`);
+    }
+  }
+
   return Response.json({ ok: true, ranAt: new Date().toISOString(), revalidated, summary });
 });
