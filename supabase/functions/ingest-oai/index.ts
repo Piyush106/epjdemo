@@ -304,7 +304,8 @@ Deno.serve(async (req: Request) => {
           });
           updated += 1;
         } else {
-          toUpsert.push(row);
+          // articles.id has no DB default → generate one for new rows.
+          toUpsert.push({ ...row, id: crypto.randomUUID() });
           inserted += 1;
         }
       }
