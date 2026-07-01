@@ -172,6 +172,27 @@ function editorEmail(p: Payload, date: string): string {
   );
 }
 
+// Resolve the journal-specific editor address from the journals table
+// (contact_email), matching the submitted journal by title or abbrev.
+async function editorRecipientFor(journal: string | undefined, fallback: string): Promise<string> {
+  const url = Deno.env.get("SUPABASE_URL");
+  const key = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  if (!url || !key || !journal) return fallback;
+  try {
+    const res = await fetch(`${url}/rest/v1/journals?select=abbrev,title,contact_email`, {
+      headers: { apikey: key, Authorization: `Bearer ${key}` },
+    });
+    if (!res.ok) return fallback;
+    const rows = (await res.json()) as { abbrev: string; title: string; contact_email: string | null }[];
+    const j = rows.find(
+      (r) => r.title === journal || r.abbrev === journal || r.abbrev?.toLowerCase() === journal.toLowerCase(),
+    );
+    return (j && j.contact_email) || fallback;
+  } catch {
+    return fallback;
+  }
+}
+
 async function sendEmail(apiKey: string, body: Record<string, unknown>) {
   // Resend allows ~2 requests/second; retry on 429 with a short backoff so a
   // burst (each submission sends 2 emails) never drops one.
@@ -196,7 +217,7 @@ Deno.serve(async (req: Request) => {
   const apiKey = Deno.env.get("RESEND_API_KEY");
   if (!apiKey) return Response.json({ error: "RESEND_API_KEY not configured" }, { status: 500, headers: CORS });
   const from = Deno.env.get("FROM_EMAIL") ?? "EP Journals Group <editor@ep-journals.org>";
-  const editor = Deno.env.get("EDITOR_EMAIL") ?? "editor@ep-journals.org";
+  const fallbackEditor = Deno.env.get("EDITOR_EMAIL") ?? "editor@ep-journals.org";
 
   let p: Payload;
   try {
@@ -214,8 +235,9 @@ Deno.serve(async (req: Request) => {
   // Randomly pick one of the three author acknowledgement templates.
   const idx = Math.floor(Math.random() * AUTHOR_TEMPLATES.length);
   const author = AUTHOR_TEMPLATES[idx](p, date);
+  const editor = await editorRecipientFor(p.journal, fallbackEditor);
 
-  const results: Record<string, unknown> = { authorTemplate: idx + 1 };
+  const results: Record<string, unknown> = { authorTemplate: idx + 1, editorTo: editor };
   try {
     results.editor = await sendEmail(apiKey, {
       from, to: [editor], reply_to: p.email,
