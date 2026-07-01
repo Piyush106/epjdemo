@@ -15,8 +15,8 @@ const config: Config = {
     },
     extend: {
       fontFamily: {
-        heading: ["Playfair Display", "Georgia", "Times New Roman", "serif"],
-        body: ["Lora", "Georgia", "Times New Roman", "serif"],
+        heading: ["var(--font-playfair)", "Playfair Display", "Georgia", "Times New Roman", "serif"],
+        body: ["var(--font-lora)", "Lora", "Georgia", "Times New Roman", "serif"],
       },
       colors: {
         border: "hsl(var(--border))",
