@@ -55,6 +55,18 @@ export async function getRecentArticles(limit = 12): Promise<Article[]> {
   return (data as Article[]) ?? [];
 }
 
+/** Recent published articles for one journal (for the journal landing page). */
+export async function getJournalArticles(journalAbbrev: string, limit = 10): Promise<Article[]> {
+  const { data } = await supabase
+    .from("articles")
+    .select("*")
+    .eq("status", "published")
+    .eq("journal_abbrev", journalAbbrev)
+    .order("publication_date", { ascending: false })
+    .limit(limit);
+  return (data as Article[] | null) ?? [];
+}
+
 /** Other recent published articles from the same journal (for "related articles"). */
 export async function getRelatedArticles(
   journalAbbrev: string,

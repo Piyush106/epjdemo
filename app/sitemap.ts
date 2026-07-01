@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { SITE } from "@/lib/seo";
-import { getAllArticleIds, getAllContentPages } from "@/lib/data";
+import { getAllArticleIds, getAllContentPages, getJournals } from "@/lib/data";
 import { POLICIES } from "@/components/PolicyLayout";
 
 export const revalidate = 86400; // refresh sitemap daily
@@ -76,5 +76,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     contentEntries = [];
   }
 
-  return [...staticEntries, ...policyEntries, ...articleEntries, ...contentEntries];
+  let journalEntries: MetadataRoute.Sitemap = [];
+  try {
+    const journals = await getJournals();
+    journalEntries = journals.map((j) => ({
+      url: `${base}/journals/${j.abbrev.toLowerCase()}`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.8,
+    }));
+  } catch {
+    journalEntries = [];
+  }
+
+  return [...staticEntries, ...journalEntries, ...policyEntries, ...articleEntries, ...contentEntries];
 }

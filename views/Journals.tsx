@@ -1,4 +1,5 @@
 "use client";
+import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import InstitutionalSidebar from "@/components/InstitutionalSidebar";
@@ -56,15 +57,18 @@ const Journals = ({ initialJournals = [] }: { initialJournals?: Journal[] }) => 
                     <article>
                       <header className="mb-3">
                         <h2 className="text-base font-heading font-semibold text-foreground mb-1.5">
-                          <a
-                            href={journal.external_url.replace(/\/index\.php\/.*$/, "")}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                          <Link
+                            to={`/journals/${journal.abbrev.toLowerCase()}`}
                             className="hover:text-ep-orange transition-colors"
                           >
                             {journal.title}
-                          </a>
+                          </Link>
                         </h2>
+                        <p className="text-xs mb-1.5">
+                          <Link to={`/journals/${journal.abbrev.toLowerCase()}`} className="text-primary hover:underline">
+                            Journal page &amp; recent articles &rarr;
+                          </Link>
+                        </p>
                         <div className="text-xs text-muted-foreground space-y-0.5">
                           <p><strong>Abbreviation:</strong> {journal.abbrev}</p>
                           {(journal.print_issn || journal.electronic_issn) && (
