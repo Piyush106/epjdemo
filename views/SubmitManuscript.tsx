@@ -1,5 +1,6 @@
 "use client";
 import { useState, useRef } from "react";
+import { trackEvent } from "@/lib/analytics";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import MetaTags from "@/components/MetaTags";
@@ -159,6 +160,8 @@ const SubmitManuscript = () => {
         console.warn("Email notification failed, submission was still recorded.");
       }
 
+      // GA4 conversion — a completed manuscript submission (the key ad outcome).
+      trackEvent("submit_manuscript", { journal, method: "website_form" });
       setSubmitted(true);
     } catch (err: any) {
       toast({ title: "Submission error", description: err.message, variant: "destructive" });
