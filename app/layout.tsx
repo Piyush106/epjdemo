@@ -4,6 +4,7 @@ import "./globals.css";
 import JsonLd from "@/components/JsonLd";
 import { SITE } from "@/lib/seo";
 import Providers from "@/components/Providers";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 import { Suspense } from "react";
 
 // Self-hosted via next/font — no render-blocking Google Fonts request (CWV).
@@ -76,7 +77,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <JsonLd data={organizationLd} />
         <JsonLd data={websiteLd} />
       </head>
-      <body><Providers><Suspense>{children}</Suspense></Providers></body>
+      <body>
+        <Providers><Suspense>{children}</Suspense></Providers>
+        {process.env.NEXT_PUBLIC_GA_ID && <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />}
+      </body>
     </html>
   );
 }
