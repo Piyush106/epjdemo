@@ -15,6 +15,7 @@ const CORS = {
 };
 
 interface Payload {
+  reference?: string;
   journal?: string; authorName?: string; email?: string; affiliation?: string;
   country?: string; paperTitle?: string; abstract?: string; keywords?: string;
   comments?: string; fileName?: string; fileBase64?: string; fileType?: string;
@@ -82,7 +83,7 @@ function tplAcknowledgement(p: Payload, date: string) {
         P(`The Editorial Office of <strong>${esc(p.journal)}</strong> hereby acknowledges the receipt of your
            manuscript submitted through the EP Journals Group submission system. Your submission has been logged
            and assigned for preliminary editorial review.`) +
-        summaryBox([["Title", p.paperTitle ?? ""], ["Journal", p.journal ?? ""], ["Keywords", p.keywords ?? ""], ["File", p.fileName ?? ""]]) +
+        summaryBox([["Reference", p.reference ?? ""], ["Title", p.paperTitle ?? ""], ["Journal", p.journal ?? ""], ["Keywords", p.keywords ?? ""], ["File", p.fileName ?? ""]]) +
         P(`All manuscripts submitted to our journals undergo an initial editorial assessment followed by
            double-blind peer review. Authors can expect an editorial decision within one to two weeks of submission.`) +
         P(`We encourage you to familiarise yourself with our
@@ -115,7 +116,7 @@ function tplReceived(p: Payload, _date: string) {
         P(`Thank you for choosing <strong>${esc(p.journal)}</strong> as the venue for your scholarly work.
            We are pleased to confirm that your manuscript has been successfully received and registered in our
            editorial management system.`) +
-        summaryBox([["Title", p.paperTitle ?? ""], ["Journal", p.journal ?? ""], ["Keywords", p.keywords ?? ""], ["File", p.fileName ?? ""]]) +
+        summaryBox([["Reference", p.reference ?? ""], ["Title", p.paperTitle ?? ""], ["Journal", p.journal ?? ""], ["Keywords", p.keywords ?? ""], ["File", p.fileName ?? ""]]) +
         stats +
         P(`Our editorial team will conduct an initial assessment and, if appropriate, forward your manuscript for
            peer review. You will receive further correspondence at this email address regarding the status of your submission.`) +
@@ -141,7 +142,7 @@ function tplWelcome(p: Payload, _date: string) {
         P(`We are delighted to confirm the receipt of your manuscript submitted to
            <strong>${esc(p.journal)}</strong>. Your work is now part of our editorial pipeline and will be reviewed
            with the rigour and care it deserves.`) +
-        summaryBox([["Title", p.paperTitle ?? ""], ["Journal", p.journal ?? ""], ["Keywords", p.keywords ?? ""], ["File", p.fileName ?? ""]]) +
+        summaryBox([["Reference", p.reference ?? ""], ["Title", p.paperTitle ?? ""], ["Journal", p.journal ?? ""], ["Keywords", p.keywords ?? ""], ["File", p.fileName ?? ""]]) +
         nextBox + HELP + SIGNOFF,
       "border-top:4px solid #c0922e;",
     ),
@@ -160,7 +161,7 @@ function editorEmail(p: Payload, date: string): string {
       P(`A new manuscript has been submitted through the EP Journals Group submission system and assigned for
          preliminary editorial review. The full manuscript is attached to this email.`) +
       summaryBox([
-        ["Title", p.paperTitle ?? ""], ["Journal", p.journal ?? ""], ["Author", p.authorName ?? ""],
+        ["Reference", p.reference ?? ""], ["Title", p.paperTitle ?? ""], ["Journal", p.journal ?? ""], ["Author", p.authorName ?? ""],
         ["Email", p.email ?? ""], ["Affiliation", p.affiliation ?? ""], ["Country", p.country ?? ""],
         ["Keywords", p.keywords ?? ""], ["File", p.fileName ?? ""],
       ]) +

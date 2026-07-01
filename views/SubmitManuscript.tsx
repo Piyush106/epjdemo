@@ -30,6 +30,7 @@ const SubmitManuscript = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [refId, setRefId] = useState("");
   const [dragActive, setDragActive] = useState(false);
 
   const [journal, setJournal] = useState("");
@@ -102,6 +103,8 @@ const SubmitManuscript = () => {
 
       // Insert submission record
       const submissionId = crypto.randomUUID();
+      const reference = `EP-${submissionId.slice(0, 8).toUpperCase()}`;
+      setRefId(reference);
       const { error: insertError } = await supabase
         .from("manuscript_submissions")
         .insert({
@@ -137,6 +140,7 @@ const SubmitManuscript = () => {
       try {
         await supabase.functions.invoke("notify-submission", {
           body: {
+            reference,
             journal,
             authorName,
             email,
@@ -171,6 +175,12 @@ const SubmitManuscript = () => {
         <main className="container mx-auto px-4 py-12 max-w-2xl text-center">
           <CheckCircle2 className="h-16 w-16 text-primary mx-auto mb-4" />
           <h1 className="text-2xl font-heading font-semibold text-foreground mb-3">Manuscript Submitted Successfully</h1>
+          {refId && (
+            <p className="text-sm text-foreground mb-3">
+              Your reference number: <span className="font-mono font-semibold text-primary">{refId}</span>
+              <span className="block text-xs text-muted-foreground mt-1">Please quote this in any correspondence.</span>
+            </p>
+          )}
           <p className="text-sm text-muted-foreground leading-relaxed mb-6">
             Your manuscript has been received and will be reviewed by our editorial team.
             A confirmation has been sent to your email address. You will be contacted regarding
