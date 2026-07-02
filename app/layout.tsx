@@ -79,7 +79,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <Providers><Suspense>{children}</Suspense></Providers>
-        {process.env.NEXT_PUBLIC_GA_ID && <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />}
+        {(process.env.NEXT_PUBLIC_GA_ID || process.env.NEXT_PUBLIC_GOOGLE_ADS_ID) && (
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} adsId={process.env.NEXT_PUBLIC_GOOGLE_ADS_ID} />
+        )}
       </body>
     </html>
   );
