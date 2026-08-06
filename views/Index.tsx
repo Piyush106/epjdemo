@@ -2,8 +2,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import InstitutionalSidebar from "@/components/InstitutionalSidebar";
-import MetaTags from "@/components/MetaTags";
-import SchemaOrg from "@/components/SchemaOrg";
 import { Link } from "react-router-dom";
 import RecentArticlesSlideshow from "@/components/RecentArticlesSlideshow";
 import ExploreResources from "@/components/home/ExploreResources";
@@ -42,13 +40,6 @@ const Index = ({ initialJournals = [], initialArticles = [], articleCount = 0 }:
 
   return (
     <div className="min-h-screen bg-background">
-      <MetaTags
-        title="Open Access Journals | Peer-Reviewed Research | EP Journals Group"
-        description="Publish in peer-reviewed open access journals across engineering, economics, management, natural and social sciences. Free to read, CC BY 4.0, CrossRef DOI, double-blind peer review. Submit your manuscript to EP Journals Group."
-      />
-      <SchemaOrg type="Organization" />
-      <SchemaOrg type="WebSite" />
-      <SchemaOrg type="Periodical" />
       <Header />
 
       {/* Recent Articles Slideshow */}
@@ -63,6 +54,19 @@ const Index = ({ initialJournals = [], initialArticles = [], articleCount = 0 }:
           </div>
           <Link to="/submit" className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-primary text-primary-foreground hover:opacity-90 transition-opacity">
             Submit Paper →
+          </Link>
+        </div>
+      </section>
+
+      {/* Editorial Board Recruitment CTA */}
+      <section className="border-b border-border bg-secondary">
+        <div className="container mx-auto px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div>
+            <p className="text-sm font-heading font-semibold text-foreground">Are you a researcher or academic?</p>
+            <p className="text-xs text-muted-foreground">Join our international editorial board and help shape peer-reviewed open access research.</p>
+          </div>
+          <Link to="/join-editorial-board" className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border border-primary text-primary bg-card hover:bg-primary hover:text-primary-foreground transition-colors">
+            Become an Editorial Board Member →
           </Link>
         </div>
       </section>

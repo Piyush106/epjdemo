@@ -2,8 +2,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import InstitutionalSidebar from "@/components/InstitutionalSidebar";
-import MetaTags from "@/components/MetaTags";
-import SchemaOrg from "@/components/SchemaOrg";
 import {
   Table,
   TableBody,
@@ -16,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { CheckCircle2 } from "lucide-react";
 import { useJournals } from "@/hooks/useJournals";
+import type { Journal } from "@/lib/types";
 
 const indexingPlatforms = [
   "Google Scholar",
@@ -34,15 +33,13 @@ const visibilityPlatforms = ["Academia.edu", "LinkedIn"];
 const journalDoiDisplay = (j: { journal_doi: string | null; abbrev: string }) =>
   j.journal_doi || `10.65150/EP-${j.abbrev.toLowerCase()}`;
 
-const Indexing = () => {
-  const { data: journals = [] } = useJournals();
+const Indexing = ({ initialJournals = [] }: { initialJournals?: Journal[] }) => {
+  // Server-seeded so the full ISSN / DOI / indexing table is in the initial HTML
+  // for crawlers and AI retrievers; the client hook only refreshes it.
+  const { data } = useJournals();
+  const journals = data && data.length ? data : initialJournals;
   return (
     <div className="min-h-screen bg-background">
-      <MetaTags
-        title="Indexing & Abstracting | EP Journals"
-        description="View indexing and abstracting information for EP Journals across academic databases and research platforms."
-      />
-      <SchemaOrg type="WebPage" data={{"name":"Indexing & Abstracting | EP Journals","description":"View indexing and abstracting information for EP Journals across academic databases and research platforms.","url":"https://www.ep-journals.org/indexing","inLanguage":"en"}} />
       <Header />
 
       <section className="py-6 bg-ep-cream border-b border-border">

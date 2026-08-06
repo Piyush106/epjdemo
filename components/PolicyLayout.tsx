@@ -2,6 +2,8 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import JsonLd from "@/components/JsonLd";
+import { SITE } from "@/lib/seo";
 
 export type PolicyKey =
   | "publication-ethics"
@@ -44,8 +46,35 @@ interface PolicyLayoutProps {
 }
 
 export default function PolicyLayout({ title, subtitle, lastRevised, policyKey, children }: PolicyLayoutProps) {
+  const route = POLICIES.find((p) => p.key === policyKey)?.route ?? policyKey;
+  const url = `${SITE.origin}/policies/${route}`;
+
+  const articleLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: title,
+    ...(subtitle ? { description: subtitle } : {}),
+    url,
+    mainEntityOfPage: url,
+    inLanguage: "en",
+    author: { "@type": "Organization", "@id": `${SITE.origin}/#organization`, name: SITE.name },
+    publisher: { "@type": "Organization", "@id": `${SITE.origin}/#organization`, name: SITE.name },
+    isPartOf: { "@type": "WebSite", "@id": `${SITE.origin}/#website` },
+  };
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE.origin },
+      { "@type": "ListItem", position: 2, name: "Policies", item: `${SITE.origin}/policies` },
+      { "@type": "ListItem", position: 3, name: title, item: url },
+    ],
+  };
+
   return (
     <div className="min-h-screen bg-background">
+      <JsonLd data={articleLd} />
+      <JsonLd data={breadcrumbLd} />
       <Header />
 
       <section className="py-6 bg-secondary border-b border-border">

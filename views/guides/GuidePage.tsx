@@ -2,7 +2,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import InstitutionalSidebar from "@/components/InstitutionalSidebar";
-import MetaTags from "@/components/MetaTags";
 import { Separator } from "@/components/ui/separator";
 import RelatedLinks, { type RelatedLink } from "@/components/guides/RelatedLinks";
 import type { ReactNode } from "react";
@@ -30,7 +29,6 @@ const GuidePage = ({
 }: GuidePageProps) => {
   return (
     <div className="min-h-screen bg-background">
-      <MetaTags title={metaTitle ?? `${title} | EP Journals Group`} description={metaDescription} />
       <Header />
 
       <section className="py-6 bg-secondary border-b border-border">

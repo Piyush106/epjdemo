@@ -69,3 +69,62 @@ export function buildMetadata({
     ...(other ? { other } : {}),
   };
 }
+
+/**
+ * Build a CollectionPage JSON-LD object for a listing page (e.g. a Knowledge
+ * Centre category index). `items` are the entries, each becoming an Article
+ * node under `hasPart`. Rendered server-side so the collection and every item
+ * URL are crawlable in the initial HTML.
+ */
+export function buildCollectionPageLd({
+  name,
+  description,
+  path,
+  items,
+}: {
+  name: string;
+  description: string;
+  path: string;
+  items: { name: string; description?: string | null; url: string }[];
+}) {
+  const url = `${SITE.origin}${path}`;
+  return {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name,
+    description,
+    url,
+    isPartOf: { "@type": "WebSite", "@id": `${SITE.origin}/#website` },
+    publisher: { "@type": "Organization", "@id": `${SITE.origin}/#organization` },
+    inLanguage: "en",
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: items.length,
+      itemListElement: items.map((it, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        url: it.url,
+        item: {
+          "@type": "Article",
+          headline: it.name,
+          ...(it.description ? { description: it.description } : {}),
+          url: it.url,
+        },
+      })),
+    },
+  };
+}
+
+/** Build a BreadcrumbList JSON-LD object from an ordered list of crumbs. */
+export function buildBreadcrumbLd(crumbs: { name: string; path: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: crumbs.map((c, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: c.name,
+      item: `${SITE.origin}${c.path}`,
+    })),
+  };
+}

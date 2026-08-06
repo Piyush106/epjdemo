@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import MetaTags from "@/components/MetaTags";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2, CheckCircle2, XCircle, AlertTriangle } from "lucide-react";
@@ -110,7 +109,6 @@ const Unsubscribe = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <MetaTags title="Unsubscribe – EP Journals Group" description="Manage your email preferences." noindex />
       <Header />
       <main className="container mx-auto px-4 py-16 max-w-xl">
         {content[status]}

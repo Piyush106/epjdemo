@@ -3,8 +3,6 @@ import { useState, useRef } from "react";
 import { trackEvent } from "@/lib/analytics";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import MetaTags from "@/components/MetaTags";
-import SchemaOrg from "@/components/SchemaOrg";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -173,7 +171,6 @@ const SubmitManuscript = () => {
   if (submitted) {
     return (
       <div className="min-h-screen bg-background">
-        <MetaTags title="Submission Received – EP Journals Group" description="Your manuscript has been submitted successfully." />
         <Header />
         <main className="container mx-auto px-4 py-12 max-w-2xl text-center">
           <CheckCircle2 className="h-16 w-16 text-primary mx-auto mb-4" />
@@ -202,11 +199,6 @@ const SubmitManuscript = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <MetaTags
-        title="Manuscript Submission | Submit Paper to Open Access Journal | EP Journals Group"
-        description="Submit your research paper for peer review and open access publication. Fast double-blind peer review (1–2 weeks), CrossRef DOI on acceptance, CC BY 4.0 licence. Submit a manuscript to EP Journals Group."
-      />
-      <SchemaOrg type="WebPage" data={{"name":"Submit a Manuscript | EP Journals Group","description":"Submit your research paper for open access publication. Double-blind peer review, CrossRef DOI, CC BY 4.0 licence.","url":"https://www.ep-journals.org/submit","inLanguage":"en"}} />
       <Header />
 
       <main className="container mx-auto px-4 py-8 max-w-3xl">

@@ -3,8 +3,6 @@ import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import InstitutionalSidebar from "@/components/InstitutionalSidebar";
-import MetaTags from "@/components/MetaTags";
-import SchemaOrg from "@/components/SchemaOrg";
 import { Separator } from "@/components/ui/separator";
 import { useJournals } from "@/hooks/useJournals";
 import type { Journal } from "@/lib/types";
@@ -17,11 +15,6 @@ const Journals = ({ initialJournals = [] }: { initialJournals?: Journal[] }) => 
 
   return (
     <div className="min-h-screen bg-background">
-      <MetaTags
-        title="Open Access Journals List | Peer-Reviewed Academic Journals | EP Journals Group"
-        description="Six peer-reviewed open access journals in engineering, economics, finance, management, natural sciences, social sciences, and education. Monthly publication, double-blind peer review, CrossRef DOI, CC BY 4.0."
-      />
-      <SchemaOrg type="Periodical" />
       <Header />
 
       {/* Page Header */}

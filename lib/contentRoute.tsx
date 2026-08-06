@@ -3,7 +3,12 @@ import { notFound } from "next/navigation";
 import JsonLd from "@/components/JsonLd";
 import DynamicContentPage from "@/views/DynamicContentPage";
 import { buildMetadata, SITE } from "@/lib/seo";
-import { getContentPage, getContentSlugs, type ContentPageRow } from "@/lib/data";
+import {
+  getContentPage,
+  getContentSlugs,
+  getRelatedContentPages,
+  type ContentPageRow,
+} from "@/lib/data";
 
 export type ContentCategory = "guide" | "comparison" | "publishing" | "user-focused";
 
@@ -14,6 +19,25 @@ export const CATEGORY_META: Record<ContentCategory, { label: string; base: strin
   publishing: { label: "Publishing", base: "/publishing" },
   "user-focused": { label: "Resources", base: "/resources" },
 };
+
+/**
+ * Canonical consolidation for known duplicates. Keyed by `${category}:${slug}`,
+ * value is the canonical path the page should point at. Used to resolve exact
+ * title/topic duplicates (keyword cannibalisation) without deleting any page:
+ * the weaker duplicate keeps working but points its canonical + OpenGraph URL at
+ * the stronger page, and is excluded from the sitemap. Reversible — edit or
+ * remove an entry to change the primary.
+ */
+export const CANONICAL_OVERRIDES: Record<string, string> = {
+  // Two published guides share the exact title "How to Write a Research Abstract".
+  // `how-to-write-research-abstract` is the fuller page (23 body blocks vs 9,
+  // 5 FAQs vs 3, 6 related links vs 3, more recently updated) → the primary.
+  "guide:how-to-write-a-research-abstract": "/guides/how-to-write-research-abstract",
+};
+
+export function canonicalOverridePath(category: ContentCategory, slug: string): string | undefined {
+  return CANONICAL_OVERRIDES[`${category}:${slug}`];
+}
 
 /** generateStaticParams: pre-render every published slug in a category. */
 export async function contentParams(category: ContentCategory): Promise<{ slug: string }[]> {
@@ -32,14 +56,24 @@ export async function contentMeta(category: ContentCategory, slug: string): Prom
     return buildMetadata({ title: `${label} — not found`, description: "", noindex: true });
   }
   const path = `${base}/${page.slug}`;
+  const overridePath = canonicalOverridePath(category, page.slug);
+  const canonical = overridePath ? `${SITE.origin}${overridePath}` : undefined;
   const description = page.meta_description || page.summary || "";
-  const meta = buildMetadata({ title: page.title, description, path, ogType: "article" });
+  const meta = buildMetadata({ title: page.title, description, path, canonical, ogType: "article" });
   // meta_title already carries the full SEO title → use absolute so the layout's
   // "%s | EP Journals Group" template isn't applied twice.
   return {
     ...meta,
     title: page.meta_title ? { absolute: page.meta_title } : page.title,
     keywords: page.keywords && page.keywords.length ? page.keywords : undefined,
+    openGraph: {
+      ...meta.openGraph,
+      type: "article",
+      publishedTime: page.created_at,
+      modifiedTime: page.updated_at,
+      section: label,
+      ...(page.keywords?.length ? { tags: page.keywords } : {}),
+    },
   };
 }
 
@@ -63,10 +97,18 @@ function buildJsonLd(page: ContentPageRow, category: ContentCategory) {
       description: page.meta_description || page.summary || undefined,
       url,
       mainEntityOfPage: url,
-      // last_updated is a human string ("May 2026"); use ISO updated_at for schema dates.
-      datePublished: page.updated_at,
+      // created_at = first publication; updated_at = last edit. Both real ISO timestamps.
+      datePublished: page.created_at,
       dateModified: page.updated_at,
       inLanguage: "en",
+      isAccessibleForFree: true,
+      articleSection: label,
+      image: {
+        "@type": "ImageObject",
+        url: `${SITE.origin}${SITE.ogImage}`,
+        width: 1200,
+        height: 630,
+      },
       author: { "@type": "Organization", "@id": `${SITE.origin}/#organization`, name: SITE.name },
       publisher: { "@type": "Organization", "@id": `${SITE.origin}/#organization` },
       ...(page.keywords?.length ? { keywords: page.keywords.join(", ") } : {}),
@@ -96,10 +138,16 @@ export async function ContentRoutePage({
 }) {
   const page = await getContentPage(slug, category);
   if (!page) notFound();
+  let related: Awaited<ReturnType<typeof getRelatedContentPages>> = [];
+  try {
+    related = await getRelatedContentPages(category, page.slug);
+  } catch {
+    related = [];
+  }
   return (
     <>
       <JsonLd data={buildJsonLd(page, category)} />
-      <DynamicContentPage category={category} initialPage={page} />
+      <DynamicContentPage category={category} initialPage={page} relatedTopics={related} />
     </>
   );
 }

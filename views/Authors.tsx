@@ -2,18 +2,11 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import InstitutionalSidebar from "@/components/InstitutionalSidebar";
-import MetaTags from "@/components/MetaTags";
-import SchemaOrg from "@/components/SchemaOrg";
 import { Separator } from "@/components/ui/separator";
 
 const Authors = () => {
   return (
     <div className="min-h-screen bg-background">
-      <MetaTags
-        title="Author Guidelines | How to Publish a Research Paper | EP Journals Group"
-        description="Step-by-step author guidelines for publishing a research paper in a peer-reviewed open access journal: manuscript preparation, formatting, submission, peer review, and publication. EP Journals Group."
-      />
-      <SchemaOrg type="WebPage" data={{"@type":"HowTo","name":"How to Publish a Research Paper | EP Journals Group","description":"Step-by-step author guidelines for manuscript preparation, formatting, submission, peer review, and publication.","url":"https://www.ep-journals.org/authors","inLanguage":"en"}} />
       <Header />
 
       {/* Page Header */}

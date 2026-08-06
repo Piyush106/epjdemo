@@ -28,12 +28,16 @@ const LABEL: Record<string, string> = {
 interface Props {
   currentSlug: string;
   currentCategory: string;
+  /** Server-fetched related pages, rendered into the initial HTML (SEO/internal links). */
+  initialItems?: PageRef[];
 }
 
-const RelatedTopics = ({ currentSlug, currentCategory }: Props) => {
-  const [items, setItems] = useState<PageRef[]>([]);
+const RelatedTopics = ({ currentSlug, currentCategory, initialItems = [] }: Props) => {
+  const [items, setItems] = useState<PageRef[]>(initialItems);
 
   useEffect(() => {
+    // Server already provided the related list; don't refetch.
+    if (initialItems.length) return;
     let cancelled = false;
     (async () => {
       const otherCategories = ["guide", "comparison", "publishing", "user-focused"].filter(

@@ -2,7 +2,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import InstitutionalSidebar from "@/components/InstitutionalSidebar";
-import MetaTags from "@/components/MetaTags";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "react-router-dom";
 
@@ -64,10 +63,6 @@ const steps = [
 const PublicationProcess = () => {
   return (
     <div className="min-h-screen bg-background">
-      <MetaTags
-        title="Peer Review Process & Publication Timeline | EP Journals Group"
-        description="How peer review works at EP Journals Group: initial screening (2 days), double-blind peer review by 2 independent reviewers (1–2 weeks), editorial decision, and publication within 24 hours of acceptance."
-      />
       <Header />
 
       <section className="py-6 bg-ep-cream border-b border-border">

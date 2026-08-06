@@ -1,15 +1,9 @@
 "use client";
 import { Link } from "react-router-dom";
-import MetaTags from "@/components/MetaTags";
 
 const NotFound = () => {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background">
-      <MetaTags
-        title="Page Not Found | EP Journals Group"
-        description="The requested page does not exist on this site."
-        noindex
-      />
       <div className="text-left border border-border bg-card p-6 max-w-md">
         <h1 className="mb-3 text-2xl font-heading font-semibold text-foreground">404 — Page not found</h1>
         <p className="mb-3 text-sm text-muted-foreground leading-relaxed">

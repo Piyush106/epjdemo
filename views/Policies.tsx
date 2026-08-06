@@ -2,19 +2,12 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import InstitutionalSidebar from "@/components/InstitutionalSidebar";
-import MetaTags from "@/components/MetaTags";
-import SchemaOrg from "@/components/SchemaOrg";
 import { Link } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
 
 const Policies = () => {
   return (
     <div className="min-h-screen bg-background">
-      <MetaTags
-        title="Policies & Governance | EP Journals Group"
-        description="Publisher-level policies governing editorial practice, peer review, research integrity, and ethical standards at EP Journals Group."
-      />
-      <SchemaOrg type="WebPage" data={{"name":"Policies & Governance | EP Journals Group","description":"Publisher-level policies governing editorial practice, peer review, research integrity, and ethical standards at EP Journals Group.","url":"https://www.ep-journals.org/policies","inLanguage":"en"}} />
       <Header />
 
       <section className="py-6 bg-secondary border-b border-border">

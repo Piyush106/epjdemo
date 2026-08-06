@@ -1,7 +1,8 @@
 import type { MetadataRoute } from "next";
 import { SITE } from "@/lib/seo";
-import { getAllArticleIds, getAllContentPages, getJournals } from "@/lib/data";
+import { getArticleSitemapRows, getAllContentPages, getJournals } from "@/lib/data";
 import { POLICIES } from "@/components/PolicyLayout";
+import { CANONICAL_OVERRIDES } from "@/lib/contentRoute";
 
 export const revalidate = 86400; // refresh sitemap daily
 
@@ -22,6 +23,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/articles",
     "/authors",
     "/editorial",
+    "/join-editorial-board",
     "/indexing",
     "/publication-process",
     "/about",
@@ -51,10 +53,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   let articleEntries: MetadataRoute.Sitemap = [];
   try {
-    const ids = await getAllArticleIds();
-    articleEntries = ids.map((id) => ({
-      url: `${base}/articles/${id}`,
-      lastModified: new Date(),
+    const rows = await getArticleSitemapRows();
+    articleEntries = rows.map((r) => ({
+      url: `${base}/articles/${r.id}`,
+      lastModified: r.publication_date ? new Date(r.publication_date) : new Date(),
       changeFrequency: "yearly",
       priority: 0.6,
     }));
@@ -66,7 +68,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     const pages = await getAllContentPages();
     contentEntries = pages
-      .filter((p) => CONTENT_BASE[p.category])
+      // Only canonical URLs belong in the sitemap — drop pages consolidated
+      // into another via a canonical override.
+      .filter((p) => CONTENT_BASE[p.category] && !CANONICAL_OVERRIDES[`${p.category}:${p.slug}`])
       .map((p) => ({
         url: `${base}${CONTENT_BASE[p.category]}/${p.slug}`,
         lastModified: p.updated_at ? new Date(p.updated_at) : new Date(),

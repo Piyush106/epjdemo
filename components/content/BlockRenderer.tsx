@@ -106,7 +106,7 @@ const BlockRenderer = ({ blocks }: Props) => {
                   <thead className="bg-secondary">
                     <tr>
                       {block.headers.map((h, i) => (
-                        <th key={i} className="text-left font-semibold px-2 py-1.5 border-b border-border">
+                        <th key={i} scope="col" className="text-left font-semibold px-2 py-1.5 border-b border-border">
                           {h}
                         </th>
                       ))}

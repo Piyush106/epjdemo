@@ -2,17 +2,12 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import InstitutionalSidebar from "@/components/InstitutionalSidebar";
-import MetaTags from "@/components/MetaTags";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "react-router-dom";
 
 const Contact = () => {
   return (
     <div className="min-h-screen bg-background">
-      <MetaTags
-        title="Contact | EP Journals Group"
-        description="Contact the EP Journals Group editorial office for inquiries about manuscript submissions, publications, and academic collaboration."
-      />
       <Header />
 
       {/* Page Header */}

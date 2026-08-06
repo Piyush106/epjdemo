@@ -1,226 +1,17 @@
 "use client";
-import { useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import InstitutionalSidebar from "@/components/InstitutionalSidebar";
-import MetaTags from "@/components/MetaTags";
 import { Separator } from "@/components/ui/separator";
+import { EDITORIAL_BOARD } from "@/lib/editorialBoard";
 
 const Editorial = () => {
-  const editorialBoard = [
-    {
-      name: "Prof. Dr. Alireza Heidari",
-      degree: "Ph.D., D.Sc.",
-      field: "Chemistry, Molecular Spectroscopy, Cancer Research",
-      affiliation: "California South University",
-      country: "USA",
-      additionalInfo: "WATOC, AACR, ASBMB – President, AISI"
-    },
-    {
-      name: "Prof. Dr. Hasan Köten",
-      degree: "Ph.D.",
-      field: "Mechanical Engineering",
-      affiliation: "Marmara University / Istanbul Medeniyet University",
-      country: "Turkey",
-      orcid: "0000-0002-1907-9420",
-      scopusId: "36157946800"
-    },
-    {
-      name: "Fadele Ayotunde Alaba",
-      degree: "Ph.D.",
-      field: "Computer Science",
-      affiliation: "Federal University of Education, Zaria",
-      country: "Nigeria"
-    },
-    {
-      name: "Dr. Mohammad Taghipour",
-      degree: "Ph.D.",
-      field: "Industrial Engineering",
-      affiliation: "Islamic Azad University, Tehran",
-      country: "Iran",
-      orcid: "0000-0003-3720-3795"
-    },
-    {
-      name: "Dr. Chukwuebuka Okwonna",
-      degree: "Ph.D.",
-      field: "Mechanical Engineering",
-      affiliation: "Abia State University",
-      country: "Nigeria"
-    },
-    {
-      name: "Dr. Harsh Vardhan Harsh",
-      degree: "Ph.D.",
-      field: "Research",
-      affiliation: "Parul University",
-      country: "India",
-      orcid: "0000-0003-1310-8400",
-      scopusId: "57105665500",
-      researcherId: "F-4035-2016"
-    },
-    {
-      name: "Dr. Abdullah Aydın",
-      degree: "Ph.D.",
-      field: "Science/Chemistry Education",
-      affiliation: "Kırşehir Ahi Evran University",
-      country: "Turkey"
-    },
-    {
-      name: "Assoc. Prof. Dr. Ahmed Hameed Kaleel",
-      degree: "Ph.D.",
-      field: "Mechanical Engineering",
-      affiliation: "JMI",
-      country: "India",
-      scopusId: "35118884500"
-    },
-    {
-      name: "Dr. Ahmad Majar",
-      degree: "Ph.D.",
-      field: "Soil Engineering & Reclamation",
-      affiliation: "Armenian National University of Architecture and Construction",
-      country: "Armenia"
-    },
-    {
-      name: "Dr. Brahim Necib",
-      degree: "Ph.D.",
-      field: "Aeronautics & Astronautics",
-      affiliation: "Purdue University / University of Mentouri Constantine 1",
-      country: "USA / Algeria"
-    },
-    {
-      name: "Dr. Chan Chee Ming",
-      degree: "Ph.D.",
-      field: "Geotechnical Engineering",
-      affiliation: "University of Sheffield / UTHM",
-      country: "UK / Malaysia"
-    },
-    {
-      name: "Dr. Maria Ciurea",
-      degree: "Ph.D.",
-      field: "Economics",
-      affiliation: "University of Petrosani",
-      country: "Romania",
-      orcid: "0000-0001-5385-1464",
-      scopusId: "57190949983",
-      researcherId: "F-7861-2016"
-    },
-    {
-      name: "Dr. Ahasanul Haque",
-      degree: "Ph.D., FCIM UK",
-      field: "Marketing",
-      affiliation: "International Islamic University Malaysia",
-      country: "Malaysia",
-      orcid: "0000-0002-8084-7724",
-      scopusId: "46461377600"
-    },
-    {
-      name: "Dr. Ubaldo Comite",
-      degree: "Ph.D.",
-      field: "Public Administration & Management",
-      affiliation: "Università Telematica Giustino Fortunato",
-      country: "Italy"
-    },
-    {
-      name: "Dr. Nwokeocha Ifeanyi Martins",
-      degree: "Ph.D.",
-      field: "Mass Communication",
-      affiliation: "Federal University Otuoke",
-      country: "Nigeria"
-    },
-    {
-      name: "Dr. Nkiru Abumchukwu Enukora",
-      degree: "Ph.D.",
-      field: "Industrial/Organizational Psychology",
-      affiliation: "",
-      country: ""
-    },
-    {
-      name: "Dr. Sunny Nwakanma",
-      degree: "Ph.D.",
-      field: "Vocational & Technical Education",
-      affiliation: "Ignatius Ajuru University of Education",
-      country: "Nigeria"
-    },
-    {
-      name: "Dr. Ibrahim Shehu Kura Tabako",
-      degree: "Ph.D.",
-      field: "Medical Entomology",
-      affiliation: "Abdulkadir Kure University",
-      country: "Nigeria"
-    },
-    {
-      name: "Dr. Paulino A. Oñal Jr.",
-      degree: "Ph.D.",
-      field: "Management",
-      affiliation: "",
-      country: "",
-      orcid: "0000-0003-3365-058X"
-    },
-    {
-      name: "Dr. Shaza Ahmad Asaad",
-      degree: "Ph.D.",
-      field: "Agricultural Engineering",
-      affiliation: "Tishreen University & Tartous University",
-      country: "Syria"
-    },
-    {
-      name: "Dr. Pescaru Maria",
-      degree: "Ph.D.",
-      field: "Sociology",
-      affiliation: "Politehnica University of Bucharest (Pitești)",
-      country: "Romania"
-    },
-    {
-      name: "Dr. Iwegbue Ishioma Nwanapayi",
-      degree: "Ph.D.",
-      field: "Library & Information Science",
-      affiliation: "Delta State University, Abraka",
-      country: "Nigeria"
-    },
-    {
-      name: "Dr. Addi Juma Faki",
-      degree: "Ph.D.",
-      field: "Monitoring & Evaluation",
-      affiliation: "Open University of Tanzania",
-      country: "Tanzania"
-    }
-  ];
-
-  // Inject Person JSON-LD for each editorial board member
-  useEffect(() => {
-    const origin = window.location.origin;
-    const ld = {
-      "@context": "https://schema.org",
-      "@type": "ItemList",
-      name: "EP Journals Group Editorial Board",
-      description: "International editorial board members across engineering, sciences, management, and social sciences.",
-      url: `${origin}/editorial`,
-      itemListElement: editorialBoard.map((m, i) => ({
-        "@type": "ListItem",
-        position: i + 1,
-        item: {
-          "@type": "Person",
-          name: m.name,
-          honorificPrefix: m.degree || undefined,
-          affiliation: m.affiliation ? { "@type": "Organization", name: m.affiliation } : undefined,
-          ...(m.orcid ? { sameAs: [`https://orcid.org/${m.orcid}`] } : {}),
-        },
-      })),
-    };
-    const id = "ld-editorial";
-    let el = document.getElementById(id) as HTMLScriptElement | null;
-    if (!el) { el = document.createElement("script"); el.id = id; el.type = "application/ld+json"; document.head.appendChild(el); }
-    el.textContent = JSON.stringify(ld);
-    return () => { el?.remove(); };
-  }, []);
+  const editorialBoard = EDITORIAL_BOARD;
 
   return (
     <div className="min-h-screen bg-background">
-      <MetaTags
-        title="Editorial Board | EP Journals Group"
-        description="Meet the international editorial board of EP Journals Group, comprising scholars and researchers across engineering, sciences, management, and social sciences."
-      />
       <Header />
-      
+
       {/* Page Header */}
       <section className="py-6 bg-ep-cream border-b border-border">
         <div className="container mx-auto px-4">
@@ -230,6 +21,12 @@ const Editorial = () => {
           <p className="text-muted-foreground text-sm">
             EP Journals Group Editorial Advisory Board — International scholars supporting rigorous peer review.
           </p>
+          <a
+            href="/join-editorial-board"
+            className="mt-3 inline-flex items-center gap-2 border border-primary text-primary bg-card px-4 py-2 text-sm font-medium rounded-sm hover:bg-primary hover:text-primary-foreground transition-colors"
+          >
+            Become an Editorial Board Member →
+          </a>
         </div>
       </section>
 
@@ -237,10 +34,10 @@ const Editorial = () => {
       <main className="py-8 bg-background">
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-[1fr_340px] gap-8">
-            
+
             {/* Left Column - Editorial Board */}
             <div className="min-w-0">
-              
+
               {/* Introduction */}
               <div className="mb-6">
                 <h2 className="text-lg font-heading font-semibold text-foreground mb-3 border-b border-border pb-2">
@@ -263,7 +60,7 @@ const Editorial = () => {
                 <h2 className="text-lg font-heading font-semibold text-foreground mb-3 border-b border-border pb-2">
                   Board Members
                 </h2>
-                
+
                 <div className="space-y-4">
                   {editorialBoard.map((member, index) => (
                     <div key={index} className="border border-border p-4 bg-background">
@@ -272,25 +69,14 @@ const Editorial = () => {
                           <h3 className="font-heading font-medium text-foreground text-sm">
                             {member.name}
                           </h3>
-                          <p className="text-xs text-ep-orange font-medium">{member.degree}</p>
-                          <p className="text-xs text-muted-foreground mt-1">{member.field}</p>
-                          {member.affiliation && (
-                            <p className="text-xs text-muted-foreground">
-                              {member.affiliation}{member.country && `, ${member.country}`}
-                            </p>
-                          )}
-                          {!member.affiliation && member.country && (
-                            <p className="text-xs text-muted-foreground">{member.country}</p>
-                          )}
-                          {member.additionalInfo && (
-                            <p className="text-xs text-muted-foreground italic mt-1">{member.additionalInfo}</p>
-                          )}
+                          <p className="text-xs text-ep-orange font-medium">{member.credentials}</p>
+                          <p className="text-xs text-muted-foreground mt-1">{member.affiliation}</p>
                         </div>
-                        
+
                         {/* Research Identifiers */}
-                        <div className="text-xs space-y-0.5">
+                        <div className="text-xs space-y-0.5 sm:text-right sm:shrink-0">
                           {member.orcid && (
-                            <a 
+                            <a
                               href={`https://orcid.org/${member.orcid}`}
                               target="_blank"
                               rel="noopener noreferrer"
@@ -300,7 +86,7 @@ const Editorial = () => {
                             </a>
                           )}
                           {member.scopusId && (
-                            <a 
+                            <a
                               href={`https://www.scopus.com/authid/detail.uri?authorId=${member.scopusId}`}
                               target="_blank"
                               rel="noopener noreferrer"
@@ -309,8 +95,11 @@ const Editorial = () => {
                               Scopus: {member.scopusId}
                             </a>
                           )}
-                          {member.researcherId && (
-                            <p className="text-muted-foreground">ResearcherID: {member.researcherId}</p>
+                          {member.wos && (
+                            <p className="text-muted-foreground">Web of Science: {member.wos}</p>
+                          )}
+                          {member.sinta && (
+                            <p className="text-muted-foreground">SINTA ID: {member.sinta}</p>
                           )}
                         </div>
                       </div>
@@ -330,7 +119,7 @@ const Editorial = () => {
                   <p>
                     All manuscripts submitted to EP Journals Group publications undergo rigorous double-blind peer review. The editorial process is designed to ensure objectivity, fairness, and scholarly quality.
                   </p>
-                  
+
                   <div className="mt-4 space-y-3">
                     <div>
                       <h3 className="font-heading font-medium text-foreground mb-1">1. Initial Screening</h3>

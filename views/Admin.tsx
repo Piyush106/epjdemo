@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import MetaTags from "@/components/MetaTags";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -229,7 +228,6 @@ const Admin = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <MetaTags title="Admin Panel – EP Journals Group" description="Administrative panel for managing articles." noindex />
       <Header />
 
       <section className="py-6 bg-ep-cream border-b border-border">

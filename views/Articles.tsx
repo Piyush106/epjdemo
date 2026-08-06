@@ -4,8 +4,6 @@ import { Link, useSearchParams } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import InstitutionalSidebar from "@/components/InstitutionalSidebar";
-import MetaTags from "@/components/MetaTags";
-import SchemaOrg from "@/components/SchemaOrg";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -92,17 +90,6 @@ const Articles = ({ initialArticles = [] }: ArticlesProps) => {
 
   return (
     <div className="min-h-screen bg-background">
-      <MetaTags
-        title="Peer-Reviewed Articles | Open Access Research | EP Journals Group"
-        description="Browse peer-reviewed research articles in open access journals covering engineering, economics, management, natural sciences, and social sciences. Free full-text PDFs, CrossRef DOI, CC BY 4.0 licence."
-      />
-      <SchemaOrg type="WebPage" data={{
-        "@type": "CollectionPage",
-        name: "Peer-Reviewed Articles | Open Access Research | EP Journals Group",
-        description: "Browse peer-reviewed research articles in open access journals covering engineering, economics, management, natural sciences, and social sciences.",
-        url: "https://www.ep-journals.org/articles",
-        inLanguage: "en",
-      }} />
       <Header />
 
       <section className="py-6 bg-ep-cream border-b border-border">
@@ -122,11 +109,14 @@ const Articles = ({ initialArticles = [] }: ArticlesProps) => {
             <div className="min-w-0">
 
               {/* Journal filter */}
-              <div className="flex flex-wrap gap-2 mb-6">
+              <div className="flex flex-wrap gap-2 mb-6" role="group" aria-label="Filter articles by journal">
                 {journalFilters.map((f) => (
                   <button
                     key={f.abbrev}
+                    type="button"
                     onClick={() => setSearchParams(f.abbrev ? { journal: f.abbrev } : {})}
+                    aria-pressed={activeJournal === f.abbrev}
+                    aria-label={f.abbrev ? `Show ${f.label} articles` : "Show all journals"}
                     className={`px-3 py-1.5 text-xs border transition-colors ${
                       activeJournal === f.abbrev
                         ? "bg-primary text-primary-foreground border-primary"

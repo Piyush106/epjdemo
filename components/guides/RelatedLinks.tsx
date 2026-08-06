@@ -14,6 +14,8 @@ interface RelatedLinksProps {
 }
 
 const RelatedLinks = ({ links, heading = "Related reading and next steps" }: RelatedLinksProps) => {
+  // Don't render an empty section (no heading without content).
+  if (!links || links.length === 0) return null;
   return (
     <section aria-labelledby="related-links">
       <h2 id="related-links" className="text-base font-heading font-semibold text-foreground mb-2">

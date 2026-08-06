@@ -119,7 +119,13 @@ const Footer = () => {
             <div className="flex flex-wrap gap-3">
               <Link className="hover:underline" to="/about">About</Link>
               <Link className="hover:underline" to="/journals">Journals</Link>
+              <Link className="hover:underline" to="/articles">Articles</Link>
+              <Link className="hover:underline" to="/authors">For Authors</Link>
+              <Link className="hover:underline" to="/editorial">Editorial Board</Link>
+              <Link className="hover:underline" to="/join-editorial-board">Join the Board</Link>
               <Link className="hover:underline" to="/indexing">Indexing</Link>
+              <Link className="hover:underline" to="/submit">Submit</Link>
+              <Link className="hover:underline" to="/publish">Publish</Link>
               <Link className="hover:underline" to="/policies">Policies</Link>
               <Link className="hover:underline" to="/policies/publication-ethics">Ethics</Link>
               <Link className="hover:underline" to="/policies/peer-review-process">Peer Review</Link>

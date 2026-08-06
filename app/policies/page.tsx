@@ -2,19 +2,44 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import JsonLd from "@/components/JsonLd";
 import { POLICIES } from "@/components/PolicyLayout";
-import { buildMetadata } from "@/lib/seo";
+import { buildMetadata, buildBreadcrumbLd, SITE } from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata({
   title: "Policies & Governance",
   description:
-    "The complete policy and governance framework of EP Journals Group: publication ethics, peer review, open access, copyright, corrections, archiving, and more.",
+    "The complete policy and governance framework of EP Journals Group: publication ethics, peer review, open access, copyright and licensing, corrections and retractions, archiving and preservation, and research integrity.",
   path: "/policies",
 });
 
+const collectionLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: "Policies & Governance — EP Journals Group",
+  description:
+    "The formal policy and governance framework applied across every EP Journals Group journal.",
+  url: `${SITE.origin}/policies`,
+  inLanguage: "en",
+  isPartOf: { "@type": "WebSite", "@id": `${SITE.origin}/#website` },
+  publisher: { "@type": "Organization", "@id": `${SITE.origin}/#organization` },
+  hasPart: POLICIES.map((p) => ({
+    "@type": "Article",
+    name: p.label,
+    description: p.description,
+    url: `${SITE.origin}/policies/${p.route}`,
+  })),
+};
+
 export default function PoliciesIndex() {
+  const breadcrumbLd = buildBreadcrumbLd([
+    { name: "Home", path: "" },
+    { name: "Policies & Governance", path: "/policies" },
+  ]);
   return (
     <div className="min-h-screen bg-background">
+      <JsonLd data={collectionLd} />
+      <JsonLd data={breadcrumbLd} />
       <Header />
       <section className="py-6 bg-secondary border-b border-border">
         <div className="container mx-auto px-4">

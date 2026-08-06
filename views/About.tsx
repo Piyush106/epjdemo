@@ -2,19 +2,12 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import InstitutionalSidebar from "@/components/InstitutionalSidebar";
-import MetaTags from "@/components/MetaTags";
-import SchemaOrg from "@/components/SchemaOrg";
 import { Link } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
 
 const About = () => {
   return (
     <div className="min-h-screen bg-background">
-      <MetaTags
-        title="About EP Journals Group"
-        description="EP Journals Group is an academic publishing organization focused on peer-reviewed, open access research across multiple disciplines."
-      />
-      <SchemaOrg type="Organization" />
       <Header />
       
       {/* Page Header */}

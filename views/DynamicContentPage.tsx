@@ -40,13 +40,22 @@ const categoryLabel: Record<string, string> = {
   "user-focused": "Resource",
 };
 
+interface RelatedTopicRef {
+  slug: string;
+  title: string;
+  category: string;
+  summary: string | null;
+}
+
 interface Props {
   category: "guide" | "comparison" | "publishing" | "user-focused";
   /** Server-fetched page, rendered into the initial HTML (SSR/SEO). */
   initialPage?: ContentPage | null;
+  /** Server-fetched related pages for the cross-cluster "Related topics" rail. */
+  relatedTopics?: RelatedTopicRef[];
 }
 
-const DynamicContentPage = ({ category, initialPage = null }: Props) => {
+const DynamicContentPage = ({ category, initialPage = null, relatedTopics = [] }: Props) => {
   const { slug } = useParams<{ slug: string }>();
   const [page, setPage] = useState<ContentPage | null>(initialPage);
   const [loading, setLoading] = useState(!initialPage);
@@ -137,7 +146,7 @@ const DynamicContentPage = ({ category, initialPage = null }: Props) => {
 
       <EPContextFooter />
 
-      <RelatedTopics currentSlug={page.slug} currentCategory={page.category} />
+      <RelatedTopics currentSlug={page.slug} currentCategory={page.category} initialItems={relatedTopics} />
     </GuidePage>
   );
 };

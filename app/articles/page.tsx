@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Articles from "@/views/Articles";
-import { buildMetadata } from "@/lib/seo";
+import JsonLd from "@/components/JsonLd";
+import { buildMetadata, buildBreadcrumbLd, SITE } from "@/lib/seo";
 import { getRecentArticles } from "@/lib/data";
 
 // Refresh hourly; also revalidated on demand by the ingest-oai function after a
@@ -9,7 +10,7 @@ export const revalidate = 3600;
 
 export const metadata: Metadata = buildMetadata({
   title: 'Articles',
-  description: 'Recently published peer-reviewed articles across the EP Journals Group portfolio.',
+  description: 'Recently published peer-reviewed, open access articles across the EP Journals Group portfolio, with abstracts, authors, DOIs, and links to each version of record.',
   path: "/articles",
 });
 
@@ -22,5 +23,35 @@ export default async function Page() {
   } catch {
     initialArticles = [];
   }
-  return <Articles initialArticles={initialArticles} />;
+
+  const itemListLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Recently published articles — EP Journals Group",
+    numberOfItems: initialArticles.length,
+    itemListElement: initialArticles.map((a, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      url: `${SITE.origin}/articles/${a.id}`,
+      item: {
+        "@type": "ScholarlyArticle",
+        headline: a.title,
+        url: `${SITE.origin}/articles/${a.id}`,
+        datePublished: a.publication_date,
+        isPartOf: { "@type": "Periodical", name: a.journal_name, alternateName: a.journal_abbrev },
+      },
+    })),
+  };
+  const breadcrumbLd = buildBreadcrumbLd([
+    { name: "Home", path: "" },
+    { name: "Articles", path: "/articles" },
+  ]);
+
+  return (
+    <>
+      <JsonLd data={itemListLd} />
+      <JsonLd data={breadcrumbLd} />
+      <Articles initialArticles={initialArticles} />
+    </>
+  );
 }

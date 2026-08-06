@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getArticle, getJournalByAbbrev, getAllArticleIds, getRelatedArticles } from "@/lib/data";
-import { buildMetadata, SITE } from "@/lib/seo";
+import { buildMetadata, buildBreadcrumbLd, SITE } from "@/lib/seo";
 import JsonLd from "@/components/JsonLd";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -55,6 +55,7 @@ export async function generateMetadata(
     citation_title: article.title,
     citation_author: authors,
     citation_journal_title: article.journal_name,
+    citation_publisher: SITE.name,
     citation_publication_date: scholarDate,
     citation_language: "en",
     citation_abstract_html_url: versionOfRecord,
@@ -66,6 +67,8 @@ export async function generateMetadata(
   if (last) citation.citation_lastpage = last;
   if (article.doi) citation.citation_doi = article.doi;
   if (article.pdf_url) citation.citation_pdf_url = article.pdf_url;
+  // Highwire keywords are semicolon-separated.
+  if (article.keywords?.length) citation.citation_keywords = article.keywords.join("; ");
 
   return buildMetadata({
     title: article.title,
@@ -103,9 +106,15 @@ export default async function ArticlePage(
     description: (article.abstract ?? "").slice(0, 300),
     inLanguage: "en",
     license: "https://creativecommons.org/licenses/by/4.0/",
+    isAccessibleForFree: true,
     url: fullTextUrl ?? `${SITE.origin}/articles/${article.id}`,
+    mainEntityOfPage: `${SITE.origin}/articles/${article.id}`,
+    publisher: { "@type": "Organization", "@id": `${SITE.origin}/#organization`, name: SITE.name },
     ...(article.doi
-      ? { identifier: { "@type": "PropertyValue", propertyID: "DOI", value: article.doi } }
+      ? {
+          identifier: { "@type": "PropertyValue", propertyID: "DOI", value: article.doi },
+          sameAs: `https://doi.org/${article.doi}`,
+        }
       : {}),
     ...(article.keywords?.length ? { keywords: article.keywords.join(", ") } : {}),
     ...(first ? { pageStart: first } : {}),
@@ -115,14 +124,23 @@ export default async function ArticlePage(
       name: article.journal_name,
       alternateName: article.journal_abbrev,
       ...(journal?.electronic_issn ? { issn: journal.electronic_issn } : {}),
+      publisher: { "@type": "Organization", "@id": `${SITE.origin}/#organization` },
     },
   };
+
+  const breadcrumbLd = buildBreadcrumbLd([
+    { name: "Home", path: "" },
+    { name: "Articles", path: "/articles" },
+    { name: article.journal_abbrev, path: `/journals/${article.journal_abbrev.toLowerCase()}` },
+    { name: article.title, path: `/articles/${article.id}` },
+  ]);
 
   return (
     <>
       <Header />
     <main className="min-h-screen bg-background">
       <JsonLd data={scholarlyArticleLd} />
+      <JsonLd data={breadcrumbLd} />
       <article className="container py-12 prose-academic">
         <p className="text-xs uppercase tracking-wide text-muted-foreground mb-2">
           {article.journal_name} ({article.journal_abbrev})
