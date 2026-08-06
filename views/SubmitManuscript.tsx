@@ -13,7 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Upload, FileText, BookOpen, Users, ClipboardList, Library, CheckCircle2, Loader2 } from "lucide-react";
+import { Upload, FileText, BookOpen, Users, ClipboardList, Library, CheckCircle2, Loader2, Info } from "lucide-react";
 import { useJournals } from "@/hooks/useJournals";
 
 const ACCEPTED_TYPES = [
@@ -210,6 +210,24 @@ const SubmitManuscript = () => {
             peer review in 1–2 weeks, CrossRef DOI on acceptance, published under CC BY 4.0.
           </p>
         </section>
+
+        {/* Fast-track notice — clarifies that standard timelines do not apply to
+            invited fast-track submissions (prevents authors withdrawing under the
+            mistaken impression that fast-track will be slower). */}
+        <aside role="note" aria-label="Note on fast-track submissions" className="mb-8 flex items-start gap-3 border-l-4 border-primary bg-accent/60 p-4 rounded-r-sm">
+          <Info className="h-5 w-5 text-primary shrink-0 mt-0.5" aria-hidden="true" />
+          <div>
+            <p className="text-sm font-heading font-semibold text-foreground mb-1">Note on fast-track submissions</p>
+            <p className="text-sm text-foreground leading-relaxed">
+              The submission and review timelines shown on this page (including any 1–2 week review estimate and the
+              acknowledgement email you receive) apply to <strong>standard submissions only</strong>. If you were invited
+              to submit through our <strong>fast-track process</strong>, your manuscript follows a separate, expedited
+              schedule and the standard review timeline does not apply. For fast-track timelines or any exception, please
+              contact the editorial office at{" "}
+              <a href="mailto:editor@ep-journals.org" className="text-primary underline">editor@ep-journals.org</a>.
+            </p>
+          </div>
+        </aside>
 
         {/* Submission Form */}
         <section className="mb-8">

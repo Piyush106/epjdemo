@@ -50,6 +50,13 @@ const HELP = `<div style="background:#e8f0f8;padding:14px 18px;margin:0 0 20px;f
 const SIGNOFF = `<p style="font-size:14px;color:#333333;line-height:1.7;margin:0;">With best regards,<br/>
   <strong>The EP Journals Group Editorial Office</strong></p>`;
 
+// Shown on every author acknowledgement so invited fast-track authors don't read
+// the standard 1–2 week timeline as their own and withdraw.
+const FASTTRACK = `<div style="background:#fff8e6;border-left:3px solid #c0922e;padding:12px 16px;margin:0 0 20px;font-size:13px;color:#5a4a1a;line-height:1.6;">
+  <strong>Fast-track submissions:</strong> If your manuscript was invited through our fast-track process, the review
+  timeline above does not apply — your submission follows a separate, expedited schedule agreed with the editorial
+  office. For any questions, contact <a href="mailto:editor@ep-journals.org" style="color:#1a3c5e;">editor@ep-journals.org</a>.</div>`;
+
 const P = (html: string) => `<p style="font-size:14px;color:#333333;line-height:1.7;margin:0 0 16px;">${html}</p>`;
 
 function shell(inner: string, borderStyle: string): string {
@@ -90,7 +97,7 @@ function tplAcknowledgement(p: Payload, date: string) {
            <a href="https://www.ep-journals.org/policies" style="color:#1a3c5e;">editorial policies</a> and
            <a href="https://www.ep-journals.org/publication-process" style="color:#1a3c5e;">publication process</a>
            while your manuscript is under review.`) +
-        HELP + SIGNOFF,
+        FASTTRACK + HELP + SIGNOFF,
       "border:1px solid #e0e4ea;",
     ),
   };
@@ -120,7 +127,7 @@ function tplReceived(p: Payload, _date: string) {
         stats +
         P(`Our editorial team will conduct an initial assessment and, if appropriate, forward your manuscript for
            peer review. You will receive further correspondence at this email address regarding the status of your submission.`) +
-        HELP + SIGNOFF,
+        FASTTRACK + HELP + SIGNOFF,
       "border-top:4px solid #1a3c5e;",
     ),
   };
@@ -143,7 +150,7 @@ function tplWelcome(p: Payload, _date: string) {
            <strong>${esc(p.journal)}</strong>. Your work is now part of our editorial pipeline and will be reviewed
            with the rigour and care it deserves.`) +
         summaryBox([["Reference", p.reference ?? ""], ["Title", p.paperTitle ?? ""], ["Journal", p.journal ?? ""], ["Keywords", p.keywords ?? ""], ["File", p.fileName ?? ""]]) +
-        nextBox + HELP + SIGNOFF,
+        nextBox + FASTTRACK + HELP + SIGNOFF,
       "border-top:4px solid #c0922e;",
     ),
   };
