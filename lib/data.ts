@@ -186,6 +186,34 @@ export async function getContentPageList(category: string): Promise<ContentListR
   return (data as ContentListRow[] | null) ?? [];
 }
 
+/** A published editorial board member (public /editorial list). */
+export interface BoardMemberRow {
+  id: string;
+  name: string;
+  credentials: string;
+  affiliation: string;
+  orcid: string | null;
+  scopus_id: string | null;
+  wos_id: string | null;
+  sinta_id: string | null;
+  display_order: number;
+  visible: boolean;
+}
+
+/**
+ * Visible editorial board members ordered for display — powers the public
+ * /editorial page. Managed from the admin dashboard; RLS exposes only visible
+ * rows to the anon key.
+ */
+export async function getEditorialBoardMembers(): Promise<BoardMemberRow[]> {
+  const { data } = await supabase
+    .from("editorial_board_members")
+    .select("id,name,credentials,affiliation,orcid,scopus_id,wos_id,sinta_id,display_order,visible")
+    .eq("visible", true)
+    .order("display_order", { ascending: true });
+  return (data as BoardMemberRow[] | null) ?? [];
+}
+
 /** A related content-page reference for cross-linking the Knowledge Centre. */
 export interface RelatedContentRef {
   slug: string;

@@ -97,6 +97,28 @@ specific application (`?id=…`).
 > (The token gate is used because the project currently has no auth users or
 > `user_roles` table.)
 
+## 5b. Managing the published editorial board
+
+The public **`/editorial`** page is now database-driven (table
+`editorial_board_members`, migration `20260807120000_editorial_board_members.sql`,
+seeded with the current 27 members). Manage it from the **"Board members"** tab in
+`/admin/editorial-board`:
+
+- **Add / edit / remove** members (name, credentials, affiliation, ORCID, Scopus,
+  Web of Science, SINTA).
+- **Reorder** with the up/down arrows — the public page renders in this order.
+- **Hide/show** a member (eye icon) without deleting them.
+- **Publish to board** — on any application (expand it), a button copies that
+  applicant onto the public board. **This is deliberately separate from the
+  application status**: changing status to "Approved" does *not* publish anyone;
+  you publish explicitly with this button. A green "On board" badge shows who is
+  already published.
+
+Every change calls `revalidatePath('/editorial')`, so the public page updates
+**within seconds, with no redeploy**. Board membership is public data (anon can
+read visible rows via RLS); all writes go through the token-gated
+`/api/admin/board-members` route using the service role.
+
 ## 6. Resend domain setup
 
 1. In Resend, verify the sending domain for `ep-journals.org` (DKIM/SPF records).

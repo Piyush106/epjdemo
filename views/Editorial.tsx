@@ -3,10 +3,10 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import InstitutionalSidebar from "@/components/InstitutionalSidebar";
 import { Separator } from "@/components/ui/separator";
-import { EDITORIAL_BOARD } from "@/lib/editorialBoard";
+import type { BoardMemberRow } from "@/lib/data";
 
-const Editorial = () => {
-  const editorialBoard = EDITORIAL_BOARD;
+const Editorial = ({ members = [] }: { members?: BoardMemberRow[] }) => {
+  const editorialBoard = members;
 
   return (
     <div className="min-h-screen bg-background">
@@ -62,8 +62,8 @@ const Editorial = () => {
                 </h2>
 
                 <div className="space-y-4">
-                  {editorialBoard.map((member, index) => (
-                    <div key={index} className="border border-border p-4 bg-background">
+                  {editorialBoard.map((member) => (
+                    <div key={member.id} className="border border-border p-4 bg-background">
                       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
                         <div className="flex-1">
                           <h3 className="font-heading font-medium text-foreground text-sm">
@@ -85,21 +85,21 @@ const Editorial = () => {
                               ORCID: {member.orcid}
                             </a>
                           )}
-                          {member.scopusId && (
+                          {member.scopus_id && (
                             <a
-                              href={`https://www.scopus.com/authid/detail.uri?authorId=${member.scopusId}`}
+                              href={`https://www.scopus.com/authid/detail.uri?authorId=${member.scopus_id}`}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-ep-orange hover:underline block"
                             >
-                              Scopus: {member.scopusId}
+                              Scopus: {member.scopus_id}
                             </a>
                           )}
-                          {member.wos && (
-                            <p className="text-muted-foreground">Web of Science: {member.wos}</p>
+                          {member.wos_id && (
+                            <p className="text-muted-foreground">Web of Science: {member.wos_id}</p>
                           )}
-                          {member.sinta && (
-                            <p className="text-muted-foreground">SINTA ID: {member.sinta}</p>
+                          {member.sinta_id && (
+                            <p className="text-muted-foreground">SINTA ID: {member.sinta_id}</p>
                           )}
                         </div>
                       </div>
