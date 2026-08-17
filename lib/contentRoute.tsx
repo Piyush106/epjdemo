@@ -29,10 +29,12 @@ export const CATEGORY_META: Record<ContentCategory, { label: string; base: strin
  * remove an entry to change the primary.
  */
 export const CANONICAL_OVERRIDES: Record<string, string> = {
-  // Two published guides share the exact title "How to Write a Research Abstract".
-  // `how-to-write-research-abstract` is the fuller page (23 body blocks vs 9,
-  // 5 FAQs vs 3, 6 related links vs 3, more recently updated) → the primary.
+  // Three published guides cover the same intent ("how to write an abstract").
+  // `how-to-write-research-abstract` is the fullest page (23 structured body
+  // blocks, 5 FAQs, most complete) → the single primary. The other two keep
+  // working but canonicalise to it and are dropped from the sitemap.
   "guide:how-to-write-a-research-abstract": "/guides/how-to-write-research-abstract",
+  "guide:how-to-write-an-abstract": "/guides/how-to-write-research-abstract",
 };
 
 export function canonicalOverridePath(category: ContentCategory, slug: string): string | undefined {

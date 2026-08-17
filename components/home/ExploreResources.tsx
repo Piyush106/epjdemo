@@ -40,10 +40,14 @@ const COLUMNS: Array<{ key: string; label: string; description: string }> = [
   },
 ];
 
-const ExploreResources = () => {
-  const [byCat, setByCat] = useState<Record<string, PageRef[]>>({});
+const ExploreResources = ({ initialByCat }: { initialByCat?: Record<string, PageRef[]> }) => {
+  // Server-seeded so the guide/comparison links are in the prerendered HTML
+  // (crawlers + AI retrievers see them); the client fetch only refreshes and is
+  // skipped entirely when the server already provided the lists.
+  const [byCat, setByCat] = useState<Record<string, PageRef[]>>(initialByCat ?? {});
 
   useEffect(() => {
+    if (initialByCat && Object.keys(initialByCat).length) return;
     let cancelled = false;
     (async () => {
       const result: Record<string, PageRef[]> = {};
@@ -64,7 +68,7 @@ const ExploreResources = () => {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [initialByCat]);
 
   return (
     <div className="mb-8">
@@ -95,7 +99,7 @@ const ExploreResources = () => {
                     </li>
                   ))}
                   {items.length === 0 ? (
-                    <li className="text-muted-foreground">Loading…</li>
+                    <li className="text-muted-foreground">More coming soon.</li>
                   ) : null}
                 </ul>
               </div>

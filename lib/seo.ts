@@ -71,6 +71,21 @@ export function buildMetadata({
 }
 
 /**
+ * Produce a clean meta/OG description from a longer text (e.g. an abstract):
+ * collapses whitespace, trims to <= max chars on a WORD boundary (never
+ * mid-word), strips trailing punctuation, and appends an ellipsis when cut.
+ * Google renders ~155-160 chars, so max defaults to 160.
+ */
+export function clampDescription(text: string | null | undefined, max = 160): string {
+  const s = (text ?? "").replace(/\s+/g, " ").trim();
+  if (s.length <= max) return s;
+  const cut = s.slice(0, max);
+  const lastSpace = cut.lastIndexOf(" ");
+  const base = (lastSpace > 40 ? cut.slice(0, lastSpace) : cut).replace(/[\s.,;:!?\-–—]+$/, "");
+  return `${base}…`;
+}
+
+/**
  * Build a CollectionPage JSON-LD object for a listing page (e.g. a Knowledge
  * Centre category index). `items` are the entries, each becoming an Article
  * node under `hasPart`. Rendered server-side so the collection and every item

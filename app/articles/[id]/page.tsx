@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getArticle, getJournalByAbbrev, getAllArticleIds, getRelatedArticles } from "@/lib/data";
-import { buildMetadata, buildBreadcrumbLd, SITE } from "@/lib/seo";
+import { buildMetadata, buildBreadcrumbLd, clampDescription, SITE } from "@/lib/seo";
 import JsonLd from "@/components/JsonLd";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -72,7 +72,7 @@ export async function generateMetadata(
 
   return buildMetadata({
     title: article.title,
-    description: (article.abstract ?? "").slice(0, 200),
+    description: clampDescription(article.abstract, 160),
     canonical: versionOfRecord,
     ogType: "article",
     other: citation,
@@ -103,7 +103,7 @@ export default async function ArticlePage(
     author: authors.map((name) => ({ "@type": "Person", name })),
     datePublished: article.publication_date,
     abstract: article.abstract,
-    description: (article.abstract ?? "").slice(0, 300),
+    description: clampDescription(article.abstract, 300),
     inLanguage: "en",
     license: "https://creativecommons.org/licenses/by/4.0/",
     isAccessibleForFree: true,

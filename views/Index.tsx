@@ -30,9 +30,10 @@ interface IndexProps {
   initialJournals?: Journal[];
   initialArticles?: { id: string; title: string; authors: string; journal_abbrev: string; publication_date: string }[];
   articleCount?: number;
+  exploreResources?: Record<string, { slug: string; title: string; category: string }[]>;
 }
 
-const Index = ({ initialJournals = [], initialArticles = [], articleCount = 0 }: IndexProps) => {
+const Index = ({ initialJournals = [], initialArticles = [], articleCount = 0, exploreResources }: IndexProps) => {
   // Server passes journals so the table + links are in the initial HTML (SEO);
   // useJournals refreshes on the client. SSR render uses initialJournals.
   const { data } = useJournals();
@@ -318,7 +319,7 @@ const Index = ({ initialJournals = [], initialArticles = [], articleCount = 0 }:
 
               <Separator className="my-6" />
 
-              <ExploreResources />
+              <ExploreResources initialByCat={exploreResources} />
 
               <Separator className="my-6" />
 

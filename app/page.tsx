@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import Index from "@/views/Index";
 import JsonLd from "@/components/JsonLd";
 import { SITE, buildMetadata } from "@/lib/seo";
-import { getJournals, getRecentArticles, getPublishedArticleCount } from "@/lib/data";
+import { getJournals, getRecentArticles, getPublishedArticleCount, getContentPageList } from "@/lib/data";
+
+// Categories shown in the homepage "Explore Publishing Resources" block.
+const EXPLORE_CATEGORIES = ["guide", "comparison", "publishing", "user-focused"] as const;
 
 export const revalidate = 3600;
 
@@ -21,6 +24,20 @@ export default async function HomePage() {
 
   let articleCount = 0;
   try { articleCount = await getPublishedArticleCount(); } catch { articleCount = 0; }
+
+  // Server-fetch the Knowledge Centre lists so the homepage links are in the
+  // prerendered HTML (crawlers/AI retrievers), not a client-only "Loading…".
+  const exploreResources: Record<string, { slug: string; title: string; category: string }[]> = {};
+  await Promise.all(
+    EXPLORE_CATEGORIES.map(async (c) => {
+      try {
+        const rows = await getContentPageList(c);
+        exploreResources[c] = rows.slice(0, 5).map((r) => ({ slug: r.slug, title: r.title, category: c }));
+      } catch {
+        exploreResources[c] = [];
+      }
+    }),
+  );
 
   const itemListLd = {
     "@context": "https://schema.org",
@@ -44,7 +61,7 @@ export default async function HomePage() {
   return (
     <>
       <JsonLd data={itemListLd} />
-      <Index initialJournals={journals} initialArticles={recentArticles} articleCount={articleCount} />
+      <Index initialJournals={journals} initialArticles={recentArticles} articleCount={articleCount} exploreResources={exploreResources} />
     </>
   );
 }
