@@ -15,6 +15,23 @@ const nextConfig = {
         destination: "https://www.ep-journals.org/:path*",
         permanent: true,
       },
+      // Broken internal-link slugs (referenced in related_links but never created)
+      // → the real, published guide covering the same intent. Prevents soft-404s.
+      {
+        source: "/guides/how-to-publish-a-research-paper-step-by-step",
+        destination: "/guides/how-to-publish-a-research-paper",
+        permanent: true,
+      },
+      {
+        source: "/guides/understanding-apc",
+        destination: "/guides/how-to-publish-without-high-apc",
+        permanent: true,
+      },
+      {
+        source: "/guides/responding-to-reviewer-comments",
+        destination: "/guides/how-to-get-research-paper-accepted",
+        permanent: true,
+      },
     ];
   },
 

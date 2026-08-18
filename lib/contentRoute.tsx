@@ -53,10 +53,12 @@ export async function contentParams(category: ContentCategory): Promise<{ slug: 
 /** Per-slug metadata sourced from the row's purpose-built SEO columns. */
 export async function contentMeta(category: ContentCategory, slug: string): Promise<Metadata> {
   const page = await getContentPage(slug, category);
+  // Unknown slug → real 404 (via the not-found boundary), NOT a soft-404
+  // (HTTP 200 + noindex). generateMetadata and the page both call notFound(),
+  // so Google gets a clean 404 for mistyped/nonexistent slugs instead of an
+  // "Excluded by noindex" 200.
+  if (!page) notFound();
   const { base, label } = CATEGORY_META[category];
-  if (!page) {
-    return buildMetadata({ title: `${label} — not found`, description: "", noindex: true });
-  }
   const path = `${base}/${page.slug}`;
   const overridePath = canonicalOverridePath(category, page.slug);
   const canonical = overridePath ? `${SITE.origin}${overridePath}` : undefined;
