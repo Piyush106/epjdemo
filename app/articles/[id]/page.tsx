@@ -44,10 +44,14 @@ export async function generateMetadata(
   const { first, last } = parsePages(article.pages);
   const authors = authorList(article.authors);
 
-  // DECISION (locked): canonical points to the OJS version of record — the page
-  // that holds the DOI and the PDF — so scholarly authority concentrates there
-  // and this page serves as discovery without duplicate-content dilution.
-  const versionOfRecord = article.article_url ?? `${SITE.origin}/articles/${article.id}`;
+  // DECISION (2026-08-17): the main-site landing page is now SELF-CANONICAL, so
+  // scholarly + brand authority consolidates on www.ep-journals.org instead of
+  // scattering across six OJS subdomains. The OJS version of record still holds
+  // the DOI + full-text PDF and is surfaced via citation_pdf_url /
+  // citation_abstract_html_url and the visible "read full text" link — the
+  // standard repository landing-page pattern Google Scholar handles routinely.
+  const landingUrl = `${SITE.origin}/articles/${article.id}`;
+  const versionOfRecord = article.article_url ?? landingUrl; // OJS full-text, for citation_* tags
   const scholarDate = article.publication_date.substring(0, 10).split("-").join("/");
 
   // Google Scholar citation_* tags — rendered server-side in <head>.
@@ -73,7 +77,7 @@ export async function generateMetadata(
   return buildMetadata({
     title: article.title,
     description: clampDescription(article.abstract, 160),
-    canonical: versionOfRecord,
+    canonical: landingUrl,
     ogType: "article",
     other: citation,
   });
@@ -107,7 +111,7 @@ export default async function ArticlePage(
     inLanguage: "en",
     license: "https://creativecommons.org/licenses/by/4.0/",
     isAccessibleForFree: true,
-    url: fullTextUrl ?? `${SITE.origin}/articles/${article.id}`,
+    url: `${SITE.origin}/articles/${article.id}`,
     mainEntityOfPage: `${SITE.origin}/articles/${article.id}`,
     publisher: { "@type": "Organization", "@id": `${SITE.origin}/#organization`, name: SITE.name },
     ...(article.doi
@@ -166,6 +170,15 @@ export default async function ArticlePage(
 
         <h2 className="font-heading text-lg font-semibold text-foreground mt-8 mb-2">Abstract</h2>
         <p className="text-foreground">{article.abstract}</p>
+
+        {(() => {
+          const kws = (article.keywords ?? []).map((k) => (k ?? "").trim()).filter(Boolean);
+          return kws.length ? (
+            <p className="text-sm text-muted-foreground mt-3">
+              <span className="font-medium text-foreground">Keywords:</span> {kws.join(", ")}
+            </p>
+          ) : null;
+        })()}
 
         {fullTextUrl && (
           <p className="mt-8">
