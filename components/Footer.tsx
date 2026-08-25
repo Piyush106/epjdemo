@@ -121,6 +121,7 @@ const Footer = () => {
               <Link className="hover:underline" to="/journals">Journals</Link>
               <Link className="hover:underline" to="/articles">Articles</Link>
               <Link className="hover:underline" to="/authors">For Authors</Link>
+              <Link className="hover:underline" to="/templates">Templates</Link>
               <Link className="hover:underline" to="/editorial">Editorial Board</Link>
               <Link className="hover:underline" to="/join-editorial-board">Join the Board</Link>
               <Link className="hover:underline" to="/indexing">Indexing</Link>

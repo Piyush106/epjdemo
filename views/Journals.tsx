@@ -4,7 +4,9 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import InstitutionalSidebar from "@/components/InstitutionalSidebar";
 import { Separator } from "@/components/ui/separator";
+import { Download } from "lucide-react";
 import { useJournals } from "@/hooks/useJournals";
+import { templateFor, templateDownloadName } from "@/lib/templates";
 import type { Journal } from "@/lib/types";
 
 const Journals = ({ initialJournals = [] }: { initialJournals?: Journal[] }) => {
@@ -62,6 +64,18 @@ const Journals = ({ initialJournals = [] }: { initialJournals?: Journal[] }) => 
                             Journal page &amp; recent articles &rarr;
                           </Link>
                         </p>
+                        {templateFor(journal.abbrev) && (
+                          <p className="text-xs mb-1.5">
+                            <a
+                              href={templateFor(journal.abbrev)!.href}
+                              download={templateDownloadName(journal.abbrev)}
+                              className="inline-flex items-center gap-1 text-primary hover:underline"
+                            >
+                              <Download className="h-3 w-3" aria-hidden="true" />
+                              Download manuscript template (.docx · {templateFor(journal.abbrev)!.size})
+                            </a>
+                          </p>
+                        )}
                         <div className="text-xs text-muted-foreground space-y-0.5">
                           <p><strong>Abbreviation:</strong> {journal.abbrev}</p>
                           {(journal.print_issn || journal.electronic_issn) && (

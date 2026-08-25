@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { Download } from "lucide-react";
 import { getJournals, getJournalByAbbrev, getJournalArticles } from "@/lib/data";
 import { buildMetadata, SITE } from "@/lib/seo";
+import { templateFor, templateDownloadName, DOCX_MIME } from "@/lib/templates";
 import JsonLd from "@/components/JsonLd";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -40,6 +42,20 @@ export default async function JournalPage({ params }: { params: Promise<{ abbrev
   const articles = await getJournalArticles(journal.abbrev, 10);
   const site = journalHomepage(journal.external_url);
   const issn = journal.electronic_issn ?? journal.print_issn ?? undefined;
+  const tpl = templateFor(journal.abbrev);
+
+  const templateLd = tpl
+    ? {
+        "@context": "https://schema.org",
+        "@type": "DigitalDocument",
+        name: `${journal.title} (${journal.abbrev}) Manuscript Template`,
+        encodingFormat: DOCX_MIME,
+        contentUrl: `${SITE.origin}${tpl.href}`,
+        inLanguage: "en",
+        publisher: { "@type": "Organization", "@id": `${SITE.origin}/#organization` },
+        isPartOf: { "@type": "Periodical", name: journal.title, alternateName: journal.abbrev, ...(issn ? { issn } : {}) },
+      }
+    : null;
 
   const periodicalLd = {
     "@context": "https://schema.org",
@@ -74,6 +90,7 @@ export default async function JournalPage({ params }: { params: Promise<{ abbrev
     <div className="min-h-screen bg-background">
       <JsonLd data={periodicalLd} />
       <JsonLd data={breadcrumbLd} />
+      {templateLd ? <JsonLd data={templateLd} /> : null}
       <Header />
 
       <section className="py-8 bg-secondary border-b border-border">
@@ -90,6 +107,18 @@ export default async function JournalPage({ params }: { params: Promise<{ abbrev
             <Link href="/submit" className="inline-flex items-center border border-border bg-card px-4 py-2 text-sm font-medium rounded-sm hover:bg-muted">
               Submit to this journal
             </Link>
+            {tpl ? (
+              <a
+                href={tpl.href}
+                download={templateDownloadName(journal.abbrev)}
+                className="inline-flex items-center gap-2 border border-border bg-card px-4 py-2 text-sm font-medium rounded-sm hover:bg-muted"
+                aria-label={`Download ${journal.title} manuscript template, Word document, ${tpl.size}`}
+              >
+                <Download className="h-4 w-4" aria-hidden="true" />
+                Manuscript template
+                <span className="text-xs text-muted-foreground">(.docx · {tpl.size})</span>
+              </a>
+            ) : null}
           </div>
         </div>
       </section>

@@ -1,8 +1,12 @@
 "use client";
+import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import InstitutionalSidebar from "@/components/InstitutionalSidebar";
 import { Separator } from "@/components/ui/separator";
+import { Download } from "lucide-react";
+import { JOURNALS } from "@/lib/editorialBoardConfig";
+import { JOURNAL_TEMPLATES, templateDownloadName } from "@/lib/templates";
 
 const Authors = () => {
   return (
@@ -38,6 +42,63 @@ const Authors = () => {
                 </p>
                 <p className="text-foreground leading-relaxed">
                   The following information applies generally to all EP Journals Group publications. Authors should consult the specific journal's website for any additional requirements or variations applicable to that publication.
+                </p>
+              </div>
+
+              <Separator className="my-6" />
+
+              {/* Manuscript Templates */}
+              <div className="mb-8" id="manuscript-templates">
+                <h2 className="text-lg font-heading font-semibold text-foreground mb-3 border-b border-border pb-2">
+                  Manuscript Templates
+                </h2>
+                <p className="text-foreground leading-relaxed mb-3">
+                  Prepare your manuscript in the Microsoft Word template for your target journal. Each template sets
+                  the required structure, headings, and reference style, which helps your paper clear initial screening
+                  quickly. Templates open in Word, Google Docs, or LibreOffice.
+                </p>
+                <div className="border border-border overflow-x-auto not-prose">
+                  <table className="w-full text-sm">
+                    <thead className="bg-muted">
+                      <tr>
+                        <th className="text-left font-semibold text-foreground px-3 py-2">Journal</th>
+                        <th className="text-left font-semibold text-foreground px-3 py-2">Template</th>
+                        <th className="text-left font-semibold text-foreground px-3 py-2">Scope</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {JOURNALS.map((j) => {
+                        const tpl = JOURNAL_TEMPLATES[j.abbrev];
+                        if (!tpl) return null;
+                        return (
+                          <tr key={j.abbrev} className="border-t border-border align-top">
+                            <td className="px-3 py-2 text-foreground">
+                              {j.title} <span className="text-muted-foreground font-mono">({j.abbrev})</span>
+                            </td>
+                            <td className="px-3 py-2">
+                              <a
+                                href={tpl.href}
+                                download={templateDownloadName(j.abbrev)}
+                                className="inline-flex items-center gap-1.5 text-primary hover:underline"
+                                aria-label={`Download ${j.title} manuscript template, Word document, ${tpl.size}`}
+                              >
+                                <Download className="h-3.5 w-3.5" aria-hidden="true" />
+                                Download (.docx · {tpl.size})
+                              </a>
+                            </td>
+                            <td className="px-3 py-2">
+                              <Link to={`/journals/${j.abbrev.toLowerCase()}`} className="text-primary hover:underline">
+                                Scope &amp; ISSNs
+                              </Link>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+                <p className="text-xs text-muted-foreground mt-2">
+                  All templates are also listed on the <Link to="/templates" className="text-ep-orange hover:underline">manuscript templates page</Link>.
                 </p>
               </div>
 

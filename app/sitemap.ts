@@ -22,6 +22,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/journals",
     "/articles",
     "/authors",
+    "/templates",
     "/editorial",
     "/join-editorial-board",
     "/indexing",

@@ -13,8 +13,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Upload, FileText, BookOpen, Users, ClipboardList, Library, CheckCircle2, Loader2, Info } from "lucide-react";
+import { Upload, FileText, BookOpen, Users, ClipboardList, Library, CheckCircle2, Loader2, Info, Download } from "lucide-react";
 import { useJournals } from "@/hooks/useJournals";
+import { templateFor, templateDownloadName } from "@/lib/templates";
 
 const ACCEPTED_TYPES = [
   "application/pdf",
@@ -266,6 +267,31 @@ const SubmitManuscript = () => {
                   </SelectContent>
                 </Select>
               </div>
+              {(() => {
+                const selJ = journals.find((j) => j.title === journal);
+                const tpl = templateFor(selJ?.abbrev);
+                return (
+                  <div className="rounded-sm border border-primary/30 bg-accent/50 px-3 py-2.5 text-xs">
+                    {tpl ? (
+                      <p className="text-foreground leading-relaxed">
+                        <strong>Step 1 — use the manuscript template.</strong> Prepare your paper in the {selJ!.abbrev} template before submitting:{" "}
+                        <a
+                          href={tpl.href}
+                          download={templateDownloadName(selJ!.abbrev)}
+                          className="inline-flex items-center gap-1 text-primary hover:underline font-medium"
+                        >
+                          <Download className="h-3 w-3" aria-hidden="true" /> Download {selJ!.abbrev} template (.docx · {tpl.size})
+                        </a>
+                      </p>
+                    ) : (
+                      <p className="text-muted-foreground leading-relaxed">
+                        <strong className="text-foreground">Step 1 — use the manuscript template.</strong> Select your target journal above, then download and prepare your paper in its{" "}
+                        <Link to="/templates" className="text-primary hover:underline">manuscript template</Link> before submitting.
+                      </p>
+                    )}
+                  </div>
+                );
+              })()}
             </fieldset>
 
             {/* B. Author Details */}
