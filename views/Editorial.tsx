@@ -65,7 +65,7 @@ const Editorial = ({ members = [] }: { members?: BoardMemberRow[] }) => {
                   {editorialBoard.map((member) => (
                     <div key={member.id} className="border border-border p-4 bg-background">
                       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
-                        <div className="flex-1">
+                        <div className="flex-1 min-w-0">
                           <h3 className="font-heading font-medium text-foreground text-sm">
                             {member.name}
                           </h3>
@@ -74,7 +74,7 @@ const Editorial = ({ members = [] }: { members?: BoardMemberRow[] }) => {
                         </div>
 
                         {/* Research Identifiers */}
-                        <div className="text-xs space-y-0.5 sm:text-right sm:shrink-0">
+                        <div className="text-xs space-y-0.5 sm:text-right sm:shrink-0 min-w-0 sm:max-w-[45%] break-words">
                           {member.orcid && (
                             <a
                               href={`https://orcid.org/${member.orcid}`}
