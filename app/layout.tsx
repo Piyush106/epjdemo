@@ -5,6 +5,7 @@ import JsonLd from "@/components/JsonLd";
 import { SITE } from "@/lib/seo";
 import Providers from "@/components/Providers";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
+import MetaPixel from "@/components/MetaPixel";
 import { Suspense } from "react";
 
 // Self-hosted via next/font — no render-blocking Google Fonts request (CWV).
@@ -82,6 +83,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {(process.env.NEXT_PUBLIC_GA_ID || process.env.NEXT_PUBLIC_GOOGLE_ADS_ID) && (
           <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} adsId={process.env.NEXT_PUBLIC_GOOGLE_ADS_ID} />
         )}
+        <MetaPixel pixelId={process.env.NEXT_PUBLIC_META_PIXEL_ID} />
       </body>
     </html>
   );
