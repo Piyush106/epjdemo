@@ -55,7 +55,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let articleEntries: MetadataRoute.Sitemap = [];
   try {
     const rows = await getArticleSitemapRows();
-    articleEntries = rows.map((r) => ({
+    // Only self-canonical articles belong here; copies whose canonical is the
+    // OJS version of record are listed in that journal's own sitemap.
+    articleEntries = rows.filter((r) => !r.article_url).map((r) => ({
       url: `${base}/articles/${r.id}`,
       lastModified: r.publication_date ? new Date(r.publication_date) : new Date(),
       changeFrequency: "yearly",

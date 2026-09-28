@@ -103,12 +103,12 @@ export async function getAllArticleIds(): Promise<string[]> {
 }
 
 /** Article id + publication date — powers accurate <lastmod> values in the sitemap. */
-export async function getArticleSitemapRows(): Promise<{ id: string; publication_date: string | null }[]> {
+export async function getArticleSitemapRows(): Promise<{ id: string; publication_date: string | null; article_url: string | null }[]> {
   const { data } = await supabase
     .from("articles")
-    .select("id, publication_date")
+    .select("id, publication_date, article_url")
     .eq("status", "published");
-  return (data as { id: string; publication_date: string | null }[] | null) ?? [];
+  return (data as { id: string; publication_date: string | null; article_url: string | null }[] | null) ?? [];
 }
 
 // ---- content_pages (guides / comparisons / publishing / resources) ----------
