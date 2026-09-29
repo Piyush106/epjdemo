@@ -32,11 +32,11 @@ export default async function Page() {
     itemListElement: initialArticles.map((a, i) => ({
       "@type": "ListItem",
       position: i + 1,
-      url: `${SITE.origin}/articles/${a.id}`,
+      url: a.article_url ?? `${SITE.origin}/articles/${a.id}`,
       item: {
         "@type": "ScholarlyArticle",
         headline: a.title,
-        url: `${SITE.origin}/articles/${a.id}`,
+        url: a.article_url ?? `${SITE.origin}/articles/${a.id}`,
         datePublished: a.publication_date,
         isPartOf: { "@type": "Periodical", name: a.journal_name, alternateName: a.journal_abbrev },
       },
