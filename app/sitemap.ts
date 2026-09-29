@@ -28,6 +28,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/indexing",
     "/publication-process",
     "/about",
+    "/faq",
     "/contact",
     "/submit",
     "/publish",
@@ -38,16 +39,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/resources",
   ];
 
+  // No lastModified on static/policy pages: stamping "now" on every request
+  // teaches Google that our <lastmod> values are unreliable, so it ignores them
+  // for the pages where they matter (articles, guides). Accurate or nothing.
   const staticEntries: MetadataRoute.Sitemap = staticPaths.map((p) => ({
     url: `${base}${p}`,
-    lastModified: new Date(),
     changeFrequency: p === "" || p === "/articles" ? "daily" : "weekly",
     priority: p === "" ? 1 : 0.7,
   }));
 
   const policyEntries: MetadataRoute.Sitemap = POLICIES.map((p) => ({
     url: `${base}/policies/${p.route}`,
-    lastModified: new Date(),
     changeFrequency: "monthly",
     priority: 0.5,
   }));
@@ -76,7 +78,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .filter((p) => CONTENT_BASE[p.category] && !CANONICAL_OVERRIDES[`${p.category}:${p.slug}`])
       .map((p) => ({
         url: `${base}${CONTENT_BASE[p.category]}/${p.slug}`,
-        lastModified: p.updated_at ? new Date(p.updated_at) : new Date(),
+        ...(p.updated_at ? { lastModified: new Date(p.updated_at) } : {}),
         changeFrequency: "monthly",
         priority: 0.6,
       }));
@@ -89,7 +91,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const journals = await getJournals();
     journalEntries = journals.map((j) => ({
       url: `${base}/journals/${j.abbrev.toLowerCase()}`,
-      lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.8,
     }));

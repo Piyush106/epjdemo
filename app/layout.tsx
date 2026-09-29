@@ -33,7 +33,8 @@ export const metadata: Metadata = {
   alternates: { canonical: SITE.origin },
   robots: { index: true, follow: true },
   // Icons are provided by the App Router file conventions (app/favicon.ico,
-  // app/icon.png, app/apple-icon.png) — Next emits the correct <link> tags.
+  // app/icon.png, app/icon1-3.png at 48/96/192px, app/apple-icon.png) — Next emits
+  // the correct <link> tags. Google Search wants a square icon that is a multiple of 48px.
 };
 
 const organizationLd = {
