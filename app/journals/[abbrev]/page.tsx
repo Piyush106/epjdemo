@@ -156,6 +156,11 @@ export default async function JournalPage({ params }: { params: Promise<{ abbrev
                       <p className="text-xs text-muted-foreground mt-0.5">
                         {a.authors}{a.publication_date ? ` · ${new Date(a.publication_date).toLocaleDateString("en-GB", { month: "short", year: "numeric" })}` : ""}
                       </p>
+                      {a.article_url && (
+                        <a href={a.article_url} className="text-xs text-primary hover:underline">
+                          Full text on the {journal.abbrev} journal site &rarr;
+                        </a>
+                      )}
                     </li>
                   ))}
                 </ul>

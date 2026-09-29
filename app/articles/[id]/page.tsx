@@ -44,14 +44,14 @@ export async function generateMetadata(
   const { first, last } = parsePages(article.pages);
   const authors = authorList(article.authors);
 
-  // DECISION (2026-08-17): the main-site landing page is now SELF-CANONICAL, so
-  // scholarly + brand authority consolidates on www.ep-journals.org instead of
-  // scattering across six OJS subdomains. The OJS version of record still holds
-  // the DOI + full-text PDF and is surfaced via citation_pdf_url /
-  // citation_abstract_html_url and the visible "read full text" link — the
-  // standard repository landing-page pattern Google Scholar handles routinely.
+  // DECISION (2026-09-28): when an OJS version of record exists, the canonical
+  // points to it. The DOI resolves to the OJS page, which also holds the PDF, so
+  // Google and Google Scholar consolidate on one URL per article instead of
+  // seeing two competing landing pages. Articles with no OJS page stay
+  // self-canonical. (Supersedes the 2026-08-17 self-canonical decision.)
   const landingUrl = `${SITE.origin}/articles/${article.id}`;
-  const versionOfRecord = article.article_url ?? landingUrl; // OJS full-text, for citation_* tags
+  const versionOfRecord = article.article_url ?? landingUrl;
+  const hasOjsRecord = Boolean(article.article_url);
   const scholarDate = article.publication_date.substring(0, 10).split("-").join("/");
 
   // Google Scholar citation_* tags — rendered server-side in <head>.
@@ -77,9 +77,11 @@ export async function generateMetadata(
   return buildMetadata({
     title: article.title,
     description: clampDescription(article.abstract, 160),
-    canonical: landingUrl,
+    canonical: versionOfRecord,
     ogType: "article",
-    other: citation,
+    // Google Scholar tags only where this page IS the version of record;
+    // otherwise Scholar would build a second record for the same paper.
+    other: hasOjsRecord ? undefined : citation,
   });
 }
 
@@ -111,8 +113,8 @@ export default async function ArticlePage(
     inLanguage: "en",
     license: "https://creativecommons.org/licenses/by/4.0/",
     isAccessibleForFree: true,
-    url: `${SITE.origin}/articles/${article.id}`,
-    mainEntityOfPage: `${SITE.origin}/articles/${article.id}`,
+    url: article.article_url ?? `${SITE.origin}/articles/${article.id}`,
+    mainEntityOfPage: article.article_url ?? `${SITE.origin}/articles/${article.id}`,
     publisher: { "@type": "Organization", "@id": `${SITE.origin}/#organization`, name: SITE.name },
     ...(article.doi
       ? {
