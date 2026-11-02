@@ -287,17 +287,23 @@ Deno.serve(async (req: Request) => {
       type ExistingRow = {
         id: string; doi: string | null; article_url: string | null; pdf_url: string | null;
         volume: string | null; issue: string | null; pages: string | null; keywords: string[] | null;
+        status: string;
       };
       const { data: existing } = await supabase
         .from("articles")
-        .select("id, doi, article_url, pdf_url, volume, issue, pages, keywords")
+        .select("id, doi, article_url, pdf_url, volume, issue, pages, keywords, status")
         .eq("journal_abbrev", journal.abbrev);
 
+      // Several rows can share an OJS URL (hand-entered copies hidden as drafts
+      // on 2026-11-02). Match the published, DOI-bearing row so a harvest never
+      // revives a hidden copy.
+      const rank = (e: ExistingRow) => (e.status === "published" ? 2 : 0) + (e.doi ? 1 : 0);
       const byDoi = new Map<string, ExistingRow>();
       const byUrl = new Map<string, ExistingRow>();
       for (const e of (existing ?? []) as ExistingRow[]) {
         if (e.doi) byDoi.set(e.doi, e);
-        if (e.article_url) byUrl.set(e.article_url, e);
+        const cur = e.article_url ? byUrl.get(e.article_url) : undefined;
+        if (e.article_url && (!cur || rank(e) > rank(cur))) byUrl.set(e.article_url, e);
       }
 
       let inserted = 0;
@@ -316,6 +322,8 @@ Deno.serve(async (req: Request) => {
             issue: row.issue ?? match.issue,
             pages: row.pages ?? match.pages,
             keywords: row.keywords ?? match.keywords,
+            // An editor's decision to hide a row (draft) outranks the feed.
+            status: match.status === "draft" ? "draft" : row.status,
           });
           updated += 1;
         } else {

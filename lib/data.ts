@@ -43,6 +43,25 @@ export async function getArticle(id: string): Promise<Article | null> {
   return (data as Article | null) ?? null;
 }
 
+/**
+ * A published article by the 8-hex id prefix used in its URL slug. uuid columns
+ * can't be LIKE-filtered through PostgREST, so query the uuid range the prefix
+ * spans; with ~1,000 rows a collision is unlikely, and `title` breaks any tie.
+ */
+export async function getArticleByIdPrefix(prefix: string, slug?: string): Promise<Article | null> {
+  const { data } = await supabase
+    .from("articles")
+    .select("*")
+    .eq("status", "published")
+    .gte("id", `${prefix}-0000-0000-0000-000000000000`)
+    .lte("id", `${prefix}-ffff-ffff-ffff-ffffffffffff`)
+    .limit(5);
+  const rows = (data as Article[] | null) ?? [];
+  if (rows.length <= 1 || !slug) return rows[0] ?? null;
+  const { articleSlug } = await import("@/lib/articleUrl");
+  return rows.find((r) => articleSlug(r) === slug) ?? rows[0];
+}
+
 /** Most recently published articles (powers the homepage slideshow + listings). */
 export async function getRecentArticles(limit = 12): Promise<Article[]> {
   const { data, error } = await supabase
@@ -93,22 +112,23 @@ export async function getRelatedArticles(
   return (data as Article[] | null) ?? [];
 }
 
-/** All article ids — used by generateStaticParams to pre-render article pages. */
-export async function getAllArticleIds(): Promise<string[]> {
+/** All article ids + titles — used by generateStaticParams to pre-render article pages. */
+export async function getAllArticleIds(): Promise<{ id: string; title: string }[]> {
   const { data } = await supabase
     .from("articles")
-    .select("id")
+    .select("id, title")
     .eq("status", "published");
-  return (data as { id: string }[] | null)?.map((r) => r.id) ?? [];
+  return (data as { id: string; title: string }[] | null) ?? [];
 }
 
-/** Article id + publication date — powers accurate <lastmod> values in the sitemap. */
-export async function getArticleSitemapRows(): Promise<{ id: string; publication_date: string | null; article_url: string | null }[]> {
+/** Article id, title + publication date — powers article URLs and <lastmod> in the sitemap and feeds. */
+export async function getArticleSitemapRows(): Promise<{ id: string; title: string; publication_date: string | null }[]> {
   const { data } = await supabase
     .from("articles")
-    .select("id, publication_date, article_url")
-    .eq("status", "published");
-  return (data as { id: string; publication_date: string | null; article_url: string | null }[] | null) ?? [];
+    .select("id, title, publication_date")
+    .eq("status", "published")
+    .order("publication_date", { ascending: false });
+  return (data as { id: string; title: string; publication_date: string | null }[] | null) ?? [];
 }
 
 // ---- content_pages (guides / comparisons / publishing / resources) ----------

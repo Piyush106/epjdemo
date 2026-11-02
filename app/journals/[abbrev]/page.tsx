@@ -8,6 +8,7 @@ import { templateFor, templateDownloadName, DOCX_MIME } from "@/lib/templates";
 import JsonLd from "@/components/JsonLd";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { articlePath } from "@/lib/articleUrl";
 
 export const revalidate = 3600;
 
@@ -152,15 +153,10 @@ export default async function JournalPage({ params }: { params: Promise<{ abbrev
                 <ul className="space-y-3">
                   {articles.map((a) => (
                     <li key={a.id} className="border-b border-border pb-3 last:border-0">
-                      <Link href={`/articles/${a.id}`} className="text-sm font-medium text-foreground hover:text-primary transition-colors">{a.title}</Link>
+                      <Link href={articlePath(a)} className="text-sm font-medium text-foreground hover:text-primary transition-colors">{a.title}</Link>
                       <p className="text-xs text-muted-foreground mt-0.5">
                         {a.authors}{a.publication_date ? ` · ${new Date(a.publication_date).toLocaleDateString("en-GB", { month: "short", year: "numeric" })}` : ""}
                       </p>
-                      {a.article_url && (
-                        <a href={a.article_url} className="text-xs text-primary hover:underline">
-                          Full text on the {journal.abbrev} journal site &rarr;
-                        </a>
-                      )}
                     </li>
                   ))}
                 </ul>

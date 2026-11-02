@@ -47,7 +47,11 @@ export function buildMetadata({
   return {
     title,
     description,
-    alternates: { canonical: canonicalUrl },
+    alternates: {
+      canonical: canonicalUrl,
+      // Advertise the article feed on every page so readers and crawlers find it.
+      types: { "application/rss+xml": `${SITE.origin}/articles/feed.xml` },
+    },
     robots: noindex
       ? { index: false, follow: false }
       : { index: true, follow: true },
