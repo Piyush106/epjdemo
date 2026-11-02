@@ -50,7 +50,14 @@ interface ArticleRow {
 // we scope-extract per <record> then pull repeated Dublin Core fields. This is
 // a targeted OAI parser, not a general XML parser.
 
+// OJS double-escapes some abstracts ("p &amp;lt; .05"), so decode until stable
+// (at most twice) to recover "p < .05".
 function decodeEntities(s: string): string {
+  const once = decodeEntitiesOnce(s);
+  return once === s ? once : decodeEntitiesOnce(once);
+}
+
+function decodeEntitiesOnce(s: string): string {
   return s
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">")
@@ -73,6 +80,14 @@ function dcValues(recordXml: string, tag: string): string[] {
     if (v) out.push(v);
   }
   return out;
+}
+
+// oai_dc gives each creator as "Family, Given" (or a single name). Joining those
+// with ", " made "Safitri, Dini" read as two people downstream, so store each as
+// "Given Family" — the comma-separated `authors` column then splits correctly.
+function creatorName(raw: string): string {
+  const [family, ...given] = raw.split(",").map((p) => p.trim()).filter(Boolean);
+  return given.length ? `${given.join(" ")} ${family}` : family ?? "";
 }
 
 function dcFirst(recordXml: string, tag: string): string | null {
@@ -211,7 +226,7 @@ async function harvestJournal(journal: Journal, today: string): Promise<ArticleR
 
       rows.push({
         title,
-        authors: dcValues(rec, "creator").join(", "),
+        authors: dcValues(rec, "creator").map(creatorName).filter(Boolean).join(", "),
         abstract: dcValues(rec, "description").sort((a, b) => b.length - a.length)[0] ?? "",
         keywords: extractKeywords(dcValues(rec, "subject")),
         doi: extractDoi(identifiers),

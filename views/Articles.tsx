@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState, useCallback, useMemo } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import InstitutionalSidebar from "@/components/InstitutionalSidebar";
@@ -20,6 +20,8 @@ interface Article {
   journal_abbrev: string;
   journal_name: string;
   publication_date: string;
+  /** Set server-side from doi.org; rows loaded on the client leave it undefined. */
+  doi_registered?: boolean;
 }
 
 const PAGE_SIZE = 20;
@@ -37,8 +39,21 @@ const Articles = ({ initialArticles = [] }: ArticlesProps) => {
   // Skip the first client fetch when the server already provided the unfiltered
   // first page; only fetch on filter changes or "load more".
   const didMount = useRef(false);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const activeJournal = searchParams.get("journal") || "";
+  // The ?journal= filter is read from window after mount, not useSearchParams():
+  // on this ISR page useSearchParams() bails out of SSR, which shipped crawlers an
+  // empty list (BAILOUT_TO_CLIENT_SIDE_RENDERING) despite the server-fetched page.
+  const [activeJournal, setActiveJournal] = useState("");
+  useEffect(() => {
+    const j = new URLSearchParams(window.location.search).get("journal");
+    if (j) setActiveJournal(j);
+  }, []);
+  const selectJournal = (abbrev: string) => {
+    const url = new URL(window.location.href);
+    if (abbrev) url.searchParams.set("journal", abbrev);
+    else url.searchParams.delete("journal");
+    window.history.replaceState(null, "", url);
+    setActiveJournal(abbrev);
+  };
 
   const { data: journals = [] } = useJournals();
   const journalMap = useMemo(() => buildJournalMap(journals), [journals]);
@@ -114,7 +129,7 @@ const Articles = ({ initialArticles = [] }: ArticlesProps) => {
                   <button
                     key={f.abbrev}
                     type="button"
-                    onClick={() => setSearchParams(f.abbrev ? { journal: f.abbrev } : {})}
+                    onClick={() => selectJournal(f.abbrev)}
                     aria-pressed={activeJournal === f.abbrev}
                     aria-label={f.abbrev ? `Show ${f.label} articles` : "Show all journals"}
                     className={`px-3 py-1.5 text-xs border transition-colors ${
@@ -167,9 +182,14 @@ const Articles = ({ initialArticles = [] }: ArticlesProps) => {
                           {article.doi && (
                             <span className="flex items-center gap-1">
                               <FileText className="h-3 w-3" />
-                              <a href={`https://doi.org/${article.doi}`} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
-                                {article.doi}
-                              </a>
+                              {/* Link only DOIs confirmed live at doi.org; others show as text. */}
+                              {article.doi_registered ? (
+                                <a href={`https://doi.org/${article.doi}`} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
+                                  {article.doi}
+                                </a>
+                              ) : (
+                                <span title="DOI registration with Crossref in progress">{article.doi}</span>
+                              )}
                             </span>
                           )}
                           <Link to={`/articles/${article.id}`} className="text-primary hover:underline ml-auto">View Article →</Link>

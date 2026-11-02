@@ -28,6 +28,16 @@ const indexingPlatforms = [
 
 const visibilityPlatforms = ["Academia.edu", "LinkedIn"];
 
+// Every ISSN links to its ISSN Portal record so readers can verify it themselves.
+const IssnLink = ({ issn }: { issn: string | null }) =>
+  issn ? (
+    <a href={`https://portal.issn.org/resource/ISSN/${issn}`} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+      {issn}
+    </a>
+  ) : (
+    <>—</>
+  );
+
 // Display the journal_doi from the DB; if not set, fall back to the publisher's
 // expected pattern based on the GJEFM-confirmed prefix 10.65150.
 const journalDoiDisplay = (j: { journal_doi: string | null; abbrev: string }) =>
@@ -64,7 +74,7 @@ const Indexing = ({ initialJournals = [] }: { initialJournals?: Journal[] }) => 
                   Common Indexing & Discovery Platforms
                 </h2>
                 <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
-                  All journals published by EP Journals Group are indexed and abstracted in the following academic platforms:
+                  All journals published by EP Journals Group are discoverable through the following academic platforms. Each ISSN below links to its public record on the ISSN Portal.
                 </p>
                 <div className="grid sm:grid-cols-2 gap-x-6 gap-y-1.5 mb-4">
                   {indexingPlatforms.map((p) => (
@@ -75,7 +85,7 @@ const Indexing = ({ initialJournals = [] }: { initialJournals?: Journal[] }) => 
                   ))}
                 </div>
                 <p className="text-sm text-muted-foreground mb-2 font-medium">
-                  Visibility & Dissemination Platforms
+                  Where articles are also shared (these are not indexes)
                 </p>
                 <div className="grid sm:grid-cols-2 gap-x-6 gap-y-1.5">
                   {visibilityPlatforms.map((p) => (
@@ -112,8 +122,8 @@ const Indexing = ({ initialJournals = [] }: { initialJournals?: Journal[] }) => 
                             <span className="font-medium text-foreground">{j.abbrev}</span>
                             <span className="block text-muted-foreground mt-0.5 leading-tight">{j.title}</span>
                           </TableCell>
-                          <TableCell className="text-xs font-mono">{j.print_issn || "—"}</TableCell>
-                          <TableCell className="text-xs font-mono">{j.electronic_issn || "—"}</TableCell>
+                          <TableCell className="text-xs font-mono"><IssnLink issn={j.print_issn} /></TableCell>
+                          <TableCell className="text-xs font-mono"><IssnLink issn={j.electronic_issn} /></TableCell>
                           <TableCell className="text-xs font-mono">{journalDoiDisplay(j)}</TableCell>
                           <TableCell className="text-center">
                             <Badge variant="outline" className="text-xs font-normal bg-ep-teal/15 text-ep-teal border-ep-teal/30">
@@ -143,8 +153,8 @@ const Indexing = ({ initialJournals = [] }: { initialJournals?: Journal[] }) => 
                           <span className="text-muted-foreground font-mono ml-2">({journal.abbrev})</span>
                         </h3>
                         <div className="text-xs text-muted-foreground mt-1 flex flex-wrap gap-x-4 gap-y-0.5">
-                          {journal.print_issn && <span>Print ISSN: {journal.print_issn}</span>}
-                          {journal.electronic_issn && <span>Online ISSN: {journal.electronic_issn}</span>}
+                          {journal.print_issn && <span>Print ISSN: <IssnLink issn={journal.print_issn} /></span>}
+                          {journal.electronic_issn && <span>Online ISSN: <IssnLink issn={journal.electronic_issn} /></span>}
                           <span>DOI: {journalDoiDisplay(journal)}</span>
                         </div>
                       </div>
@@ -158,7 +168,7 @@ const Indexing = ({ initialJournals = [] }: { initialJournals?: Journal[] }) => 
                             </div>
                           ))}
                         </div>
-                        <p className="text-xs font-medium text-muted-foreground mb-2">Visibility & Dissemination</p>
+                        <p className="text-xs font-medium text-muted-foreground mb-2">Also shared on (not indexes)</p>
                         <div className="grid sm:grid-cols-2 gap-x-6 gap-y-1">
                           {visibilityPlatforms.map((p) => (
                             <div key={p} className="flex items-center gap-2 text-xs text-muted-foreground">

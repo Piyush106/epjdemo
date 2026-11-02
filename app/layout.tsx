@@ -49,7 +49,10 @@ const organizationLd = {
   email: SITE.email,
   foundingDate: "2024",
   publishingPrinciples: `${SITE.origin}/policies/publication-ethics`,
-  sameAs: [SITE.origin, "https://doi.org/10.65150"],
+  // Independent records that identify the publisher as one entity (helps Google
+  // and AI assistants tell "EP Journals Group" apart from similarly named
+  // publishers). Add Wikidata, LinkedIn, ICI and Scilit URLs once they exist.
+  sameAs: ["https://api.crossref.org/members/54641"],
 };
 
 const websiteLd = {

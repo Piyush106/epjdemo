@@ -7,6 +7,7 @@ import JsonLd from "@/components/JsonLd";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ArticleCite from "@/components/ArticleCite";
+import { isDoiRegistered } from "@/lib/doi";
 
 // Pre-render article pages and refresh every 3 days, matching the ingestion cycle.
 // New articles added by the ingestion job are server-rendered on first request,
@@ -95,6 +96,7 @@ export default async function ArticlePage(
   const journal = await getJournalByAbbrev(article.journal_abbrev);
   const authors = authorList(article.authors);
   const related = await getRelatedArticles(article.journal_abbrev, article.id, 5);
+  const doiLive = article.doi ? await isDoiRegistered(article.doi) : false;
   const { first, last } = parsePages(article.pages);
   const fullTextUrl = article.article_url ?? article.pdf_url ?? undefined;
   const citeUrl = article.article_url ?? `${SITE.origin}/articles/${article.id}`;
@@ -119,7 +121,7 @@ export default async function ArticlePage(
     ...(article.doi
       ? {
           identifier: { "@type": "PropertyValue", propertyID: "DOI", value: article.doi },
-          sameAs: `https://doi.org/${article.doi}`,
+          ...(doiLive ? { sameAs: `https://doi.org/${article.doi}` } : {}),
         }
       : {}),
     ...(article.keywords?.length ? { keywords: article.keywords.join(", ") } : {}),
@@ -164,9 +166,16 @@ export default async function ArticlePage(
         {article.doi && (
           <p className="text-sm mt-1">
             DOI:{" "}
-            <a className="text-primary hover:underline" href={`https://doi.org/${article.doi}`}>
-              {article.doi}
-            </a>
+            {doiLive ? (
+              <a className="text-primary hover:underline" href={`https://doi.org/${article.doi}`}>
+                {article.doi}
+              </a>
+            ) : (
+              <>
+                {article.doi}{" "}
+                <span className="text-xs text-muted-foreground">(registration with Crossref in progress)</span>
+              </>
+            )}
           </p>
         )}
 
@@ -204,7 +213,7 @@ export default async function ArticlePage(
           volume={article.volume}
           issue={article.issue}
           pages={article.pages}
-          doi={article.doi}
+          doi={doiLive ? article.doi : null}
           url={citeUrl}
         />
 

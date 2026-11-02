@@ -53,6 +53,7 @@ export default async function HomePage() {
         alternateName: j.abbrev,
         issn: [j.electronic_issn, j.print_issn].filter(Boolean),
         url: j.external_url,
+        sameAs: [j.electronic_issn, j.print_issn].filter(Boolean).map((issn) => `https://portal.issn.org/resource/ISSN/${issn}`),
         publisher: { "@type": "Organization", "@id": `${SITE.origin}/#organization` },
       },
     })),
