@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { CalendarDays, FileText } from "lucide-react";
 import { useJournals, buildJournalMap, journalBadgeClass } from "@/hooks/useJournals";
 import { fetchWithRetry } from "@/lib/supabaseRetry";
+import { articlePath } from "@/lib/articleUrl";
 
 interface Article {
   id: string;
@@ -164,7 +165,7 @@ const Articles = ({ initialArticles = [] }: ArticlesProps) => {
                   <div className="space-y-4">
                     {articles.map((article) => (
                       <article key={article.id} className="border border-border bg-card p-4 hover:bg-muted/30 transition-colors">
-                        <Link to={`/articles/${article.id}`} className="group">
+                        <Link to={articlePath(article)} className="group">
                           <h3 className="text-sm font-heading font-semibold text-foreground group-hover:text-primary transition-colors leading-snug mb-1">
                             {article.title}
                           </h3>
@@ -192,7 +193,7 @@ const Articles = ({ initialArticles = [] }: ArticlesProps) => {
                               )}
                             </span>
                           )}
-                          <Link to={`/articles/${article.id}`} className="text-primary hover:underline ml-auto">View Article →</Link>
+                          <Link to={articlePath(article)} className="text-primary hover:underline ml-auto">View Article →</Link>
                         </div>
                       </article>
                     ))}

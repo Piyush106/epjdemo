@@ -1,5 +1,6 @@
 import { SITE } from "@/lib/seo";
-import { getJournals } from "@/lib/data";
+import { getJournals, getRecentArticles } from "@/lib/data";
+import { articlePath } from "@/lib/articleUrl";
 
 // Served at /llms.txt. A curated, token-efficient Markdown map of the site for
 // LLMs / AI answer engines (the emerging llms.txt convention). This is additive
@@ -13,6 +14,15 @@ export async function GET() {
   try { journals = await getJournals(); } catch { journals = []; }
 
   const origin = SITE.origin;
+
+  // Latest research, so answer engines can find and cite individual papers.
+  let recent: Awaited<ReturnType<typeof getRecentArticles>> = [];
+  try { recent = await getRecentArticles(40); } catch { recent = []; }
+  const recentLines = recent.length
+    ? recent
+        .map((a) => `- [${a.title}](${origin}${articlePath(a)}) — ${a.authors}. ${a.journal_abbrev}, ${a.publication_date.slice(0, 10)}${a.doi ? `. DOI ${a.doi}` : ""}`)
+        .join("\n")
+    : "- See the articles index.";
 
   const journalLines = journals.length
     ? journals
@@ -41,6 +51,12 @@ Attribution 4.0 (CC BY 4.0) licence and assigned Crossref DOIs.
 ## Journals
 
 ${journalLines}
+
+## Recent articles
+
+${recentLines}
+
+All articles: ${origin}/articles · RSS: ${origin}/articles/feed.xml
 
 ## Key pages
 
@@ -73,7 +89,7 @@ ${journalLines}
 
 ## Notes
 
-- Canonical article pages on this site link to each article's version of record (DOI/PDF) on the journal's site.
+- Article pages on this site (${origin}/articles/...) are the version of record, with the abstract, citation data and PDF.
 - Sitemap: ${origin}/sitemap.xml
 - Contact: ${SITE.email}
 `;

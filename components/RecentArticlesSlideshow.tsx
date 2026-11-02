@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useJournals, buildJournalMap, journalTextClass } from "@/hooks/useJournals";
 import { fetchWithRetry } from "@/lib/supabaseRetry";
+import { articlePath } from "@/lib/articleUrl";
 
 interface Article {
   id: string;
@@ -144,7 +145,7 @@ const RecentArticlesSlideshow = ({ initialArticles = [] }: { initialArticles?: A
           <div className="min-w-0 flex-1 flex items-center gap-3">
             <div className="min-w-0 flex-1">
               <Link
-                to={`/articles/${article.id}`}
+                to={articlePath(article)}
                 className="group flex items-start gap-1.5"
               >
                 <p className="text-xs font-medium text-foreground leading-snug truncate group-hover:text-primary transition-colors">

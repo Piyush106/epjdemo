@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { useJournals, buildJournalMap, journalBadgeClass } from "@/hooks/useJournals";
 import { fetchWithRetry } from "@/lib/supabaseRetry";
+import { articlePath } from "@/lib/articleUrl";
 
 // Discriminated union: search results are either articles or content pages.
 interface ArticleResult {
@@ -152,7 +153,7 @@ const GlobalSearch = ({ open, onOpenChange }: GlobalSearchProps) => {
   const handleSelect = (result: SearchResult) => {
     onOpenChange(false);
     if (result.kind === "article") {
-      navigate(`/articles/${result.id}`);
+      navigate(articlePath(result));
     } else {
       const prefix = ROUTE_PREFIX[result.category] ?? "/guides";
       navigate(`${prefix}/${result.slug}`);

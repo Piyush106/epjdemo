@@ -4,6 +4,7 @@ import JsonLd from "@/components/JsonLd";
 import { buildMetadata, buildBreadcrumbLd, SITE } from "@/lib/seo";
 import { getRecentArticles } from "@/lib/data";
 import { registeredDois } from "@/lib/doi";
+import { articlePath } from "@/lib/articleUrl";
 
 // Refresh hourly; also revalidated on demand by the ingest-oai function after a
 // harvest, so newly-ingested articles surface in this list immediately.
@@ -35,11 +36,11 @@ export default async function Page() {
     itemListElement: initialArticles.map((a, i) => ({
       "@type": "ListItem",
       position: i + 1,
-      url: a.article_url ?? `${SITE.origin}/articles/${a.id}`,
+      url: `${SITE.origin}${articlePath(a)}`,
       item: {
         "@type": "ScholarlyArticle",
         headline: a.title,
-        url: a.article_url ?? `${SITE.origin}/articles/${a.id}`,
+        url: `${SITE.origin}${articlePath(a)}`,
         datePublished: a.publication_date,
         isPartOf: { "@type": "Periodical", name: a.journal_name, alternateName: a.journal_abbrev },
       },
