@@ -45,7 +45,7 @@ const Editorial = ({ members = [] }: { members?: BoardMemberRow[] }) => {
                 </h2>
                 <div className="prose-academic text-foreground text-sm">
                   <p>
-                    The Editorial Advisory Board of EP Journals Group comprises distinguished scholars and researchers from institutions across the globe. Board members contribute expertise spanning engineering, natural sciences, social sciences, economics, management, and humanities. All members are accorded equal standing and participate collectively in upholding the standards of EP Journals Group publications.
+                    The Editorial Advisory Board of EP Journals Group comprises researchers from universities and institutes in more than ten countries. Board members contribute expertise spanning engineering, natural sciences, social sciences, economics, management, and humanities. All members are accorded equal standing and participate collectively in upholding the standards of EP Journals Group publications.
                   </p>
                   <p className="text-muted-foreground">
                     The organisation does not employ hierarchical editorial structures. Editorial decisions are made collectively based on peer review recommendations and scholarly merit. Board members provide guidance on editorial policy, assist with peer review, and support the development of their respective journals.

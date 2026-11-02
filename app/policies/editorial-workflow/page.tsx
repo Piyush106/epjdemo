@@ -37,19 +37,19 @@ export default function Page() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
             <div className="text-center p-2">
               <p className="font-heading font-semibold text-foreground">1. Initial Screening</p>
-              <p className="text-primary font-medium">Within 2 Days</p>
+              <p className="text-primary font-medium">Within 2 working days</p>
             </div>
             <div className="text-center p-2">
-              <p className="font-heading font-semibold text-foreground">2. Peer Review</p>
-              <p className="text-primary font-medium">1–2 Weeks</p>
+              <p className="font-heading font-semibold text-foreground">2. Double-Blind Peer Review</p>
+              <p className="text-primary font-medium">Two independent reviewers</p>
             </div>
             <div className="text-center p-2">
               <p className="font-heading font-semibold text-foreground">3. Editorial Decision</p>
-              <p className="text-primary font-medium">Immediate</p>
+              <p className="text-primary font-medium">Typically 1–2 weeks from submission</p>
             </div>
             <div className="text-center p-2">
               <p className="font-heading font-semibold text-foreground">4. Publication</p>
-              <p className="text-primary font-medium">Within 24 Hours</p>
+              <p className="text-primary font-medium">After APC payment and proof approval</p>
             </div>
           </div>
         </div>
@@ -57,8 +57,8 @@ export default function Page() {
         <p className="text-foreground leading-relaxed">
           Manuscripts are received and assessed for scope, completeness, and compliance within two working days.
           Suitable manuscripts are assigned for double-blind peer review, which is typically completed within one to
-          two weeks. Editorial decisions are issued immediately upon receipt of reviewer reports. Upon acceptance and
-          APC confirmation, articles are published within 24 hours.
+          two weeks. The handling editor issues a decision once both reviewer reports have been assessed. After
+          acceptance, APC payment, and the author&apos;s approval of the final proof, the article is published online.
         </p>
         <p className="text-foreground leading-relaxed">
           Final decisions are recorded and communicated with full reviewer feedback. Accepted manuscripts proceed

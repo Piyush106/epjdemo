@@ -36,13 +36,14 @@ const About = () => {
                   Organisational Overview
                 </h2>
                 <p className="text-foreground leading-relaxed">
-                  EP Journals Group is an academic publishing organisation established with the objective of advancing scholarly research and facilitating the global dissemination of knowledge. The organisation publishes a portfolio of peer-reviewed, open-access journals spanning the disciplines of Engineering and Technology, Economics and Finance, Management Studies, Natural Sciences, and Social Sciences.
+                  EP Journals Group is an open access publisher of six peer-reviewed journals in Engineering and Technology,
+                  Economics and Finance, Management, Natural Sciences, Social Sciences, and Education. Every journal uses
+                  double-blind review with at least two independent reviewers, registers a Crossref DOI for each article, and
+                  publishes under a CC BY 4.0 licence.
                 </p>
                 <p className="text-foreground leading-relaxed">
-                  The organisation is committed to upholding the highest standards of academic integrity and publication ethics. All journals published under the EP Journals Group imprint operate in accordance with internationally recognised guidelines for scholarly publishing, including those established by the Committee on Publication Ethics (COPE).
-                </p>
-                <p className="text-foreground leading-relaxed">
-                  EP Journals Group serves a global community of researchers, academics, and practitioners. The organisation's publications are designed to provide a platform for rigorous academic discourse, to support the development of evidence-based knowledge, and to contribute to the resolution of contemporary challenges across multiple fields of inquiry.
+                  All journals follow the guidance of the Committee on Publication Ethics (COPE). The article processing charge
+                  is USD 30, payable only after acceptance; there is no submission fee.
                 </p>
               </div>
 
@@ -58,7 +59,7 @@ const About = () => {
                 </p>
                 <div className="mt-4 space-y-3 text-foreground">
                   <p>
-                    <strong>1.</strong> Support the advancement of knowledge by publishing original research that meets the highest standards of methodological rigour and scholarly contribution.
+                    <strong>1.</strong> Publish original research that passes double-blind review by at least two independent reviewers.
                   </p>
                   <p>
                     <strong>2.</strong> Ensure the integrity of the publication process through transparent, impartial, and ethical editorial practices.
@@ -80,7 +81,7 @@ const About = () => {
                   Scope and Disciplines
                 </h2>
                 <p className="text-foreground leading-relaxed">
-                  EP Journals Group publishes scholarly work across a broad range of academic disciplines. The current portfolio comprises five journals, each dedicated to a distinct field of study:
+                  EP Journals Group publishes scholarly work across a broad range of academic disciplines. The current portfolio comprises six journals, covering the following fields:
                 </p>
                 <div className="mt-4 space-y-3">
                   <div>
@@ -110,7 +111,14 @@ const About = () => {
                   <div>
                     <h3 className="font-heading font-medium text-foreground">Social Sciences and Humanities</h3>
                     <p className="text-muted-foreground text-xs">
-                      Including sociology, psychology, education, political science, anthropology, law, and philosophy.
+                      Including sociology, psychology, political science, anthropology, law, and philosophy.
+                    </p>
+                  </div>
+                  <div>
+                    <h3 className="font-heading font-medium text-foreground">Education</h3>
+                    <p className="text-muted-foreground text-xs">
+                      Including teaching and learning, educational leadership, and the finance and management of education
+                      (published in GJEFM).
                     </p>
                   </div>
                 </div>
@@ -145,7 +153,7 @@ const About = () => {
                   <div>
                     <h3 className="font-heading font-medium text-foreground mb-2">Publication Ethics</h3>
                     <p className="text-foreground leading-relaxed">
-                      EP Journals Group adheres to the guidelines established by the Committee on Publication Ethics (COPE). The organisation takes allegations of misconduct seriously and follows established procedures for investigating and responding to such concerns. Authors, reviewers, and editors are expected to uphold the highest standards of research integrity and professional conduct.
+                      EP Journals Group adheres to the guidelines established by the Committee on Publication Ethics (COPE). The organisation takes allegations of misconduct seriously and follows established procedures for investigating and responding to such concerns. Authors, reviewers, and editors are expected to follow the research integrity policy.
                     </p>
                   </div>
                 </div>
@@ -162,7 +170,7 @@ const About = () => {
                   EP Journals Group is committed to the principles of open access. All articles published in EP Journals Group journals are made freely available to readers worldwide immediately upon publication. There are no subscription or access fees for readers.
                 </p>
                 <p className="text-foreground leading-relaxed">
-                  The organisation believes that open access maximises the impact and visibility of research, supports the democratisation of knowledge, and accelerates scientific and scholarly progress. Published articles are typically licensed under Creative Commons terms that permit sharing and reuse with appropriate attribution.
+                  The organisation believes that open access maximises the impact and visibility of research, supports the democratisation of knowledge, and accelerates scientific and scholarly progress. Published articles are licensed under CC BY 4.0, which permits sharing and reuse with attribution.
                 </p>
               </div>
 

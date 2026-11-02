@@ -3,6 +3,7 @@ import Articles from "@/views/Articles";
 import JsonLd from "@/components/JsonLd";
 import { buildMetadata, buildBreadcrumbLd, SITE } from "@/lib/seo";
 import { getRecentArticles } from "@/lib/data";
+import { registeredDois } from "@/lib/doi";
 
 // Refresh hourly; also revalidated on demand by the ingest-oai function after a
 // harvest, so newly-ingested articles surface in this list immediately.
@@ -23,6 +24,8 @@ export default async function Page() {
   } catch {
     initialArticles = [];
   }
+  const liveDois = await registeredDois(initialArticles.map((a) => a.doi));
+  const listed = initialArticles.map((a) => ({ ...a, doi_registered: a.doi ? liveDois.has(a.doi) : false }));
 
   const itemListLd = {
     "@context": "https://schema.org",
@@ -51,7 +54,7 @@ export default async function Page() {
     <>
       <JsonLd data={itemListLd} />
       <JsonLd data={breadcrumbLd} />
-      <Articles initialArticles={initialArticles} />
+      <Articles initialArticles={listed} />
     </>
   );
 }
