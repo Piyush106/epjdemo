@@ -15,6 +15,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ArticleCite from "@/components/ArticleCite";
 import { isDoiRegistered } from "@/lib/doi";
+import { issueKey, issuePath } from "@/lib/issues";
 import type { Article } from "@/lib/types";
 
 // Pre-render article pages and refresh every 3 days, matching the ingestion cycle.
@@ -244,7 +245,20 @@ export default async function ArticlePage(
     ["Journal", <Link key="j" href={`/journals/${article.journal_abbrev.toLowerCase()}`} className="text-primary hover:underline">{article.journal_name} ({article.journal_abbrev})</Link>],
     ["Published", published],
     ...(article.volume || article.issue || article.pages
-      ? [["Volume / issue / pages", [article.volume && `Vol. ${article.volume}`, article.issue && `Issue ${article.issue}`, article.pages && `pp. ${article.pages}`].filter(Boolean).join(", ")] as [string, React.ReactNode]]
+      ? [[
+          "Volume / issue / pages",
+          <>
+            {/* Links the article to its issue's table of contents. */}
+            {article.volume && article.issue ? (
+              <Link href={issuePath(article.journal_abbrev, issueKey(article).volume, issueKey(article).issue)} className="text-primary hover:underline">
+                Vol. {article.volume}, Issue {article.issue}
+              </Link>
+            ) : (
+              [article.volume && `Vol. ${article.volume}`, article.issue && `Issue ${article.issue}`].filter(Boolean).join(", ")
+            )}
+            {article.pages ? `, pp. ${article.pages}` : ""}
+          </>,
+        ] as [string, React.ReactNode]]
       : []),
     ...(issns.length
       ? [["ISSN", [journal?.electronic_issn && `${journal.electronic_issn} (online)`, journal?.print_issn && `${journal.print_issn} (print)`].filter(Boolean).join(" · ")] as [string, React.ReactNode]]

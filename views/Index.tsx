@@ -31,9 +31,11 @@ interface IndexProps {
   initialArticles?: { id: string; title: string; authors: string; journal_abbrev: string; publication_date: string }[];
   articleCount?: number;
   exploreResources?: Record<string, { slug: string; title: string; category: string }[]>;
+  /** Server-rendered "latest from each journal" block (crawlable links). */
+  latestByJournal?: React.ReactNode;
 }
 
-const Index = ({ initialJournals = [], initialArticles = [], articleCount = 0, exploreResources }: IndexProps) => {
+const Index = ({ initialJournals = [], initialArticles = [], articleCount = 0, exploreResources, latestByJournal }: IndexProps) => {
   // Server passes journals so the table + links are in the initial HTML (SEO);
   // useJournals refreshes on the client. SSR render uses initialJournals.
   const { data } = useJournals();
@@ -171,6 +173,8 @@ const Index = ({ initialJournals = [], initialArticles = [], articleCount = 0, e
               </div>
 
               <Separator className="my-6" />
+
+              {latestByJournal}
 
               {/* Publication Process Summary */}
               <div className="mb-8">

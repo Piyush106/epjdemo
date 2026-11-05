@@ -30,9 +30,11 @@ const PAGE_SIZE = 20;
 interface ArticlesProps {
   /** First page, fetched server-side and rendered into the initial HTML (SEO). */
   initialArticles?: Article[];
+  /** Server-rendered numbered archive links (crawlable path to every article). */
+  archiveNav?: React.ReactNode;
 }
 
-const Articles = ({ initialArticles = [] }: ArticlesProps) => {
+const Articles = ({ initialArticles = [], archiveNav }: ArticlesProps) => {
   const [articles, setArticles] = useState<Article[]>(initialArticles);
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -212,6 +214,8 @@ const Articles = ({ initialArticles = [] }: ArticlesProps) => {
                   )}
                 </>
               )}
+
+              {archiveNav}
             </div>
 
             <InstitutionalSidebar variant="journal" />

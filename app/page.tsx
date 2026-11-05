@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Index from "@/views/Index";
 import JsonLd from "@/components/JsonLd";
 import { SITE, buildMetadata } from "@/lib/seo";
-import { getJournals, getRecentArticles, getPublishedArticleCount, getContentPageList } from "@/lib/data";
+import { getJournals, getRecentArticles, getPublishedArticleCount, getContentPageList, getJournalArticles } from "@/lib/data";
+import LatestByJournal from "@/components/home/LatestByJournal";
 
 // Categories shown in the homepage "Explore Publishing Resources" block.
 const EXPLORE_CATEGORIES = ["guide", "comparison", "publishing", "user-focused"] as const;
@@ -39,6 +40,14 @@ export default async function HomePage() {
     }),
   );
 
+  // Three newest articles per journal for the "Latest research from each journal" block.
+  const byJournal: Record<string, Awaited<ReturnType<typeof getJournalArticles>>> = {};
+  await Promise.all(
+    journals.map(async (j) => {
+      try { byJournal[j.abbrev] = await getJournalArticles(j.abbrev, 3); } catch { byJournal[j.abbrev] = []; }
+    }),
+  );
+
   const itemListLd = {
     "@context": "https://schema.org",
     "@type": "ItemList",
@@ -62,7 +71,7 @@ export default async function HomePage() {
   return (
     <>
       <JsonLd data={itemListLd} />
-      <Index initialJournals={journals} initialArticles={recentArticles} articleCount={articleCount} exploreResources={exploreResources} />
+      <Index initialJournals={journals} initialArticles={recentArticles} articleCount={articleCount} exploreResources={exploreResources} latestByJournal={<LatestByJournal journals={journals} byJournal={byJournal} />} />
     </>
   );
 }
