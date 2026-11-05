@@ -13,7 +13,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Separator } from "@/components/ui/separator";
 import { useJournals } from "@/hooks/useJournals";
 import type { Journal } from "@/lib/types";
 
@@ -28,7 +27,7 @@ const journalHomepage = (externalUrl: string) =>
 
 interface IndexProps {
   initialJournals?: Journal[];
-  initialArticles?: { id: string; title: string; authors: string; journal_abbrev: string; publication_date: string }[];
+  initialArticles?: { id: string; title: string; authors: string; journal_abbrev: string; journal_name?: string | null; publication_date: string; volume?: string | null; issue?: string | null }[];
   articleCount?: number;
   exploreResources?: Record<string, { slug: string; title: string; category: string }[]>;
   /** Server-rendered "latest from each journal" block (crawlable links). */
@@ -98,9 +97,8 @@ const Index = ({ initialJournals = [], initialArticles = [], articleCount = 0, e
                 </div>
               </header>
 
-              <Separator className="my-6" />
 
-              <div className="mb-8">
+              <div className="mb-6 border border-border bg-card p-5">
                 <h2 className="text-lg font-heading font-semibold text-foreground mb-3 border-b border-border pb-2">
                   About the Publisher
                 </h2>
@@ -117,10 +115,9 @@ const Index = ({ initialJournals = [], initialArticles = [], articleCount = 0, e
                 </div>
               </div>
 
-              <Separator className="my-6" />
 
               {/* Journals Overview - Table Format */}
-              <div className="mb-8">
+              <div className="mb-6 border border-border bg-card p-5">
                 <h2 className="text-lg font-heading font-semibold text-foreground mb-3 border-b border-border pb-2">
                   Journals Published by EP Journals Group
                 </h2>
@@ -172,12 +169,11 @@ const Index = ({ initialJournals = [], initialArticles = [], articleCount = 0, e
                 </p>
               </div>
 
-              <Separator className="my-6" />
 
               {latestByJournal}
 
               {/* Publication Process Summary */}
-              <div className="mb-8">
+              <div className="mb-6 border border-border bg-card p-5">
                 <h2 className="text-lg font-heading font-semibold text-foreground mb-3 border-b border-border pb-2">
                   Publication Process
                 </h2>
@@ -209,14 +205,14 @@ const Index = ({ initialJournals = [], initialArticles = [], articleCount = 0, e
                 </p>
               </div>
 
-              <Separator className="my-6" />
 
-              <ExploreResources initialByCat={exploreResources} />
+              <div className="mb-6 border border-border bg-card p-5">
+                <ExploreResources initialByCat={exploreResources} />
+              </div>
 
-              <Separator className="my-6" />
 
               {/* Editorial Governance Statement */}
-              <div className="mb-8">
+              <div className="mb-6 border border-border bg-card p-5">
                 <h2 className="text-lg font-heading font-semibold text-foreground mb-3 border-b border-border pb-2">
                   Editorial Governance & Standards
                 </h2>
@@ -245,10 +241,9 @@ const Index = ({ initialJournals = [], initialArticles = [], articleCount = 0, e
                 </div>
               </div>
 
-              <Separator className="my-6" />
 
               {/* Publication Standards */}
-              <div className="mb-8">
+              <div className="mb-6 border border-border bg-card p-5">
                 <h2 className="text-lg font-heading font-semibold text-foreground mb-3 border-b border-border pb-2">
                   Publication Standards & Ethical Compliance
                 </h2>
@@ -277,10 +272,9 @@ const Index = ({ initialJournals = [], initialArticles = [], articleCount = 0, e
                 </div>
               </div>
 
-              <Separator className="my-6" />
 
               {/* Open Access & Licensing */}
-              <div className="mb-8">
+              <div className="mb-6 border border-border bg-card p-5">
                 <h2 className="text-lg font-heading font-semibold text-foreground mb-3 border-b border-border pb-2">
                   Open Access & Licensing Framework
                 </h2>
@@ -312,10 +306,9 @@ const Index = ({ initialJournals = [], initialArticles = [], articleCount = 0, e
                 </div>
               </div>
 
-              <Separator className="my-6" />
 
               {/* Archiving & Preservation */}
-              <div className="mb-8">
+              <div className="mb-6 border border-border bg-card p-5">
                 <h2 className="text-lg font-heading font-semibold text-foreground mb-3 border-b border-border pb-2">
                   Archiving & Digital Preservation
                 </h2>
@@ -333,10 +326,9 @@ const Index = ({ initialJournals = [], initialArticles = [], articleCount = 0, e
                 </div>
               </div>
 
-              <Separator className="my-6" />
 
               {/* Why Publish With EP Journals */}
-              <div className="mb-8">
+              <div className="mb-6 border border-border bg-card p-5">
                 <h2 className="text-lg font-heading font-semibold text-foreground mb-3 border-b border-border pb-2">
                   Why Publish With EP Journals Group
                 </h2>
@@ -387,8 +379,7 @@ const Index = ({ initialJournals = [], initialArticles = [], articleCount = 0, e
                 </Link>
               </section>
 
-              <Separator className="my-6" />
-              <div className="mb-6">
+              <div className="mb-6 border border-border bg-card p-5">
                 <h2 className="text-lg font-heading font-semibold text-foreground mb-3 border-b border-border pb-2">
                   Contact Information
                 </h2>

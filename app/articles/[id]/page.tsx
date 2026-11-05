@@ -14,6 +14,7 @@ import JsonLd from "@/components/JsonLd";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ArticleCite from "@/components/ArticleCite";
+import { ArchiveArticleList } from "@/components/ArchiveList";
 import { isDoiRegistered } from "@/lib/doi";
 import { issueKey, issuePath } from "@/lib/issues";
 import type { Article } from "@/lib/types";
@@ -394,11 +395,13 @@ export default async function ArticlePage(
             <p className="text-foreground text-sm leading-relaxed">{summary}</p>
           </section>
 
-          <section aria-labelledby="glance-heading" className="mt-6">
-            <h2 id="glance-heading" className="font-heading text-base font-semibold text-foreground mb-2">Article at a glance</h2>
-            <dl className="grid sm:grid-cols-[200px_1fr] gap-x-4 gap-y-1 text-sm">
+          <section aria-labelledby="glance-heading" className="mt-6 border border-border bg-card">
+            <h2 id="glance-heading" className="font-heading text-base font-semibold text-foreground px-4 py-2.5 border-b border-border">
+              Article at a glance
+            </h2>
+            <dl className="divide-y divide-border text-sm">
               {glance.map(([k, v]) => (
-                <div key={k} className="contents">
+                <div key={k} className="grid sm:grid-cols-[200px_1fr] gap-x-4 gap-y-0.5 px-4 py-2">
                   <dt className="text-muted-foreground">{k}</dt>
                   <dd className="text-foreground m-0">{v}</dd>
                 </div>
@@ -406,14 +409,22 @@ export default async function ArticlePage(
             </dl>
           </section>
 
-          <h2 className="font-heading text-lg font-semibold text-foreground mt-8 mb-2">Abstract</h2>
-          <p id="article-abstract" className="text-foreground">{abstract}</p>
-
-          {keywords.length > 0 && (
-            <p className="text-sm text-muted-foreground mt-3">
-              <span className="font-medium text-foreground">Keywords:</span> {keywords.join(", ")}
-            </p>
-          )}
+          <section aria-labelledby="abstract-heading" className="mt-6 border border-border bg-card">
+            <h2 id="abstract-heading" className="font-heading text-lg font-semibold text-foreground px-4 py-2.5 border-b border-border">
+              Abstract
+            </h2>
+            <p id="article-abstract" className="text-foreground px-4 py-3 leading-relaxed">{abstract}</p>
+            {keywords.length > 0 && (
+              <div className="px-4 py-3 border-t border-border">
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Keywords</p>
+                <ul className="flex flex-wrap gap-1.5">
+                  {keywords.map((k) => (
+                    <li key={k} className="rounded-sm border border-border bg-secondary px-2 py-0.5 text-xs text-foreground">{k}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </section>
 
           <div id="cite">
             <ArticleCite
@@ -479,13 +490,13 @@ export default async function ArticlePage(
             </ul>
           </section>
 
-          <section aria-labelledby="faq-heading" className="mt-10">
-            <h2 id="faq-heading" className="font-heading text-lg font-semibold text-foreground mb-3">
+          <section aria-labelledby="faq-heading" className="mt-10 border border-border bg-card">
+            <h2 id="faq-heading" className="font-heading text-lg font-semibold text-foreground px-4 py-2.5 border-b border-border">
               Questions about this article
             </h2>
-            <div className="space-y-4">
+            <div className="divide-y divide-border">
               {faqs.slice(1).map((f) => (
-                <div key={f.q}>
+                <div key={f.q} className="px-4 py-3">
                   <h3 className="font-heading text-sm font-semibold text-foreground">{f.q}</h3>
                   <p className="text-sm text-foreground mt-0.5 break-words">{f.a}</p>
                 </div>
@@ -498,19 +509,7 @@ export default async function ArticlePage(
               <h2 id="related-heading" className="font-heading text-lg font-semibold text-foreground mb-3">
                 More research from {article.journal_abbrev}
               </h2>
-              <ul className="space-y-3">
-                {related.map((r) => (
-                  <li key={r.id} className="border-b border-border pb-3 last:border-0">
-                    <Link href={articlePath(r)} className="text-sm font-medium text-foreground hover:text-primary transition-colors">
-                      {r.title}
-                    </Link>
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      {r.authors}
-                      {r.publication_date ? ` · ${new Date(r.publication_date).toLocaleDateString("en-GB", { month: "short", year: "numeric" })}` : ""}
-                    </p>
-                  </li>
-                ))}
-              </ul>
+              <ArchiveArticleList articles={related} showJournal={false} />
             </section>
           )}
 

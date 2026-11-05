@@ -5,12 +5,10 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import InstitutionalSidebar from "@/components/InstitutionalSidebar";
 import { supabase } from "@/integrations/supabase/client";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { CalendarDays, FileText } from "lucide-react";
-import { useJournals, buildJournalMap, journalBadgeClass } from "@/hooks/useJournals";
+import { useJournals } from "@/hooks/useJournals";
 import { fetchWithRetry } from "@/lib/supabaseRetry";
-import { articlePath } from "@/lib/articleUrl";
+import ArticleCard from "@/components/ArticleCard";
 
 interface Article {
   id: string;
@@ -21,6 +19,9 @@ interface Article {
   journal_abbrev: string;
   journal_name: string;
   publication_date: string;
+  volume?: string | null;
+  issue?: string | null;
+  pages?: string | null;
   /** Set server-side from doi.org; rows loaded on the client leave it undefined. */
   doi_registered?: boolean;
 }
@@ -59,7 +60,6 @@ const Articles = ({ initialArticles = [], archiveNav }: ArticlesProps) => {
   };
 
   const { data: journals = [] } = useJournals();
-  const journalMap = useMemo(() => buildJournalMap(journals), [journals]);
   const journalFilters = useMemo(
     () => [{ abbrev: "", label: "All Journals" }, ...journals.map((j) => ({ abbrev: j.abbrev, label: j.abbrev }))],
     [journals],
@@ -72,7 +72,7 @@ const Articles = ({ initialArticles = [], archiveNav }: ArticlesProps) => {
     const { data } = await fetchWithRetry<Article[]>(() => {
       let query = supabase
         .from("articles" as any)
-        .select("id, title, authors, abstract, doi, journal_abbrev, journal_name, publication_date")
+        .select("id, title, authors, abstract, doi, journal_abbrev, journal_name, publication_date, volume, issue, pages")
         .eq("status", "published")
         .order("publication_date", { ascending: false })
         .range(from, from + PAGE_SIZE - 1);
@@ -164,40 +164,10 @@ const Articles = ({ initialArticles = [], archiveNav }: ArticlesProps) => {
                 </div>
               ) : (
                 <>
-                  <div className="space-y-4">
+                  <div className="space-y-3">
+                    {/* Same card as the archive pages; DOIs link only when confirmed live. */}
                     {articles.map((article) => (
-                      <article key={article.id} className="border border-border bg-card p-4 hover:bg-muted/30 transition-colors">
-                        <Link to={articlePath(article)} className="group">
-                          <h3 className="text-sm font-heading font-semibold text-foreground group-hover:text-primary transition-colors leading-snug mb-1">
-                            {article.title}
-                          </h3>
-                        </Link>
-                        <p className="text-xs text-muted-foreground mb-2">{article.authors}</p>
-                        <p className="text-xs text-foreground leading-relaxed line-clamp-3 mb-3">
-                          {article.abstract}
-                        </p>
-                        <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-                          <Badge variant="outline" className={`text-[10px] border ${journalBadgeClass(journalMap[article.journal_abbrev]?.color_token)}`}>{article.journal_abbrev}</Badge>
-                          <span className="flex items-center gap-1">
-                            <CalendarDays className="h-3 w-3" />
-                            {new Date(article.publication_date).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
-                          </span>
-                          {article.doi && (
-                            <span className="flex items-center gap-1">
-                              <FileText className="h-3 w-3" />
-                              {/* Link only DOIs confirmed live at doi.org; others show as text. */}
-                              {article.doi_registered ? (
-                                <a href={`https://doi.org/${article.doi}`} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
-                                  {article.doi}
-                                </a>
-                              ) : (
-                                <span title="DOI registration with Crossref in progress">{article.doi}</span>
-                              )}
-                            </span>
-                          )}
-                          <Link to={articlePath(article)} className="text-primary hover:underline ml-auto">View Article →</Link>
-                        </div>
-                      </article>
+                      <ArticleCard key={article.id} article={article} showAbstract />
                     ))}
                   </div>
 

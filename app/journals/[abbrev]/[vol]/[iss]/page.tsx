@@ -116,7 +116,7 @@ export default async function IssuePage({ params }: Params) {
           {monthYear(group.published)} · {articleCount(group.articles.length)}
           {issns.length ? ` · ISSN ${issns.join(" / ")}` : ""} · open access under CC BY 4.0
         </p>
-        <ArchiveArticleList articles={group.articles} showJournal={false} />
+        <ArchiveArticleList articles={group.articles} showJournal={false} numbered />
         <p className="mt-6 text-sm">
           <Link href={`${base}/archive`} className="text-primary hover:underline">&larr; All {journal.abbrev} issues</Link>
         </p>
