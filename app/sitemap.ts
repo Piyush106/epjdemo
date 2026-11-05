@@ -1,6 +1,8 @@
 import type { MetadataRoute } from "next";
 import { SITE } from "@/lib/seo";
-import { getArticleSitemapRows, getAllContentPages, getJournals } from "@/lib/data";
+import { getArticleSitemapRows, getAllContentPages, getJournals, getJournalArchive, getArticlesPage } from "@/lib/data";
+import { groupByIssue, issuePath } from "@/lib/issues";
+import { ARCHIVE_PAGE_SIZE } from "@/components/ArchiveList";
 import { POLICIES } from "@/components/PolicyLayout";
 import { CANONICAL_OVERRIDES } from "@/lib/contentRoute";
 import { articlePath } from "@/lib/articleUrl";
@@ -89,14 +91,38 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let journalEntries: MetadataRoute.Sitemap = [];
   try {
     const journals = await getJournals();
-    journalEntries = journals.map((j) => ({
-      url: `${base}/journals/${j.abbrev.toLowerCase()}`,
-      changeFrequency: "weekly",
-      priority: 0.8,
-    }));
+    for (const j of journals) {
+      const jb = `${base}/journals/${j.abbrev.toLowerCase()}`;
+      const issues = groupByIssue(await getJournalArchive(j.abbrev));
+      const latest = issues[0]?.published;
+      journalEntries.push(
+        { url: jb, changeFrequency: "weekly", priority: 0.9 },
+        { url: `${jb}/archive`, ...(latest ? { lastModified: new Date(latest) } : {}), changeFrequency: "weekly", priority: 0.8 },
+        // Issue tables of contents: one crawlable hub per issue.
+        ...issues.map((g) => ({
+          url: `${base}${issuePath(j.abbrev, g.volume, g.issue)}`,
+          lastModified: new Date(g.published),
+          changeFrequency: "monthly" as const,
+          priority: 0.7,
+        })),
+      );
+    }
   } catch {
     journalEntries = [];
   }
 
-  return [...staticEntries, ...journalEntries, ...policyEntries, ...articleEntries, ...contentEntries];
+  // Numbered archive pages (/articles/page/2…): crawl paths to every article.
+  let archiveEntries: MetadataRoute.Sitemap = [];
+  try {
+    const pages = Math.ceil((await getArticlesPage(1, 1)).total / ARCHIVE_PAGE_SIZE);
+    archiveEntries = Array.from({ length: Math.max(0, pages - 1) }, (_, i) => ({
+      url: `${base}/articles/page/${i + 2}`,
+      changeFrequency: "daily" as const,
+      priority: 0.4,
+    }));
+  } catch {
+    archiveEntries = [];
+  }
+
+  return [...staticEntries, ...archiveEntries, ...journalEntries, ...policyEntries, ...articleEntries, ...contentEntries];
 }

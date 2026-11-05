@@ -69,6 +69,9 @@ export async function getRecentArticles(limit = 12): Promise<Article[]> {
     .select("*")
     .eq("status", "published")
     .order("publication_date", { ascending: false })
+    // Same tie-break as getArticlesPage, so /articles (page 1) and
+    // /articles/page/2 never skip or repeat an article published the same day.
+    .order("id", { ascending: true })
     .limit(limit);
   if (error) throw error;
   return (data as Article[]) ?? [];
@@ -110,6 +113,39 @@ export async function getRelatedArticles(
     .order("publication_date", { ascending: false })
     .limit(limit);
   return (data as Article[] | null) ?? [];
+}
+
+// ---- archive pages (every article reachable by a crawlable link) -----------
+
+export type ArchiveArticle = Pick<
+  Article,
+  "id" | "title" | "authors" | "journal_abbrev" | "journal_name" | "publication_date" | "volume" | "issue" | "pages" | "doi"
+>;
+const ARCHIVE_COLUMNS = "id, title, authors, journal_abbrev, journal_name, publication_date, volume, issue, pages, doi";
+
+/** One page of all published articles, newest first, plus the total count. */
+export async function getArticlesPage(page: number, perPage: number): Promise<{ rows: ArchiveArticle[]; total: number }> {
+  const from = (page - 1) * perPage;
+  const { data, count } = await supabase
+    .from("articles")
+    .select(ARCHIVE_COLUMNS, { count: "exact" })
+    .eq("status", "published")
+    .order("publication_date", { ascending: false })
+    .order("id", { ascending: true })
+    .range(from, from + perPage - 1);
+  return { rows: (data as ArchiveArticle[] | null) ?? [], total: count ?? 0 };
+}
+
+/** Every published article of one journal, newest first (journal archive + issue pages). */
+export async function getJournalArchive(journalAbbrev: string): Promise<ArchiveArticle[]> {
+  const { data } = await supabase
+    .from("articles")
+    .select(ARCHIVE_COLUMNS)
+    .eq("status", "published")
+    .eq("journal_abbrev", journalAbbrev)
+    .order("publication_date", { ascending: false })
+    .limit(2000);
+  return (data as ArchiveArticle[] | null) ?? [];
 }
 
 /** All article ids + titles — used by generateStaticParams to pre-render article pages. */

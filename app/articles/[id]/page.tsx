@@ -14,7 +14,9 @@ import JsonLd from "@/components/JsonLd";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ArticleCite from "@/components/ArticleCite";
+import { ArchiveArticleList } from "@/components/ArchiveList";
 import { isDoiRegistered } from "@/lib/doi";
+import { issueKey, issuePath } from "@/lib/issues";
 import type { Article } from "@/lib/types";
 
 // Pre-render article pages and refresh every 3 days, matching the ingestion cycle.
@@ -115,14 +117,76 @@ export async function generateMetadata(
   // Highwire keywords are semicolon-separated.
   if (article.keywords?.length) citation.citation_keywords = article.keywords.join("; ");
 
+  // Scholar: the full text (PDF) is free to read without login.
+  citation.citation_fulltext_world_readable = "";
+
+  // Dublin Core and PRISM — read by library discovery systems, OpenAIRE-style
+  // harvesters and some search engines alongside the Highwire set above.
+  const isoDate = article.publication_date.substring(0, 10);
+  const dcPrism: Record<string, string | string[]> = {
+    "DC.title": article.title,
+    "DC.creator": authors,
+    "DC.date": isoDate,
+    "DC.publisher": SITE.name,
+    "DC.type": "Text.Serial.Journal",
+    "DC.format": "text/html",
+    "DC.language": "en",
+    "DC.rights": "https://creativecommons.org/licenses/by/4.0/",
+    "DC.source": article.journal_name,
+    "DC.description": clampDescription(abstract, 500),
+    "prism.publicationName": article.journal_name,
+    "prism.publicationDate": isoDate,
+    "prism.rightsAgent": SITE.email,
+  };
+  if (article.doi) {
+    dcPrism["DC.identifier"] = `doi:${article.doi}`;
+    dcPrism["prism.doi"] = article.doi;
+  }
+  if (keywords(article).length) dcPrism["DC.subject"] = keywords(article);
+  if (issns[0]) dcPrism["prism.issn"] = issns[0];
+  if (journal?.electronic_issn) dcPrism["prism.eIssn"] = journal.electronic_issn;
+  if (article.volume) dcPrism["prism.volume"] = String(article.volume);
+  if (article.issue) dcPrism["prism.number"] = String(article.issue);
+  if (first) dcPrism["prism.startingPage"] = first;
+  if (last) dcPrism["prism.endingPage"] = last;
+
+  // Social cards show the journal and date at a glance.
+  const twitterLabels = {
+    "twitter:label1": "Journal",
+    "twitter:data1": article.journal_abbrev,
+    "twitter:label2": "Published",
+    "twitter:data2": formatDate(article.publication_date),
+  };
+
   // Title tag carries the journal and publisher so the brand shows in results.
-  return buildMetadata({
+  const meta = buildMetadata({
     title: `${article.title} | ${article.journal_abbrev}`,
     description: clampDescription(abstract, 160),
     path,
     ogType: "article",
-    other: citation,
+    other: { ...citation, ...dcPrism, ...twitterLabels },
   });
+  // Per-article Open Graph details. The share image comes from the sibling
+  // opengraph-image.tsx; drop the site-wide card so it isn't used instead.
+  const { images: _ogImages, ...og } = (meta.openGraph ?? {}) as Record<string, unknown>;
+  meta.openGraph = {
+    ...og,
+    type: "article",
+    publishedTime: isoDate,
+    authors,
+    section: article.journal_name,
+    ...(keywords(article).length ? { tags: keywords(article) } : {}),
+  } as Metadata["openGraph"];
+  if (meta.twitter) {
+    const { images: _twImages, ...tw } = meta.twitter as Record<string, unknown>;
+    meta.twitter = tw as Metadata["twitter"];
+  }
+  return meta;
+}
+
+/** Trimmed, non-empty keywords. */
+function keywords(article: Article): string[] {
+  return (article.keywords ?? []).map((k) => (k ?? "").trim()).filter(Boolean);
 }
 
 export default async function ArticlePage(
@@ -145,6 +209,8 @@ export default async function ArticlePage(
   const doiLive = article.doi ? await isDoiRegistered(article.doi) : false;
   const { first, last } = parsePages(article.pages);
   const pdfPath = article.pdf_url ? `${path}/pdf` : null;
+  // Journal homepage on its own subdomain, without the OJS /index.php/<path> tail.
+  const journalSite = journal?.external_url ? journal.external_url.replace(/\/index\.php\/.*$/, "") : null;
   const published = formatDate(article.publication_date);
   const year = article.publication_date.slice(0, 4);
   const keywords = (article.keywords ?? []).map((k) => (k ?? "").trim()).filter(Boolean);
@@ -193,6 +259,13 @@ export default async function ArticlePage(
     inLanguage: "en",
     license: "https://creativecommons.org/licenses/by/4.0/",
     isAccessibleForFree: true,
+    genre: "Research article",
+    copyrightYear: Number(year),
+    // Authors keep copyright; the article is licensed CC BY 4.0.
+    copyrightHolder: authors.map((name) => ({ "@type": "Person", name })),
+    image: `${url}/opengraph-image`,
+    // The answer-first summary and abstract are the parts to read aloud / quote.
+    speakable: { "@type": "SpeakableSpecification", cssSelector: ["#article-summary", "#article-abstract"] },
     url,
     mainEntityOfPage: url,
     publisher: { "@type": "Organization", "@id": `${SITE.origin}/#organization`, name: SITE.name },
@@ -244,7 +317,20 @@ export default async function ArticlePage(
     ["Journal", <Link key="j" href={`/journals/${article.journal_abbrev.toLowerCase()}`} className="text-primary hover:underline">{article.journal_name} ({article.journal_abbrev})</Link>],
     ["Published", published],
     ...(article.volume || article.issue || article.pages
-      ? [["Volume / issue / pages", [article.volume && `Vol. ${article.volume}`, article.issue && `Issue ${article.issue}`, article.pages && `pp. ${article.pages}`].filter(Boolean).join(", ")] as [string, React.ReactNode]]
+      ? [[
+          "Volume / issue / pages",
+          <>
+            {/* Links the article to its issue's table of contents. */}
+            {article.volume && article.issue ? (
+              <Link href={issuePath(article.journal_abbrev, issueKey(article).volume, issueKey(article).issue)} className="text-primary hover:underline">
+                Vol. {article.volume}, Issue {article.issue}
+              </Link>
+            ) : (
+              [article.volume && `Vol. ${article.volume}`, article.issue && `Issue ${article.issue}`].filter(Boolean).join(", ")
+            )}
+            {article.pages ? `, pp. ${article.pages}` : ""}
+          </>,
+        ] as [string, React.ReactNode]]
       : []),
     ...(issns.length
       ? [["ISSN", [journal?.electronic_issn && `${journal.electronic_issn} (online)`, journal?.print_issn && `${journal.print_issn} (print)`].filter(Boolean).join(" · ")] as [string, React.ReactNode]]
@@ -302,18 +388,20 @@ export default async function ArticlePage(
           )}
 
           {/* Answer-first summary: the lead of the abstract, quoted verbatim. */}
-          <section aria-labelledby="summary-heading" className="mt-8 border border-border bg-secondary p-4">
+          <section id="article-summary" aria-labelledby="summary-heading" className="mt-8 border border-border bg-secondary p-4">
             <h2 id="summary-heading" className="font-heading text-base font-semibold text-foreground mb-1">
               What is this article about?
             </h2>
             <p className="text-foreground text-sm leading-relaxed">{summary}</p>
           </section>
 
-          <section aria-labelledby="glance-heading" className="mt-6">
-            <h2 id="glance-heading" className="font-heading text-base font-semibold text-foreground mb-2">Article at a glance</h2>
-            <dl className="grid sm:grid-cols-[200px_1fr] gap-x-4 gap-y-1 text-sm">
+          <section aria-labelledby="glance-heading" className="mt-6 border border-border bg-card">
+            <h2 id="glance-heading" className="font-heading text-base font-semibold text-foreground px-4 py-2.5 border-b border-border">
+              Article at a glance
+            </h2>
+            <dl className="divide-y divide-border text-sm">
               {glance.map(([k, v]) => (
-                <div key={k} className="contents">
+                <div key={k} className="grid sm:grid-cols-[200px_1fr] gap-x-4 gap-y-0.5 px-4 py-2">
                   <dt className="text-muted-foreground">{k}</dt>
                   <dd className="text-foreground m-0">{v}</dd>
                 </div>
@@ -321,14 +409,22 @@ export default async function ArticlePage(
             </dl>
           </section>
 
-          <h2 className="font-heading text-lg font-semibold text-foreground mt-8 mb-2">Abstract</h2>
-          <p className="text-foreground">{abstract}</p>
-
-          {keywords.length > 0 && (
-            <p className="text-sm text-muted-foreground mt-3">
-              <span className="font-medium text-foreground">Keywords:</span> {keywords.join(", ")}
-            </p>
-          )}
+          <section aria-labelledby="abstract-heading" className="mt-6 border border-border bg-card">
+            <h2 id="abstract-heading" className="font-heading text-lg font-semibold text-foreground px-4 py-2.5 border-b border-border">
+              Abstract
+            </h2>
+            <p id="article-abstract" className="text-foreground px-4 py-3 leading-relaxed">{abstract}</p>
+            {keywords.length > 0 && (
+              <div className="px-4 py-3 border-t border-border">
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Keywords</p>
+                <ul className="flex flex-wrap gap-1.5">
+                  {keywords.map((k) => (
+                    <li key={k} className="rounded-sm border border-border bg-secondary px-2 py-0.5 text-xs text-foreground">{k}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </section>
 
           <div id="cite">
             <ArticleCite
@@ -344,13 +440,63 @@ export default async function ArticlePage(
             />
           </div>
 
-          <section aria-labelledby="faq-heading" className="mt-10">
-            <h2 id="faq-heading" className="font-heading text-lg font-semibold text-foreground mb-3">
+          {/* Where the article lives in its journal: the journal's own site
+              (OJS, where the editorial record and galleys are kept) and its
+              pages on this site. */}
+          <section aria-labelledby="journal-site-heading" className="mt-10 border border-border bg-secondary p-4">
+            <h2 id="journal-site-heading" className="font-heading text-base font-semibold text-foreground">
+              Published in {article.journal_name} ({article.journal_abbrev})
+            </h2>
+            {issns.length > 0 && (
+              <p className="text-xs text-muted-foreground mt-0.5">
+                ISSN {[journal?.electronic_issn && `${journal.electronic_issn} (online)`, journal?.print_issn && `${journal.print_issn} (print)`].filter(Boolean).join(" · ")}
+              </p>
+            )}
+            <ul className="mt-3 grid sm:grid-cols-2 gap-2 text-sm">
+              {article.article_url && (
+                <li>
+                  <a href={article.article_url} target="_blank" rel="noopener" className="text-primary hover:underline">
+                    This article on the {article.journal_abbrev} website &rarr;
+                  </a>
+                </li>
+              )}
+              {journalSite && (
+                <li>
+                  <a href={journalSite} target="_blank" rel="noopener" className="text-primary hover:underline">
+                    {article.journal_abbrev} journal homepage &rarr;
+                  </a>
+                </li>
+              )}
+              {article.volume && article.issue && (
+                <li>
+                  <Link href={issuePath(article.journal_abbrev, issueKey(article).volume, issueKey(article).issue)} className="text-primary hover:underline">
+                    Contents of Vol. {article.volume}, Issue {article.issue}
+                  </Link>
+                </li>
+              )}
+              <li>
+                <Link href={`/journals/${article.journal_abbrev.toLowerCase()}/archive`} className="text-primary hover:underline">
+                  All {article.journal_abbrev} issues
+                </Link>
+              </li>
+              <li>
+                <Link href={`/journals/${article.journal_abbrev.toLowerCase()}`} className="text-primary hover:underline">
+                  Aims, scope and editorial details
+                </Link>
+              </li>
+              <li>
+                <Link href="/submit" className="text-primary hover:underline">Submit a manuscript to {article.journal_abbrev}</Link>
+              </li>
+            </ul>
+          </section>
+
+          <section aria-labelledby="faq-heading" className="mt-10 border border-border bg-card">
+            <h2 id="faq-heading" className="font-heading text-lg font-semibold text-foreground px-4 py-2.5 border-b border-border">
               Questions about this article
             </h2>
-            <div className="space-y-4">
+            <div className="divide-y divide-border">
               {faqs.slice(1).map((f) => (
-                <div key={f.q}>
+                <div key={f.q} className="px-4 py-3">
                   <h3 className="font-heading text-sm font-semibold text-foreground">{f.q}</h3>
                   <p className="text-sm text-foreground mt-0.5 break-words">{f.a}</p>
                 </div>
@@ -363,19 +509,7 @@ export default async function ArticlePage(
               <h2 id="related-heading" className="font-heading text-lg font-semibold text-foreground mb-3">
                 More research from {article.journal_abbrev}
               </h2>
-              <ul className="space-y-3">
-                {related.map((r) => (
-                  <li key={r.id} className="border-b border-border pb-3 last:border-0">
-                    <Link href={articlePath(r)} className="text-sm font-medium text-foreground hover:text-primary transition-colors">
-                      {r.title}
-                    </Link>
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      {r.authors}
-                      {r.publication_date ? ` · ${new Date(r.publication_date).toLocaleDateString("en-GB", { month: "short", year: "numeric" })}` : ""}
-                    </p>
-                  </li>
-                ))}
-              </ul>
+              <ArchiveArticleList articles={related} showJournal={false} />
             </section>
           )}
 

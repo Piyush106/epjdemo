@@ -44,6 +44,10 @@ export async function POST(req: Request) {
   }
 
   for (const p of paths) revalidatePath(p);
+  // Archive, journal-archive and issue pages list every article, so refresh the
+  // whole /articles and /journals trees (pages regenerate on their next request).
+  revalidatePath("/articles", "layout");
+  revalidatePath("/journals", "layout");
 
   let indexnow: { submitted: number; status: number } | { error: string };
   try {

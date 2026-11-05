@@ -8,7 +8,7 @@ import { templateFor, templateDownloadName, DOCX_MIME } from "@/lib/templates";
 import JsonLd from "@/components/JsonLd";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { articlePath } from "@/lib/articleUrl";
+import { ArchiveArticleList } from "@/components/ArchiveList";
 
 export const revalidate = 3600;
 
@@ -108,6 +108,9 @@ export default async function JournalPage({ params }: { params: Promise<{ abbrev
             <Link href="/submit" className="inline-flex items-center border border-border bg-card px-4 py-2 text-sm font-medium rounded-sm hover:bg-muted">
               Submit to this journal
             </Link>
+            <Link href={`/journals/${journal.abbrev.toLowerCase()}/archive`} className="inline-flex items-center border border-border bg-card px-4 py-2 text-sm font-medium rounded-sm hover:bg-muted">
+              Archive: all issues
+            </Link>
             {tpl ? (
               <a
                 href={tpl.href}
@@ -150,20 +153,11 @@ export default async function JournalPage({ params }: { params: Promise<{ abbrev
               {articles.length === 0 ? (
                 <p className="text-sm text-muted-foreground">No published articles yet.</p>
               ) : (
-                <ul className="space-y-3">
-                  {articles.map((a) => (
-                    <li key={a.id} className="border-b border-border pb-3 last:border-0">
-                      <Link href={articlePath(a)} className="text-sm font-medium text-foreground hover:text-primary transition-colors">{a.title}</Link>
-                      <p className="text-xs text-muted-foreground mt-0.5">
-                        {a.authors}{a.publication_date ? ` · ${new Date(a.publication_date).toLocaleDateString("en-GB", { month: "short", year: "numeric" })}` : ""}
-                      </p>
-                    </li>
-                  ))}
-                </ul>
+                <ArchiveArticleList articles={articles} showJournal={false} />
               )}
               <p className="mt-4">
-                <Link href={`/articles?journal=${journal.abbrev}`} className="text-primary hover:underline text-sm">
-                  Browse all {journal.abbrev} articles &rarr;
+                <Link href={`/journals/${journal.abbrev.toLowerCase()}/archive`} className="text-primary hover:underline text-sm">
+                  Browse every {journal.abbrev} issue and article &rarr;
                 </Link>
               </p>
             </section>

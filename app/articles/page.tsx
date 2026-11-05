@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Articles from "@/views/Articles";
 import JsonLd from "@/components/JsonLd";
 import { buildMetadata, buildBreadcrumbLd, SITE } from "@/lib/seo";
-import { getRecentArticles } from "@/lib/data";
+import { getArticlesPage, getRecentArticles } from "@/lib/data";
+import { ArchivePager, ARCHIVE_PAGE_SIZE } from "@/components/ArchiveList";
 import { registeredDois } from "@/lib/doi";
 import { articlePath } from "@/lib/articleUrl";
 
@@ -21,11 +22,13 @@ export const metadata: Metadata = buildMetadata({
 export default async function Page() {
   let initialArticles: Awaited<ReturnType<typeof getRecentArticles>> = [];
   try {
-    initialArticles = await getRecentArticles(20);
+    initialArticles = await getRecentArticles(ARCHIVE_PAGE_SIZE);
   } catch {
     initialArticles = [];
   }
   const liveDois = await registeredDois(initialArticles.map((a) => a.doi));
+  let totalPages = 1;
+  try { totalPages = Math.ceil((await getArticlesPage(1, 1)).total / ARCHIVE_PAGE_SIZE); } catch { totalPages = 1; }
   const listed = initialArticles.map((a) => ({ ...a, doi_registered: a.doi ? liveDois.has(a.doi) : false }));
 
   const itemListLd = {
@@ -55,7 +58,7 @@ export default async function Page() {
     <>
       <JsonLd data={itemListLd} />
       <JsonLd data={breadcrumbLd} />
-      <Articles initialArticles={listed} />
+      <Articles initialArticles={listed} archiveNav={<ArchivePager current={1} totalPages={totalPages} />} />
     </>
   );
 }
