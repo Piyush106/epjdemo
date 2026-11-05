@@ -7,7 +7,7 @@ import JsonLd from "@/components/JsonLd";
 import { ArchiveArticleList } from "@/components/ArchiveList";
 import { getJournals, getJournalByAbbrev, getJournalArchive } from "@/lib/data";
 import { buildBreadcrumbLd, buildMetadata, SITE } from "@/lib/seo";
-import { groupByIssue, issuePath, monthYear } from "@/lib/issues";
+import { articleCount, groupByIssue, issuePath, monthYear } from "@/lib/issues";
 
 // /journals/<abbrev>/archive — every issue of one journal with every article,
 // server-rendered. Gives each journal its own indexable showcase and puts each
@@ -82,7 +82,7 @@ export default async function JournalArchivePage({ params }: { params: Promise<{
         </p>
         <h1 className="text-2xl font-heading font-semibold text-foreground">{journal.title}: archive</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          {articles.length} articles in {issues.length} issues
+          {articleCount(articles.length)} in {issues.length} {issues.length === 1 ? "issue" : "issues"}
           {issns.length ? ` · ISSN ${issns.join(" / ")}` : ""} · open access under CC BY 4.0.{" "}
           <Link href="/submit" className="text-primary hover:underline">Submit to {journal.abbrev}</Link>
         </p>
@@ -96,7 +96,7 @@ export default async function JournalArchivePage({ params }: { params: Promise<{
                 <Link href={issuePath(journal.abbrev, g.volume, g.issue)} className="text-primary hover:underline">
                   Volume {g.volume}, Issue {g.issue}
                 </Link>{" "}
-                <span className="text-muted-foreground">({monthYear(g.published)}, {g.articles.length} articles)</span>
+                <span className="text-muted-foreground">({monthYear(g.published)}, {articleCount(g.articles.length)})</span>
               </li>
             ))}
           </ul>

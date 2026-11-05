@@ -47,6 +47,11 @@ export function groupByIssue(articles: ArchiveArticle[]): IssueGroup[] {
   );
 }
 
+/** "1 article" / "18 articles". */
+export function articleCount(n: number) {
+  return `${n} ${n === 1 ? "article" : "articles"}`;
+}
+
 /** "October 2026" style label from an ISO date. */
 export function monthYear(iso: string) {
   return new Date(iso).toLocaleDateString("en-GB", { month: "long", year: "numeric" });

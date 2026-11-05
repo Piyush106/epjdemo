@@ -8,7 +8,7 @@ import { ArchiveArticleList } from "@/components/ArchiveList";
 import { getJournals, getJournalByAbbrev, getJournalArchive } from "@/lib/data";
 import { buildBreadcrumbLd, buildMetadata, SITE } from "@/lib/seo";
 import { articlePath } from "@/lib/articleUrl";
-import { groupByIssue, issuePath, monthYear } from "@/lib/issues";
+import { articleCount, groupByIssue, issuePath, monthYear } from "@/lib/issues";
 
 // /journals/<abbrev>/v<volume>/i<issue> — one issue's table of contents.
 // Issue TOCs are how Google Scholar and readers browse a journal, and each one
@@ -113,7 +113,7 @@ export default async function IssuePage({ params }: Params) {
           {journal.title}, Volume {group.volume}, Issue {group.issue}
         </h1>
         <p className="text-sm text-muted-foreground mt-1 mb-5">
-          {monthYear(group.published)} · {group.articles.length} articles
+          {monthYear(group.published)} · {articleCount(group.articles.length)}
           {issns.length ? ` · ISSN ${issns.join(" / ")}` : ""} · open access under CC BY 4.0
         </p>
         <ArchiveArticleList articles={group.articles} showJournal={false} />
