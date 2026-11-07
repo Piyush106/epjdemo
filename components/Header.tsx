@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Search, Send, ChevronDown } from "lucide-react";
+import { Menu, X, Search, Send, ChevronDown, UserPlus } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 const epLogo = "/ep-journals-logo.png";
@@ -77,6 +77,12 @@ const Header = () => {
           </Link>
 
           <div className="flex items-center gap-1">
+            <Button asChild size="sm" variant="outline" className="hidden sm:inline-flex h-8 text-xs mr-1">
+              <Link to="/join-editorial-board">
+                <UserPlus className="h-3 w-3 mr-1" />
+                Join Editorial Board
+              </Link>
+            </Button>
             <Button asChild size="sm" className="hidden sm:inline-flex h-8 text-xs mr-1">
               <Link to="/submit">
                 <Send className="h-3 w-3 mr-1" />
@@ -181,6 +187,14 @@ const Header = () => {
                   </Link>
                 );
               })}
+              <Link
+                to="/join-editorial-board"
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-4 py-2.5 text-sm min-h-[44px] flex items-center gap-2 text-primary font-medium"
+              >
+                <UserPlus className="h-3.5 w-3.5" />
+                Join Editorial Board
+              </Link>
               <Link
                 to="/submit"
                 onClick={() => setMobileMenuOpen(false)}
