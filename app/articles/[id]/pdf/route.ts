@@ -1,38 +1,26 @@
 import { getArticle, getArticleByIdPrefix } from "@/lib/data";
-import { articlePath, articleSlug, parseArticleParam } from "@/lib/articleUrl";
-import { SITE } from "@/lib/seo";
+import { articlePdfUrl, parseArticleParam } from "@/lib/articleUrl";
 
-// Serves each article's PDF from www.ep-journals.org, next to its landing page.
-// Google Scholar expects citation_pdf_url on the same site as the version of
-// record, so the galley file is streamed from OJS rather than linked across hosts.
-// The CDN caches the response for a day; files rarely change after publication.
+// Old PDF address (/articles/<slug>/pdf). PDFs are now served from Supabase
+// Storage so their bytes never pass through Vercel; this route only redirects
+// links and crawlers that still use the old address. The redirect itself is
+// cached at the edge for a day.
 
 export const runtime = "nodejs";
-
-// OJS sits behind ModSecurity, which rejects bare or unusual user agents.
-const UPSTREAM_UA = "Mozilla/5.0 (compatible; EPJournalsBot/1.0; +https://www.ep-journals.org)";
 
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const parsed = parseArticleParam(id);
   if (!parsed) return new Response("Not found", { status: 404 });
   const article = "uuid" in parsed ? await getArticle(parsed.uuid) : await getArticleByIdPrefix(parsed.prefix, id);
-  if (!article?.pdf_url || article.status !== "published") return new Response("Not found", { status: 404 });
+  const target = article && article.status === "published" ? articlePdfUrl(article) : null;
+  if (!target) return new Response("Not found", { status: 404 });
 
-  const upstream = await fetch(article.pdf_url, { headers: { "User-Agent": UPSTREAM_UA, Accept: "application/pdf" } });
-  const type = upstream.headers.get("content-type") ?? "";
-  if (!upstream.ok || !upstream.body || !type.includes("pdf")) {
-    return new Response("The PDF is temporarily unavailable.", { status: 502 });
-  }
-
-  return new Response(upstream.body, {
+  return new Response(null, {
+    status: 308,
     headers: {
-      "Content-Type": "application/pdf",
-      "Content-Disposition": `inline; filename="${articleSlug(article)}.pdf"`,
-      "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800",
-      // Scholar must be able to read the PDF, so no noindex; the canonical header
-      // tells web search the landing page is the record to rank.
-      Link: `<${SITE.origin}${articlePath(article)}>; rel="canonical"`,
+      Location: target,
+      "Cache-Control": "public, max-age=3600, s-maxage=86400",
     },
   });
 }
