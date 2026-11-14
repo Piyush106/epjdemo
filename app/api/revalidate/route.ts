@@ -20,7 +20,7 @@ import { submitToIndexNow } from "@/lib/indexnow";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const DEFAULT_PATHS = ["/", "/articles", "/sitemap.xml", "/articles/feed.xml", "/llms.txt"];
+const DEFAULT_PATHS = ["/", "/articles", "/journals", "/sitemap.xml", "/articles/feed.xml", "/llms.txt"];
 const RECENT_DAYS = 14;
 
 export async function POST(req: Request) {
