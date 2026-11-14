@@ -40,4 +40,5 @@ export interface Article {
   status: string;
   article_url: string | null; // OJS landing page — the version of record
   pdf_url: string | null; // OJS galley PDF
+  pdf_storage_path?: string | null; // copy in Supabase Storage (bucket article-pdfs), set by mirror-pdfs
 }

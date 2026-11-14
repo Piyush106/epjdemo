@@ -41,3 +41,14 @@ export function parseArticleParam(param: string): { uuid: string } | { prefix: s
   const m = p.match(SLUG_ID_RE);
   return m ? { prefix: m[2].toLowerCase() } : null;
 }
+
+// Article PDFs are copied from OJS into Supabase Storage (public bucket
+// `article-pdfs`, filled by the mirror-pdfs Edge Function) and linked there
+// directly, so PDF bytes never pass through Vercel. Until a copy exists, link
+// the OJS galley itself.
+const PDF_BUCKET_BASE = `${(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").replace(/\/+$/, "")}/storage/v1/object/public/article-pdfs/`;
+
+export function articlePdfUrl(a: { pdf_url: string | null; pdf_storage_path?: string | null }): string | null {
+  if (a.pdf_storage_path && process.env.NEXT_PUBLIC_SUPABASE_URL) return PDF_BUCKET_BASE + a.pdf_storage_path;
+  return a.pdf_url ?? null;
+}

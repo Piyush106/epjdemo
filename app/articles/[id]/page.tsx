@@ -9,7 +9,7 @@ import {
   getRelatedArticles,
 } from "@/lib/data";
 import { buildMetadata, buildBreadcrumbLd, clampDescription, SITE } from "@/lib/seo";
-import { articlePath, articleSlug, parseArticleParam } from "@/lib/articleUrl";
+import { articlePath, articlePdfUrl, articleSlug, parseArticleParam } from "@/lib/articleUrl";
 import JsonLd from "@/components/JsonLd";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -25,8 +25,9 @@ import type { Article } from "@/lib/types";
 export const revalidate = 259200; // 3 days
 
 // DECISION (2026-11-02): this page is the version of record. It is
-// self-canonical, carries the full Google Scholar citation_* set, and serves the
-// PDF from this domain (/articles/<slug>/pdf). Crossref DOIs are re-pointed here,
+// self-canonical and carries the full Google Scholar citation_* set. The PDF is
+// linked from Supabase Storage (2026-11-14: moved off /articles/<slug>/pdf to keep
+// PDF traffic off Vercel). Crossref DOIs are re-pointed here,
 // and the OJS copy becomes the editorial-workflow mirror. (Supersedes the
 // 2026-09-28 canonical-to-OJS decision.)
 
@@ -113,7 +114,8 @@ export async function generateMetadata(
   if (first) citation.citation_firstpage = first;
   if (last) citation.citation_lastpage = last;
   if (article.doi) citation.citation_doi = article.doi;
-  if (article.pdf_url) citation.citation_pdf_url = `${url}/pdf`;
+  const pdfUrl = articlePdfUrl(article);
+  if (pdfUrl) citation.citation_pdf_url = pdfUrl;
   // Highwire keywords are semicolon-separated.
   if (article.keywords?.length) citation.citation_keywords = article.keywords.join("; ");
 
@@ -208,7 +210,7 @@ export default async function ArticlePage(
   const related = await getRelatedArticles(article.journal_abbrev, article.id, 5);
   const doiLive = article.doi ? await isDoiRegistered(article.doi) : false;
   const { first, last } = parsePages(article.pages);
-  const pdfPath = article.pdf_url ? `${path}/pdf` : null;
+  const pdfHref = articlePdfUrl(article);
   // Journal homepage on its own subdomain, without the OJS /index.php/<path> tail.
   const journalSite = journal?.external_url ? journal.external_url.replace(/\/index\.php\/.*$/, "") : null;
   const published = formatDate(article.publication_date);
@@ -278,8 +280,8 @@ export default async function ArticlePage(
     ...(keywords.length ? { keywords: keywords.join(", ") } : {}),
     ...(first ? { pageStart: first } : {}),
     ...(last ? { pageEnd: last } : {}),
-    ...(pdfPath
-      ? { encoding: { "@type": "MediaObject", encodingFormat: "application/pdf", contentUrl: `${SITE.origin}${pdfPath}` } }
+    ...(pdfHref
+      ? { encoding: { "@type": "MediaObject", encodingFormat: "application/pdf", contentUrl: pdfHref } }
       : {}),
     isPartOf: {
       "@type": "PublicationIssue",
@@ -373,10 +375,10 @@ export default async function ArticlePage(
             </p>
           )}
 
-          {pdfPath && (
+          {pdfHref && (
             <p className="mt-5 flex flex-wrap gap-3">
               <a
-                href={pdfPath}
+                href={pdfHref}
                 className="inline-block bg-primary text-primary-foreground px-5 py-2.5 text-sm font-semibold rounded-sm hover:bg-primary-hover"
               >
                 Download full text (PDF)
