@@ -57,7 +57,7 @@ const InstitutionalSidebar = ({
               <strong>Publication Frequency:</strong> Monthly
             </p>
             <p>
-              <strong>Disciplines:</strong> Engineering; Economics & Finance; Management; Natural Sciences; Social Sciences
+              <strong>Disciplines:</strong> Engineering & Technology; Economics & Finance; Management; Natural Sciences; Social Sciences & Humanities; Education
             </p>
             <p>
               <strong>Peer Review:</strong> Double-blind
