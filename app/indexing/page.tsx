@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Indexing from "@/views/Indexing";
+import IndexingPage from "@/components/indexing/IndexingPage";
 import JsonLd from "@/components/JsonLd";
 import { buildMetadata, buildBreadcrumbLd, SITE } from "@/lib/seo";
 import { getJournals } from "@/lib/data";
@@ -8,7 +8,7 @@ export const revalidate = 3600;
 
 export const metadata: Metadata = buildMetadata({
   title: 'Indexing',
-  description: 'Where EP Journals Group articles are discoverable — including Crossref DOIs, Google Scholar, ORCID, Zenodo, and OpenAIRE — with per-journal ISSNs and DOI prefixes. Indexing claims are subject to verification by the respective agencies.',
+  description: 'Journal-wise indexing and listing status for the six EP Journals Group journals — ISSN Portal, Crossref DOIs, OpenAlex, Scilit, Google Scholar, Zenodo, OpenAIRE and Index Copernicus — with a public verification link for every status.',
   path: "/indexing",
 });
 
@@ -43,7 +43,7 @@ export default async function Page() {
     <>
       <JsonLd data={webPageLd} />
       <JsonLd data={breadcrumbLd} />
-      <Indexing initialJournals={journals} />
+      <IndexingPage journals={journals} />
     </>
   );
 }
