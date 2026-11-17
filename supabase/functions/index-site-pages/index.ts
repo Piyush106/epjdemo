@@ -31,7 +31,8 @@ function extract(html: string) {
     .replace(/<[^>]+>/g, " ");
   body = decode(body).replace(/\s+/g, " ").trim().slice(0, 60000);
   const h1 = decode((html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)?.[1] ?? "").replace(/<[^>]+>/g, "").trim());
-  return { title: title || h1, description, body };
+  // The visible page heading is more descriptive than the short <title>.
+  return { title: h1 || title, description, body };
 }
 
 Deno.serve(async (req: Request) => {

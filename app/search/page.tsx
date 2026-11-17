@@ -26,7 +26,7 @@ function Hl({ text, terms }: { text: string; terms: string[] }) {
   return (
     <>
       {highlightParts(text, terms).map((p, i) =>
-        p.hit ? <mark key={i} className="rounded-[2px] bg-ep-orange/15 text-inherit">{p.t}</mark> : <span key={i}>{p.t}</span>,
+        p.hit ? <mark key={i} className="rounded-[2px] bg-[hsl(var(--ep-orange)/0.16)] text-inherit">{p.t}</mark> : <span key={i}>{p.t}</span>,
       )}
     </>
   );
@@ -38,7 +38,7 @@ function Snippet({ text }: { text: string }) {
   return (
     <>
       {parts.map((p, i) =>
-        p.startsWith("<<") ? <mark key={i} className="rounded-[2px] bg-ep-orange/15 text-inherit">{p.slice(2, -2)}</mark> : <span key={i}>{p}</span>,
+        p.startsWith("<<") ? <mark key={i} className="rounded-[2px] bg-[hsl(var(--ep-orange)/0.16)] text-inherit">{p.slice(2, -2)}</mark> : <span key={i}>{p}</span>,
       )}
     </>
   );
@@ -95,6 +95,9 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
               </p>
             )}
 
+            {data.total > all.length && (
+              <p className="mb-3 text-xs text-muted-foreground">Showing the {all.length} most relevant of {data.total} matches. Add words to narrow the search.</p>
+            )}
             {all.length > 0 && (
               <nav aria-label="Filter results" className="mb-5 flex flex-wrap gap-2 text-sm">
                 <Link href={href({ type: null, page: 1 })} className={`rounded-sm border px-3 py-1 ${!type ? "border-primary bg-primary text-primary-foreground" : "border-border hover:border-primary"}`}>

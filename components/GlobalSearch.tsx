@@ -21,7 +21,7 @@ function Highlight({ text, terms }: { text: string; terms: string[] }) {
     <>
       {highlightParts(text, terms).map((p, i) =>
         p.hit ? (
-          <mark key={i} className="rounded-[2px] bg-ep-orange/15 px-0 text-inherit">
+          <mark key={i} className="rounded-[2px] bg-[hsl(var(--ep-orange)/0.16)] px-0 text-inherit">
             {p.t}
           </mark>
         ) : (
