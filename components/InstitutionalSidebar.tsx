@@ -39,7 +39,7 @@ const InstitutionalSidebar = ({
   return (
     <aside className="space-y-4">
       {(variant === "homepage" || variant === "about") && (
-        <div className="border border-border bg-secondary p-4">
+        <div className="rounded-lg border border-border bg-ep-cream p-4">
           <h3 className="font-heading font-semibold text-foreground text-sm mb-3 border-b border-border pb-2">
             Publisher Information
           </h3>
@@ -128,7 +128,7 @@ const InstitutionalSidebar = ({
       </div>
 
       {(variant === "homepage" || variant === "about" || variant === "editorial") && (
-        <div className="border border-border bg-secondary p-4">
+        <div className="rounded-lg border border-border bg-ep-cream p-4">
           <h3 className="font-heading font-semibold text-foreground text-sm mb-3 border-b border-border pb-2">
             Editorial Independence
           </h3>
@@ -145,7 +145,7 @@ const InstitutionalSidebar = ({
 
       {variant === "policy" && (
         <>
-          <div className="border border-border bg-secondary p-4">
+          <div className="rounded-lg border border-border bg-ep-cream p-4">
             <h3 className="font-heading font-semibold text-foreground text-sm mb-3 border-b border-border pb-2">Policy index</h3>
             <ul className="text-xs space-y-1.5">
               {policyLinks.map((p) => {
@@ -190,7 +190,7 @@ const InstitutionalSidebar = ({
 
       {variant === "journal" && (
         <>
-          <div className="border border-border bg-secondary p-4">
+          <div className="rounded-lg border border-border bg-ep-cream p-4">
             <h3 className="font-heading font-semibold text-foreground text-sm mb-3 border-b border-border pb-2">Journal metadata</h3>
             <div className="text-xs text-muted-foreground space-y-1.5">
               <p>
@@ -228,7 +228,7 @@ const InstitutionalSidebar = ({
       )}
 
       {variant === "authors" && (
-        <div className="border border-border bg-secondary p-4">
+        <div className="rounded-lg border border-border bg-ep-cream p-4">
           <h3 className="font-heading font-semibold text-foreground text-sm mb-3 border-b border-border pb-2">Submission Checklist</h3>
           <ul className="text-xs text-muted-foreground space-y-1">
             <li className="flex items-start"><span className="mr-1.5 text-ep-orange">•</span>Title page with author details</li>
@@ -244,7 +244,7 @@ const InstitutionalSidebar = ({
 
       {variant === "contact" && (
         <>
-          <div className="border border-border bg-secondary p-4">
+          <div className="rounded-lg border border-border bg-ep-cream p-4">
             <h3 className="font-heading font-semibold text-foreground text-sm mb-3 border-b border-border pb-2">Contact summary</h3>
             <div className="text-xs text-muted-foreground space-y-1.5">
               <p>
@@ -277,7 +277,7 @@ const InstitutionalSidebar = ({
       )}
 
       {variant === "editorial" && (
-        <div className="border border-border bg-secondary p-4">
+        <div className="rounded-lg border border-border bg-ep-cream p-4">
           <h3 className="font-heading font-semibold text-foreground text-sm mb-3 border-b border-border pb-2">Board Structure</h3>
           <div className="text-xs text-muted-foreground space-y-1.5">
             <p>
@@ -296,7 +296,7 @@ const InstitutionalSidebar = ({
         </div>
       )}
 
-      <div className="border border-border bg-muted p-4">
+      <div className="rounded-lg border border-border bg-ep-cream p-4">
         <h3 className="font-heading font-semibold text-foreground text-sm mb-3 border-b border-border pb-2">
           Indexing & compliance
         </h3>
@@ -323,7 +323,7 @@ const InstitutionalSidebar = ({
       )}
 
       {/* Journal abbreviations block - shows on all variants */}
-      <div className="border border-border bg-secondary p-4">
+      <div className="rounded-lg border border-border bg-ep-cream p-4">
         <h3 className="font-heading font-semibold text-foreground text-sm mb-3 border-b border-border pb-2">
           Portfolio Journals
         </h3>

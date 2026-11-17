@@ -9,6 +9,8 @@ import { templateFor, templateDownloadName } from "@/lib/templates";
 import { articlePath } from "@/lib/articleUrl";
 import { issueKey } from "@/lib/issues";
 import type { Article, Journal } from "@/lib/types";
+import PageHero from "@/components/brand/PageHero";
+import { JOURNAL_ART } from "@/components/brand/Illustrations";
 
 // Journals page: the six journals as one portfolio (3 × 2 cards on desktop),
 // each card led by its newest article, fetched server-side from the articles
@@ -54,27 +56,33 @@ function JournalPortfolioCard({ journal, latest }: { journal: Journal; latest: A
   const { volume, issue } = latest ? issueKey(latest) : { volume: "", issue: "" };
 
   return (
-    <article className="flex h-full flex-col border border-border bg-card min-w-0">
+    <article className="flex h-full min-w-0 flex-col overflow-hidden rounded-lg border border-border bg-card shadow-sm transition-shadow hover:shadow-md">
       <div className={`h-1 ${accent.bar}`} aria-hidden="true" />
 
-      <header className="px-5 pt-4 pb-3 border-b border-border">
+      <header className="flex items-center gap-3 border-b border-border px-4 pt-3 pb-3">
+        {(() => { const Art = JOURNAL_ART[journal.abbrev as keyof typeof JOURNAL_ART]; return Art ? <span className="w-[72px] shrink-0" aria-hidden><Art className="h-auto w-full" /></span> : null; })()}
+        <div className="min-w-0">
         <p className={`text-[11px] font-semibold uppercase tracking-wider ${accent.text}`}>
           {journal.abbrev}
           <span className="text-muted-foreground font-medium normal-case tracking-normal"> · {DISCIPLINE[journal.abbrev] ?? journal.scope_short}</span>
         </p>
-        <h2 className="mt-1 font-heading text-base font-semibold leading-snug text-foreground min-h-[2.75rem]">
+        <h2 className="mt-0.5 font-heading text-[15px] font-semibold leading-snug text-foreground">
           <Link to={base} className="hover:text-primary">{journal.title}</Link>
         </h2>
+        <p className="mt-0.5 text-[11px] text-muted-foreground">
+          {[journal.electronic_issn && `e-ISSN ${journal.electronic_issn}`, journal.frequency].filter(Boolean).join(" · ")}
+        </p>
+        </div>
       </header>
 
-      <div className="flex flex-1 flex-col px-5 py-4">
+      <div className="flex flex-1 flex-col px-4 py-3">
         <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Latest article</p>
         {latest ? (
           <>
-            <h3 className="mt-1.5 text-sm font-medium leading-snug text-foreground line-clamp-3 min-h-[3.9rem]">
+            <h3 className="mt-1 text-sm font-medium leading-snug text-foreground line-clamp-2">
               <Link to={articlePath(latest)} className="hover:text-primary">{latest.title}</Link>
             </h3>
-            <dl className="mt-2 space-y-0.5 text-xs text-muted-foreground">
+            <dl className="mt-1 space-y-0.5 text-xs text-muted-foreground">
               <div><dt className="sr-only">Author</dt><dd className="truncate">{leadAuthor(latest.authors)}</dd></div>
               <div>
                 <dt className="sr-only">Published</dt>
@@ -84,12 +92,9 @@ function JournalPortfolioCard({ journal, latest }: { journal: Journal; latest: A
                 </dd>
               </div>
             </dl>
-            <div className="mt-auto pt-4">
-              <Link
-                to={articlePath(latest)}
-                className="inline-block bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary-hover rounded-sm"
-              >
-                Read the article
+            <div className="mt-auto pt-2">
+              <Link to={articlePath(latest)} className="text-xs font-semibold text-primary hover:underline">
+                Read the article &rarr;
               </Link>
             </div>
           </>
@@ -98,7 +103,7 @@ function JournalPortfolioCard({ journal, latest }: { journal: Journal; latest: A
         )}
       </div>
 
-      <footer className="flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-border px-5 py-3 text-xs">
+      <footer className="flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-border bg-ep-cream px-4 py-2.5 text-xs">
         <a
           href={journalSite(journal.external_url)}
           target="_blank"
@@ -208,17 +213,24 @@ const Journals = ({
     <div className="min-h-screen bg-background">
       <Header />
 
-      <section className="border-b border-border bg-ep-cream py-6">
-        <div className="container mx-auto px-4">
+      <PageHero
+        illustration="journals"
+        facts={[
+          { label: "Journals", value: String(journals.length || 6) },
+          { label: "Peer review", value: "Double-blind" },
+          { label: "Frequency", value: "Monthly" },
+          { label: "Licence", value: "CC BY 4.0" },
+          { label: "DOIs", value: "Crossref" },
+        ]}
+      >
           <h1 className="mb-1 font-heading text-xl font-semibold text-foreground">Six peer-reviewed open access journals</h1>
           <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">
             EP Journals Group publishes six journals, each in its own discipline. All use double-blind peer review,
             assign Crossref DOIs, publish monthly and are open access under CC BY 4.0.
           </p>
-        </div>
-      </section>
+        </PageHero>
 
-      <main className="bg-background py-8">
+      <main className="bg-background py-6">
         <div className="container mx-auto px-4">
           <section aria-labelledby="portfolio-heading">
             <h2 id="portfolio-heading" className="sr-only">Our journals and their latest research</h2>
@@ -227,7 +239,7 @@ const Journals = ({
             ) : journals.length === 0 ? (
               <p className="text-sm text-muted-foreground">No journals are currently active.</p>
             ) : (
-              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {journals.map((j) => (
                   <JournalPortfolioCard key={j.abbrev} journal={j} latest={latestByJournal[j.abbrev] ?? null} />
                 ))}

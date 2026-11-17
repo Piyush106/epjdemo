@@ -4,6 +4,9 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
 import { SITE } from "@/lib/seo";
+import PageHero from "@/components/brand/PageHero";
+import OnThisPage from "@/components/brand/OnThisPage";
+import { POLICY_ART } from "@/components/brand/Illustrations";
 
 export type PolicyKey =
   | "publication-ethics"
@@ -77,18 +80,25 @@ export default function PolicyLayout({ title, subtitle, lastRevised, policyKey, 
       <JsonLd data={breadcrumbLd} />
       <Header />
 
-      <section className="py-6 bg-secondary border-b border-border">
-        <div className="container mx-auto px-4">
+      <PageHero
+        art={POLICY_ART[route]}
+        illustration="integrity"
+        facts={[
+          { label: "Last revised", value: lastRevised },
+          { label: "Applies to", value: "All six journals" },
+          { label: "Enquiries", value: "editor@ep-journals.org" },
+        ]}
+      >
+          <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-ep-orange">Policies &amp; governance</p>
           <h1 className="text-xl font-heading font-semibold text-foreground mb-1">{title}</h1>
           {subtitle ? <p className="text-muted-foreground text-sm leading-relaxed max-w-4xl">{subtitle}</p> : null}
-        </div>
-      </section>
+        </PageHero>
 
       <section className="py-8 bg-background">
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-[1fr_340px] gap-8">
             <main className="min-w-0">
-              <div className="prose-academic text-sm">
+              <div id="policy-body" className="prose-academic !max-w-none rounded-lg border border-border bg-card p-5 text-[15px] shadow-sm sm:p-8 [&_h2]:scroll-mt-28 [&_h2]:!text-xl [&_h2]:!text-ep-brown [&_h2]:!mb-3 [&_section]:mt-8 [&_p]:leading-7">
                 <p className="text-foreground leading-relaxed">
                   The following document constitutes a formal policy of EP Journals Group. It is intended to be read together
                   with related policies and guidance notes published by the organisation. This policy applies to all journals
@@ -122,14 +132,15 @@ export default function PolicyLayout({ title, subtitle, lastRevised, policyKey, 
               </div>
             </main>
 
-            <aside className="lg:border-l lg:border-border lg:pl-6">
-              <div className="border border-border bg-card p-4 rounded-sm mb-4 text-xs text-muted-foreground">
+            <aside className="space-y-4 lg:sticky lg:top-28 lg:self-start">
+              <OnThisPage containerId="policy-body" />
+              <div className="rounded-lg border border-border bg-ep-cream p-4 text-xs text-muted-foreground">
                 <p><span className="text-foreground font-semibold">Last revised:</span> {lastRevised}</p>
                 <p className="mt-1">
                   <span className="text-foreground font-semibold">Scope:</span> All EP Journals Group journals (monthly publication frequency)
                 </p>
               </div>
-              <nav aria-label="Policies">
+              <nav aria-label="Policies" className="rounded-lg border border-border bg-card p-4 shadow-sm">
                 <p className="font-heading font-semibold text-foreground text-sm mb-2">Policies &amp; governance</p>
                 <ul className="space-y-1 text-sm">
                   {POLICIES.map((p) => (

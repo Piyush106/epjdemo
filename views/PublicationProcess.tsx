@@ -4,6 +4,11 @@ import Footer from "@/components/Footer";
 import InstitutionalSidebar from "@/components/InstitutionalSidebar";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "react-router-dom";
+import PageHero from "@/components/brand/PageHero";
+import { Checklist, PeerReview, Ethics, Research } from "@/components/brand/Illustrations";
+
+// One illustration per workflow stage: screening, review, decision, publication.
+const STEP_ART = [Checklist, PeerReview, Ethics, Research];
 
 const steps = [
   {
@@ -65,16 +70,14 @@ const PublicationProcess = () => {
     <div className="min-h-screen bg-background">
       <Header />
 
-      <section className="py-6 bg-ep-cream border-b border-border">
-        <div className="container mx-auto px-4">
+      <PageHero illustration="peerReview" facts={[{ label: "Screening", value: "Within 2 working days" }, { label: "Peer review", value: "Double-blind, 2 reviewers" }, { label: "APC", value: "USD 30 after acceptance" }]}>
           <h1 className="text-xl font-heading font-semibold text-foreground mb-1">Peer Review Process & Publication Timeline</h1>
           <p className="text-muted-foreground text-sm">
             How peer review works at EP Journals Group: initial editorial screening within 2 working days, double-blind
             peer review by two independent reviewers (1–2 weeks), an editorial decision, and publication within 24 hours
             of acceptance — with a CrossRef DOI assigned to every accepted manuscript.
           </p>
-        </div>
-      </section>
+        </PageHero>
 
       <main className="py-8 bg-background">
         <div className="container mx-auto px-4">
@@ -94,14 +97,15 @@ const PublicationProcess = () => {
               </p>
 
               {/* Horizontal timeline summary */}
-              <div className="border border-border bg-card p-4 mb-8">
+              <div className="rounded-lg border border-border bg-card p-4 shadow-sm mb-8">
                 <h2 className="text-sm font-heading font-semibold text-foreground mb-3">Workflow Timeline Overview</h2>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-0">
                   {steps.map((step, i) => (
                     <div key={step.number} className="relative flex flex-col items-center text-center px-2 py-3">
+                      {(() => { const Art = STEP_ART[i]; return Art ? <span className="mb-2 block w-24" aria-hidden><Art className="h-auto w-full" /></span> : null; })()}
                       {/* Connector line */}
                       {i < steps.length - 1 && (
-                        <div className="hidden sm:block absolute top-7 left-[calc(50%+16px)] w-[calc(100%-32px)] h-px bg-border" />
+                        <div className="hidden sm:block absolute top-[5.4rem] left-[calc(50%+16px)] w-[calc(100%-32px)] h-px bg-border" />
                       )}
                       <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-semibold shrink-0 relative z-10">
                         {step.number}
@@ -145,10 +149,10 @@ const PublicationProcess = () => {
 
               {/* Additional governance content */}
               <div className="mb-6">
-                <h2 className="text-lg font-heading font-semibold text-foreground mb-3 border-b border-border pb-2">
+                <h2 className="text-xl font-heading font-semibold text-ep-brown mb-4 border-b border-border pb-3">
                   Timeline Commitments
                 </h2>
-                <div className="border border-border bg-card p-4">
+                <div className="rounded-lg border border-border bg-card p-4 shadow-sm">
                   <div className="grid sm:grid-cols-2 gap-3 text-xs">
                     <div>
                       <p className="font-semibold text-foreground">Initial Screening</p>
@@ -179,7 +183,7 @@ const PublicationProcess = () => {
 
               {/* Submission Requirements */}
               <div className="mb-6">
-                <h2 className="text-lg font-heading font-semibold text-foreground mb-3 border-b border-border pb-2">
+                <h2 className="text-xl font-heading font-semibold text-ep-brown mb-4 border-b border-border pb-3">
                   Submission Requirements
                 </h2>
                 <p className="text-foreground leading-relaxed mb-3">
@@ -216,7 +220,7 @@ const PublicationProcess = () => {
 
               {/* Post-publication */}
               <div className="mb-6">
-                <h2 className="text-lg font-heading font-semibold text-foreground mb-3 border-b border-border pb-2">
+                <h2 className="text-xl font-heading font-semibold text-ep-brown mb-4 border-b border-border pb-3">
                   Post-Publication Procedures
                 </h2>
                 <div className="prose-academic text-foreground space-y-3">
@@ -241,7 +245,7 @@ const PublicationProcess = () => {
 
               {/* Quality assurance */}
               <div>
-                <h2 className="text-lg font-heading font-semibold text-foreground mb-3 border-b border-border pb-2">
+                <h2 className="text-xl font-heading font-semibold text-ep-brown mb-4 border-b border-border pb-3">
                   Quality Assurance & Integrity Controls
                 </h2>
                 <div className="prose-academic text-foreground space-y-3">

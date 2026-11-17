@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Article, Journal } from "@/lib/types";
 import { articlePath } from "@/lib/articleUrl";
 import { issueKey, issuePath } from "@/lib/issues";
+import { JOURNAL_ART } from "@/components/brand/Illustrations";
 
 // Homepage block: the three newest articles from each journal, with links to
 // the journal and its archive. Every journal gets equal space on the most
@@ -22,7 +23,7 @@ export default function LatestByJournal({ journals, byJournal }: { journals: Jou
   if (!withArticles.length) return null;
   return (
     <section aria-labelledby="latest-by-journal" className="mb-8">
-      <h2 id="latest-by-journal" className="text-lg font-heading font-semibold text-foreground mb-1 border-b border-border pb-2">
+      <h2 id="latest-by-journal" className="text-xl font-heading font-semibold text-ep-brown mb-1 border-b border-border pb-3">
         Latest research from each journal
       </h2>
       <p className="text-xs text-muted-foreground mb-4">The three most recent articles in each of the six journals.</p>
@@ -30,12 +31,15 @@ export default function LatestByJournal({ journals, byJournal }: { journals: Jou
         {withArticles.map((j) => {
           const base = `/journals/${j.abbrev.toLowerCase()}`;
           return (
-            <article key={j.abbrev} className="border border-border bg-card min-w-0 flex flex-col">
-              <header className="px-4 py-3 bg-secondary border-b border-border">
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-primary">{j.abbrev}</p>
-                <h3 className="font-heading text-sm font-semibold text-foreground leading-snug">
-                  <Link href={base} className="hover:text-primary">{j.title}</Link>
-                </h3>
+            <article key={j.abbrev} className="flex min-w-0 flex-col overflow-hidden rounded-lg border border-border bg-card shadow-sm">
+              <header className="flex items-center gap-3 border-b border-border bg-ep-cream px-4 py-3">
+                {(() => { const Art = JOURNAL_ART[j.abbrev as keyof typeof JOURNAL_ART]; return Art ? <span className="w-14 shrink-0" aria-hidden><Art className="h-auto w-full" /></span> : null; })()}
+                <div className="min-w-0">
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-ep-orange">{j.abbrev}</p>
+                  <h3 className="font-heading text-sm font-semibold text-foreground leading-snug">
+                    <Link href={base} className="hover:text-primary">{j.title}</Link>
+                  </h3>
+                </div>
               </header>
               <ol className="divide-y divide-border flex-1">
                 {byJournal[j.abbrev].map((a, i) => {

@@ -349,73 +349,78 @@ export default async function ArticlePage(
         <JsonLd data={scholarlyArticleLd} />
         <JsonLd data={faqLd} />
         <JsonLd data={breadcrumbLd} />
-        <article className="container py-12 prose-academic">
-          <p className="text-xs uppercase tracking-wide text-muted-foreground mb-2">
-            {article.journal_name} ({article.journal_abbrev}) · Research article · Open access
-          </p>
-          <h1 className="font-heading text-2xl md:text-3xl font-semibold text-foreground">{article.title}</h1>
-          <p className="text-sm text-foreground mt-3">{authors.join(", ")}</p>
-          <p className="text-sm text-muted-foreground">
-            {published}
-            {article.volume ? ` · Vol. ${article.volume}` : ""}
-            {article.issue ? `, Issue ${article.issue}` : ""}
-            {article.pages ? `, pp. ${article.pages}` : ""}
-          </p>
-          {article.doi && (
-            <p className="text-sm mt-1">
-              DOI:{" "}
-              {doiLive ? (
-                <a className="text-primary hover:underline" href={`https://doi.org/${article.doi}`}>{article.doi}</a>
-              ) : (
-                <>
-                  {article.doi}{" "}
-                  <span className="text-xs text-muted-foreground">(registration with Crossref in progress)</span>
-                </>
+        <article>
+          <header className="relative border-b border-border bg-ep-cream">
+            <div aria-hidden className="absolute inset-x-0 top-0 h-1 bg-ep-orange" />
+            <div className="container mx-auto px-4 py-8 sm:py-10">
+              <nav aria-label="Breadcrumb" className="mb-3 text-xs text-muted-foreground">
+                <Link href="/" className="hover:underline">Home</Link> <span aria-hidden>/</span>{" "}
+                <Link href="/articles" className="hover:underline">Articles</Link> <span aria-hidden>/</span>{" "}
+                <Link href={`/journals/${article.journal_abbrev.toLowerCase()}`} className="hover:underline">{article.journal_abbrev}</Link>
+              </nav>
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-ep-orange mb-2">
+                {article.journal_name} ({article.journal_abbrev}) · Research article · Open access
+              </p>
+              <h1 className="max-w-4xl font-heading text-2xl md:text-[2.1rem] font-semibold leading-tight text-ep-brown">{article.title}</h1>
+              <p className="mt-4 text-base text-foreground">{authors.join(", ")}</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {published}
+                {article.volume ? ` · Vol. ${article.volume}` : ""}
+                {article.issue ? `, Issue ${article.issue}` : ""}
+                {article.pages ? `, pp. ${article.pages}` : ""}
+              </p>
+              {article.doi && (
+                <p className="text-sm mt-1">
+                  DOI:{" "}
+                  {doiLive ? (
+                    <a className="text-primary hover:underline" href={`https://doi.org/${article.doi}`}>{article.doi}</a>
+                  ) : (
+                    <>
+                      {article.doi}{" "}
+                      <span className="text-xs text-muted-foreground">(registration with Crossref in progress)</span>
+                    </>
+                  )}
+                </p>
               )}
-            </p>
-          )}
 
-          {pdfHref && (
-            <p className="mt-5 flex flex-wrap gap-3">
-              <a
-                href={pdfHref}
-                className="inline-block bg-primary text-primary-foreground px-5 py-2.5 text-sm font-semibold rounded-sm hover:bg-primary-hover"
-              >
-                Download full text (PDF)
-              </a>
-              <a href="#cite" className="inline-block border border-border px-5 py-2.5 text-sm font-medium rounded-sm hover:bg-muted">
-                Cite this article
-              </a>
-            </p>
-          )}
+              <p className="mt-6 flex flex-wrap gap-3">
+                {pdfHref && (
+                  <a
+                    href={pdfHref}
+                    className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-5 py-2.5 text-sm font-semibold rounded-sm hover:bg-primary-hover"
+                  >
+                    Download full text (PDF)
+                  </a>
+                )}
+                {article.doi && doiLive && (
+                  <a href={`https://doi.org/${article.doi}`} className="inline-flex items-center border border-primary px-5 py-2.5 text-sm font-medium text-primary rounded-sm hover:bg-card">
+                    View DOI record
+                  </a>
+                )}
+                <a href="#cite" className="inline-flex items-center border border-border bg-card px-5 py-2.5 text-sm font-medium rounded-sm hover:border-primary">
+                  Cite this article
+                </a>
+              </p>
+            </div>
+          </header>
 
+          <div className="container mx-auto grid gap-10 px-4 py-10 lg:grid-cols-[minmax(0,1fr)_300px]">
+          <div className="min-w-0 prose-academic !max-w-none">
           {/* Answer-first summary: the lead of the abstract, quoted verbatim. */}
-          <section id="article-summary" aria-labelledby="summary-heading" className="mt-8 border border-border bg-secondary p-4">
+          <section id="article-summary" aria-labelledby="summary-heading" className="rounded-lg border border-border bg-ep-cream p-5">
             <h2 id="summary-heading" className="font-heading text-base font-semibold text-foreground mb-1">
               What is this article about?
             </h2>
             <p className="text-foreground text-sm leading-relaxed">{summary}</p>
           </section>
 
-          <section aria-labelledby="glance-heading" className="mt-6 border border-border bg-card">
-            <h2 id="glance-heading" className="font-heading text-base font-semibold text-foreground px-4 py-2.5 border-b border-border">
-              Article at a glance
-            </h2>
-            <dl className="divide-y divide-border text-sm">
-              {glance.map(([k, v]) => (
-                <div key={k} className="grid sm:grid-cols-[200px_1fr] gap-x-4 gap-y-0.5 px-4 py-2">
-                  <dt className="text-muted-foreground">{k}</dt>
-                  <dd className="text-foreground m-0">{v}</dd>
-                </div>
-              ))}
-            </dl>
-          </section>
 
-          <section aria-labelledby="abstract-heading" className="mt-6 border border-border bg-card">
-            <h2 id="abstract-heading" className="font-heading text-lg font-semibold text-foreground px-4 py-2.5 border-b border-border">
+
+          <section aria-labelledby="abstract-heading" className="mt-6 rounded-lg border border-border bg-card shadow-sm">
+            <h2 id="abstract-heading" className="font-heading text-xl font-semibold text-ep-brown px-5 py-3 border-b border-border">
               Abstract
             </h2>
-            <p id="article-abstract" className="text-foreground px-4 py-3 leading-relaxed">{abstract}</p>
+            <p id="article-abstract" className="text-foreground px-5 py-4 text-[15px] leading-7">{abstract}</p>
             {keywords.length > 0 && (
               <div className="px-4 py-3 border-t border-border">
                 <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Keywords</p>
@@ -445,7 +450,7 @@ export default async function ArticlePage(
           {/* Where the article lives in its journal: the journal's own site
               (OJS, where the editorial record and galleys are kept) and its
               pages on this site. */}
-          <section aria-labelledby="journal-site-heading" className="mt-10 border border-border bg-secondary p-4">
+          <section aria-labelledby="journal-site-heading" className="mt-10 rounded-lg border border-border bg-ep-cream p-5">
             <h2 id="journal-site-heading" className="font-heading text-base font-semibold text-foreground">
               Published in {article.journal_name} ({article.journal_abbrev})
             </h2>
@@ -492,7 +497,7 @@ export default async function ArticlePage(
             </ul>
           </section>
 
-          <section aria-labelledby="faq-heading" className="mt-10 border border-border bg-card">
+          <section aria-labelledby="faq-heading" className="mt-10 rounded-lg border border-border bg-card shadow-sm">
             <h2 id="faq-heading" className="font-heading text-lg font-semibold text-foreground px-4 py-2.5 border-b border-border">
               Questions about this article
             </h2>
@@ -521,6 +526,24 @@ export default async function ArticlePage(
               About {article.journal_abbrev} and how to submit
             </Link>
           </p>
+          </div>
+
+          <aside className="space-y-4 lg:sticky lg:top-28 lg:self-start">
+          <section aria-labelledby="glance-heading" className="rounded-lg border border-border bg-card shadow-sm">
+            <h2 id="glance-heading" className="font-heading text-base font-semibold text-ep-brown px-4 py-3 border-b border-border">
+              Article at a glance
+            </h2>
+            <dl className="divide-y divide-border text-sm">
+              {glance.map(([k, v]) => (
+                <div key={k} className="grid gap-x-4 gap-y-0.5 px-4 py-2">
+                  <dt className="text-muted-foreground">{k}</dt>
+                  <dd className="text-foreground m-0">{v}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+          </aside>
+          </div>
         </article>
       </main>
       <Footer />

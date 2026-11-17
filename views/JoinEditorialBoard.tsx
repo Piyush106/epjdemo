@@ -165,14 +165,14 @@ const JoinEditorialBoard = () => {
           <div className="min-w-0">
             {/* Benefits */}
             <section aria-labelledby="benefits-h" className="mb-10">
-              <h2 id="benefits-h" className="text-lg font-heading font-semibold text-foreground mb-3 border-b border-border pb-2">
+              <h2 id="benefits-h" className="text-xl font-heading font-semibold text-ep-brown mb-4 border-b border-border pb-3">
                 Why join our editorial board
               </h2>
               <div className="grid sm:grid-cols-2 gap-4">
                 {BENEFITS.map((b, i) => {
                   const Icon = BENEFIT_ICONS[i % BENEFIT_ICONS.length];
                   return (
-                    <div key={b.title} className="flex items-start gap-3 border border-border bg-card p-4">
+                    <div key={b.title} className="flex items-start gap-3 rounded-lg border border-border bg-card p-4 shadow-sm">
                       <Icon className="h-5 w-5 text-primary shrink-0 mt-0.5" aria-hidden="true" />
                       <div>
                         <h3 className="text-sm font-heading font-semibold text-foreground">{b.title}</h3>
@@ -186,7 +186,7 @@ const JoinEditorialBoard = () => {
 
             {/* Responsibilities */}
             <section aria-labelledby="resp-h" className="mb-10">
-              <h2 id="resp-h" className="text-lg font-heading font-semibold text-foreground mb-3 border-b border-border pb-2">
+              <h2 id="resp-h" className="text-xl font-heading font-semibold text-ep-brown mb-4 border-b border-border pb-3">
                 Responsibilities
               </h2>
               <ul className="space-y-2">
@@ -201,7 +201,7 @@ const JoinEditorialBoard = () => {
 
             {/* Eligibility */}
             <section aria-labelledby="elig-h" className="mb-10">
-              <h2 id="elig-h" className="text-lg font-heading font-semibold text-foreground mb-3 border-b border-border pb-2">
+              <h2 id="elig-h" className="text-xl font-heading font-semibold text-ep-brown mb-4 border-b border-border pb-3">
                 Eligibility
               </h2>
               <ul className="space-y-2">
@@ -216,7 +216,7 @@ const JoinEditorialBoard = () => {
 
             {/* Process */}
             <section aria-labelledby="proc-h" className="mb-10">
-              <h2 id="proc-h" className="text-lg font-heading font-semibold text-foreground mb-3 border-b border-border pb-2">
+              <h2 id="proc-h" className="text-xl font-heading font-semibold text-ep-brown mb-4 border-b border-border pb-3">
                 How the application process works
               </h2>
               <ol className="space-y-3">
@@ -234,7 +234,7 @@ const JoinEditorialBoard = () => {
 
             {/* ---------- Application form ---------- */}
             <section aria-labelledby="apply-h" id="apply" className="scroll-mt-24" ref={formTopRef}>
-              <h2 id="apply-h" className="text-lg font-heading font-semibold text-foreground mb-3 border-b border-border pb-2">
+              <h2 id="apply-h" className="text-xl font-heading font-semibold text-ep-brown mb-4 border-b border-border pb-3">
                 Editorial board application
               </h2>
 
@@ -488,12 +488,12 @@ const JoinEditorialBoard = () => {
 
             {/* FAQ */}
             <section aria-labelledby="faq-h" className="mt-12">
-              <h2 id="faq-h" className="text-lg font-heading font-semibold text-foreground mb-3 border-b border-border pb-2">
+              <h2 id="faq-h" className="text-xl font-heading font-semibold text-ep-brown mb-4 border-b border-border pb-3">
                 Frequently asked questions
               </h2>
               <dl className="space-y-4">
                 {FAQS.map((f) => (
-                  <div key={f.question} className="border border-border bg-card p-4">
+                  <div key={f.question} className="rounded-lg border border-border bg-card p-4 shadow-sm">
                     <dt className="text-sm font-heading font-semibold text-foreground">{f.question}</dt>
                     <dd className="text-sm text-muted-foreground leading-relaxed mt-1">{f.answer}</dd>
                   </div>
@@ -504,7 +504,7 @@ const JoinEditorialBoard = () => {
 
           {/* Sidebar */}
           <aside className="space-y-4">
-            <div className="border border-border bg-secondary p-4">
+            <div className="rounded-lg border border-border bg-ep-cream p-4">
               <h2 className="font-heading font-semibold text-foreground text-sm mb-2">At a glance</h2>
               <ul className="text-xs text-muted-foreground space-y-1.5">
                 <li>· Voluntary scholarly service (no fee to apply)</li>
@@ -517,7 +517,7 @@ const JoinEditorialBoard = () => {
                 Go to application <ArrowRight className="h-3.5 w-3.5" />
               </a>
             </div>
-            <div className="border border-border bg-card p-4 text-xs text-muted-foreground leading-relaxed">
+            <div className="rounded-lg border border-border bg-card p-4 shadow-sm text-xs text-muted-foreground leading-relaxed">
               <p className="font-heading font-semibold text-foreground text-sm mb-1">Questions?</p>
               Contact the editorial office at{" "}
               <a href="mailto:info@ep-journals.org" className="text-primary hover:underline">info@ep-journals.org</a>.

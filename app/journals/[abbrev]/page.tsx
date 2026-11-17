@@ -9,6 +9,9 @@ import JsonLd from "@/components/JsonLd";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { ArchiveArticleList } from "@/components/ArchiveList";
+import PageHero from "@/components/brand/PageHero";
+import { JOURNAL_ART } from "@/components/brand/Illustrations";
+import { issueKey, issuePath } from "@/lib/issues";
 
 export const revalidate = 3600;
 
@@ -44,6 +47,9 @@ export default async function JournalPage({ params }: { params: Promise<{ abbrev
   const site = journalHomepage(journal.external_url);
   const issn = journal.electronic_issn ?? journal.print_issn ?? undefined;
   const tpl = templateFor(journal.abbrev);
+  const latest = articles.find((a) => a.volume && a.issue);
+  const current = latest ? issueKey(latest) : null;
+  const ojsBase = journal.external_url.replace(/\/+$/, "");
 
   const templateLd = tpl
     ? {
@@ -94,14 +100,23 @@ export default async function JournalPage({ params }: { params: Promise<{ abbrev
       {templateLd ? <JsonLd data={templateLd} /> : null}
       <Header />
 
-      <section className="py-8 bg-secondary border-b border-border">
-        <div className="container mx-auto px-4">
-          <p className="text-[11px] uppercase tracking-wide text-muted-foreground mb-1">
+      <PageHero
+        illustration="journals"
+        art={JOURNAL_ART[journal.abbrev as keyof typeof JOURNAL_ART]}
+        facts={[
+          ...(journal.electronic_issn ? [{ label: "e-ISSN", value: journal.electronic_issn }] : []),
+          ...(journal.print_issn ? [{ label: "p-ISSN", value: journal.print_issn }] : []),
+          { label: "Frequency", value: journal.frequency },
+          { label: "Licence", value: "CC BY 4.0" },
+          { label: "APC", value: "USD 30 after acceptance" },
+        ]}
+      >
+          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-ep-orange">
             <Link href="/journals" className="hover:underline">Journals</Link> · {journal.abbrev}
           </p>
           <h1 className="text-2xl font-heading font-semibold text-foreground">{journal.title}</h1>
           {journal.subtitle && <p className="text-sm text-muted-foreground mt-1">{journal.subtitle}</p>}
-          <div className="flex flex-wrap gap-3 mt-4">
+          <div className="flex flex-wrap gap-2 mt-3">
             <a href={site} target="_blank" rel="noopener noreferrer" className="inline-flex items-center bg-primary text-primary-foreground px-4 py-2 text-sm font-medium rounded-sm hover:bg-primary-hover">
               Visit journal site &rarr;
             </a>
@@ -124,32 +139,44 @@ export default async function JournalPage({ params }: { params: Promise<{ abbrev
               </a>
             ) : null}
           </div>
-        </div>
-      </section>
+        </PageHero>
 
       <main className="container mx-auto px-4 py-8">
         <div className="grid lg:grid-cols-[1fr_300px] gap-10">
           <div className="min-w-0">
             {journal.aims_and_scope && (
               <section className="mb-8">
-                <h2 className="font-heading text-lg font-semibold text-foreground mb-2 border-b border-border pb-2">Aims &amp; Scope</h2>
+                <h2 className="font-heading text-xl font-semibold text-ep-brown mb-3 border-b border-border pb-2">Aims &amp; Scope</h2>
                 <p className="text-sm text-foreground leading-relaxed whitespace-pre-line">{journal.aims_and_scope}</p>
               </section>
             )}
 
             {journal.subject_areas?.length > 0 && (
               <section className="mb-8">
-                <h2 className="font-heading text-lg font-semibold text-foreground mb-2 border-b border-border pb-2">Subject areas</h2>
+                <h2 className="font-heading text-xl font-semibold text-ep-brown mb-3 border-b border-border pb-2">Subject areas</h2>
                 <div className="flex flex-wrap gap-1.5">
                   {journal.subject_areas.map((s) => (
-                    <span key={s} className="inline-flex items-center rounded-sm border border-border px-2 py-1 text-xs text-foreground">{s}</span>
+                    <span key={s} className="inline-flex items-center rounded-sm border border-border bg-ep-cream px-2.5 py-1 text-xs text-foreground">{s}</span>
                   ))}
                 </div>
               </section>
             )}
 
+            {current && (
+              <section className="mb-8 flex flex-col gap-3 rounded-lg border border-border bg-ep-cream p-5 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-ep-orange">Current issue</p>
+                  <p className="mt-1 font-heading text-lg font-semibold text-ep-brown">Volume {current.volume}, Issue {current.issue}</p>
+                </div>
+                <div className="flex flex-wrap gap-2 text-sm">
+                  <Link href={issuePath(journal.abbrev, current.volume, current.issue)} className="rounded-sm bg-primary px-4 py-2 font-medium text-primary-foreground hover:bg-primary-hover">Read the current issue</Link>
+                  <Link href={`/journals/${journal.abbrev.toLowerCase()}/archive`} className="rounded-sm border border-border bg-card px-4 py-2 font-medium hover:border-primary">Archives</Link>
+                </div>
+              </section>
+            )}
+
             <section>
-              <h2 className="font-heading text-lg font-semibold text-foreground mb-3 border-b border-border pb-2">Recent articles</h2>
+              <h2 className="font-heading text-xl font-semibold text-ep-brown mb-3 border-b border-border pb-2">Latest published research</h2>
               {articles.length === 0 ? (
                 <p className="text-sm text-muted-foreground">No published articles yet.</p>
               ) : (
@@ -164,8 +191,8 @@ export default async function JournalPage({ params }: { params: Promise<{ abbrev
           </div>
 
           <aside className="space-y-4">
-            <div className="border border-border bg-secondary p-4">
-              <h2 className="font-heading font-semibold text-foreground text-sm mb-3 border-b border-border pb-2">Journal information</h2>
+            <div className="rounded-lg border border-border bg-card p-5 shadow-sm">
+              <h2 className="font-heading font-semibold text-ep-brown text-base mb-3 border-b border-border pb-2">Journal information</h2>
               <dl className="space-y-2">
                 <Meta label="Print ISSN" value={journal.print_issn} />
                 <Meta label="Electronic ISSN" value={journal.electronic_issn} />
@@ -176,6 +203,33 @@ export default async function JournalPage({ params }: { params: Promise<{ abbrev
                 <Meta label="Licence" value={journal.license} />
                 <Meta label="Contact" value={journal.contact_email} />
               </dl>
+            </div>
+
+            <div className="rounded-lg border border-border bg-card p-5 shadow-sm">
+              <h2 className="font-heading font-semibold text-ep-brown text-base mb-3 border-b border-border pb-2">Submission information</h2>
+              <ul className="space-y-1.5 text-sm text-foreground">
+                <li>Double-blind peer review by at least two reviewers</li>
+                <li>Editorial decision typically within 1–2 weeks</li>
+                <li>APC USD 30, payable only after acceptance; no submission fee</li>
+                <li>Published under CC BY 4.0; authors keep copyright</li>
+              </ul>
+              <div className="mt-4 flex flex-col gap-2 text-sm">
+                <Link href="/submit" className="rounded-sm bg-primary px-4 py-2 text-center font-medium text-primary-foreground hover:bg-primary-hover">Submit a manuscript</Link>
+                <Link href="/authors" className="text-primary hover:underline">Author guidelines</Link>
+                <Link href="/publication-process" className="text-primary hover:underline">Peer review and publication process</Link>
+              </div>
+            </div>
+
+            <div className="rounded-lg border border-border bg-card p-5 shadow-sm">
+              <h2 className="font-heading font-semibold text-ep-brown text-base mb-3 border-b border-border pb-2">Editorial board</h2>
+              <p className="text-sm text-muted-foreground">
+                {journal.abbrev} is overseen by the EP Journals Group Editorial Advisory Board and its own editorial team.
+              </p>
+              <div className="mt-3 flex flex-col gap-1.5 text-sm">
+                <Link href="/editorial" className="text-primary hover:underline">Editorial Advisory Board</Link>
+                <a href={`${ojsBase}/about/editorialTeam`} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">{journal.abbrev} editorial team (journal site)</a>
+                <Link href="/join-editorial-board" className="text-primary hover:underline">Join the board</Link>
+              </div>
             </div>
           </aside>
         </div>
