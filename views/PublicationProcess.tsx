@@ -50,12 +50,12 @@ const steps = [
     title: "Publication",
     duration: "Within 24 Hours After APC",
     description:
-      "Upon acceptance and completion of the Article Processing Charge, manuscripts proceed immediately to production. Articles undergo professional copyediting and typesetting. Each article is assigned a Digital Object Identifier (DOI) through CrossRef and published online under open access terms (CC BY 4.0). Published articles are indexed across Google Scholar, Crossref, OpenAIRE, Zenodo, and other academic platforms.",
+      "Upon acceptance and completion of the Article Processing Charge, manuscripts proceed immediately to production. Articles undergo professional copyediting and typesetting. Each article is assigned a Digital Object Identifier (DOI) through CrossRef and published online under open access terms (CC BY 4.0). Article metadata reaches Crossref, OpenAlex, Scilit, OpenAIRE and Semantic Scholar, and article pages carry Google Scholar citation tags.",
     details: [
       "Professional copyediting and typesetting included",
       "DOI assignment via CrossRef for permanent citation",
       "Immediate open access under CC BY 4.0 licence",
-      "Indexed in Google Scholar, Crossref, OpenAIRE, Zenodo, Index Copernicus, and Scilit",
+      "Discoverable through Crossref, OpenAlex, Scilit, OpenAIRE and Index Copernicus",
     ],
   },
 ];

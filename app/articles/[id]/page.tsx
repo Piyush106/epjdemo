@@ -26,8 +26,8 @@ export const revalidate = 259200; // 3 days
 
 // DECISION (2026-11-02): this page is the version of record. It is
 // self-canonical and carries the full Google Scholar citation_* set. The PDF is
-// linked from Supabase Storage (2026-11-14: moved off /articles/<slug>/pdf to keep
-// PDF traffic off Vercel). Crossref DOIs are re-pointed here,
+// served on the same host at /articles/<slug>/pdf (streamed from the Supabase
+// Storage copy, edge-cached for a year; 2026-11-17). Crossref DOIs are re-pointed here,
 // and the OJS copy becomes the editorial-workflow mirror. (Supersedes the
 // 2026-09-28 canonical-to-OJS decision.)
 

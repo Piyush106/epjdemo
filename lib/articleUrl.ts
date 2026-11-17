@@ -1,3 +1,5 @@
+const SITE_ORIGIN = "https://www.ep-journals.org";
+
 // Article URLs on the main site — the version of record.
 //
 // Format: /articles/<title-slug>-<first 8 hex of the uuid>
@@ -43,12 +45,18 @@ export function parseArticleParam(param: string): { uuid: string } | { prefix: s
 }
 
 // Article PDFs are copied from OJS into Supabase Storage (public bucket
-// `article-pdfs`, filled by the mirror-pdfs Edge Function) and linked there
-// directly, so PDF bytes never pass through Vercel. Until a copy exists, link
-// the OJS galley itself.
+// `article-pdfs`, filled by the mirror-pdfs Edge Function). Public links and
+// citation_pdf_url use the same-site address /articles/<slug>/pdf, which
+// streams the stored copy and is cached at the edge for a year.
 const PDF_BUCKET_BASE = `${(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").replace(/\/+$/, "")}/storage/v1/object/public/article-pdfs/`;
 
-export function articlePdfUrl(a: { pdf_url: string | null; pdf_storage_path?: string | null }): string | null {
-  if (a.pdf_storage_path && process.env.NEXT_PUBLIC_SUPABASE_URL) return PDF_BUCKET_BASE + a.pdf_storage_path;
-  return a.pdf_url ?? null;
+/** Direct Storage URL of the stored copy (used by the PDF route), or null. */
+export function articleStoragePdfUrl(a: { pdf_storage_path?: string | null }): string | null {
+  return a.pdf_storage_path && process.env.NEXT_PUBLIC_SUPABASE_URL ? PDF_BUCKET_BASE + a.pdf_storage_path : null;
+}
+
+/** Public PDF link: same-site path when any PDF exists, else null. */
+export function articlePdfUrl(a: { id: string; title: string; pdf_url: string | null; pdf_storage_path?: string | null }): string | null {
+  if (!a.pdf_storage_path && !a.pdf_url) return null;
+  return `${SITE_ORIGIN}${articlePath(a)}/pdf`;
 }
