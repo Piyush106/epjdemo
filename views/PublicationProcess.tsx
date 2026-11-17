@@ -5,6 +5,10 @@ import InstitutionalSidebar from "@/components/InstitutionalSidebar";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "react-router-dom";
 import PageHero from "@/components/brand/PageHero";
+import { Checklist, PeerReview, Ethics, Research } from "@/components/brand/Illustrations";
+
+// One illustration per workflow stage: screening, review, decision, publication.
+const STEP_ART = [Checklist, PeerReview, Ethics, Research];
 
 const steps = [
   {
@@ -98,9 +102,10 @@ const PublicationProcess = () => {
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-0">
                   {steps.map((step, i) => (
                     <div key={step.number} className="relative flex flex-col items-center text-center px-2 py-3">
+                      {(() => { const Art = STEP_ART[i]; return Art ? <span className="mb-2 block w-24" aria-hidden><Art className="h-auto w-full" /></span> : null; })()}
                       {/* Connector line */}
                       {i < steps.length - 1 && (
-                        <div className="hidden sm:block absolute top-7 left-[calc(50%+16px)] w-[calc(100%-32px)] h-px bg-border" />
+                        <div className="hidden sm:block absolute top-[5.4rem] left-[calc(50%+16px)] w-[calc(100%-32px)] h-px bg-border" />
                       )}
                       <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-semibold shrink-0 relative z-10">
                         {step.number}

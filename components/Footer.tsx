@@ -20,7 +20,7 @@ const Footer = () => {
                 <li key={j.abbrev}>
                   <Link
                     to={`/journals/${j.abbrev.toLowerCase()}`}
-                    className="group flex items-center gap-2 rounded-md bg-ep-cream/95 px-2 py-1.5 text-ep-brown transition-colors hover:bg-ep-cream"
+                    className="group flex items-center gap-2 rounded-md bg-ep-cream px-2 py-1.5 text-ep-brown transition-colors hover:bg-card"
                     title={j.title}
                   >
                     {Art ? <span className="w-10 shrink-0" aria-hidden><Art className="h-auto w-full" /></span> : null}
