@@ -62,7 +62,7 @@ export default async function Page() {
       <JsonLd data={breadcrumbLd} />
       <Header />
 
-      <PageHero illustration="manuscript">
+      <PageHero illustration="manuscript" facts={[{ label: "Format", value: "Microsoft Word (.docx)" }, { label: "Journals", value: "6" }]}>
           <p className="text-[11px] uppercase tracking-wide text-muted-foreground mb-1">
             <Link href="/authors" className="hover:underline">For Authors</Link> · Downloads
           </p>

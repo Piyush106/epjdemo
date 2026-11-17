@@ -12,7 +12,7 @@ const About = () => {
       <Header />
       
       {/* Page Header */}
-      <PageHero illustration="global">
+      <PageHero illustration="global" facts={[{ label: "Journals", value: "6" }, { label: "Model", value: "Open access" }, { label: "Peer review", value: "Double-blind" }, { label: "Ethics", value: "COPE guidance" }, { label: "Licence", value: "CC BY 4.0" }]}>
           <h1 className="text-2xl font-heading font-semibold text-foreground mb-1">
             About the Publisher
           </h1>

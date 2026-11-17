@@ -6,6 +6,7 @@ import JsonLd from "@/components/JsonLd";
 import { POLICIES } from "@/components/PolicyLayout";
 import { buildMetadata, buildBreadcrumbLd, SITE } from "@/lib/seo";
 import PageHero from "@/components/brand/PageHero";
+import { POLICY_ART } from "@/components/brand/Illustrations";
 
 export const metadata: Metadata = buildMetadata({
   title: "Policies & Governance",
@@ -42,7 +43,7 @@ export default function PoliciesIndex() {
       <JsonLd data={collectionLd} />
       <JsonLd data={breadcrumbLd} />
       <Header />
-      <PageHero illustration="integrity">
+      <PageHero illustration="integrity" facts={[{ label: "Policies", value: String(POLICIES.length) }, { label: "Applies to", value: "All six journals" }, { label: "Framework", value: "COPE guidance" }]}>
           <h1 className="text-xl font-heading font-semibold text-foreground mb-1">Policies &amp; Governance</h1>
           <p className="text-muted-foreground text-sm max-w-4xl">
             The formal policy framework applied across every EP Journals Group journal. Each policy is maintained as a
@@ -50,18 +51,21 @@ export default function PoliciesIndex() {
           </p>
         </PageHero>
       <section className="container mx-auto px-4 py-8">
-        <div className="grid gap-3 md:grid-cols-2">
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
           {POLICIES.map((p) => (
             <Link
               key={p.route}
               href={`/policies/${p.route}`}
-              className="group block rounded-lg border border-border bg-card p-4 shadow-sm rounded-sm hover:border-ep-orange hover:shadow-card transition-all"
+              className="group flex items-start gap-4 rounded-lg border border-border bg-card p-4 shadow-sm transition-all hover:border-ep-orange hover:shadow-md"
             >
-              <span className="font-heading font-semibold text-foreground group-hover:text-ep-orange transition-colors">
-                {p.label}
+              {(() => { const Art = POLICY_ART[p.route]; return Art ? <span className="w-[84px] shrink-0" aria-hidden><Art className="h-auto w-full" /></span> : null; })()}
+              <span className="min-w-0">
+                <span className="block font-heading font-semibold text-foreground group-hover:text-ep-orange transition-colors">
+                  {p.label}
+                </span>
+                <span className="mt-1 block text-xs text-muted-foreground leading-relaxed">{p.description}</span>
+                <span className="mt-2 inline-block text-xs text-primary">Read policy →</span>
               </span>
-              <span className="mt-1 block text-xs text-muted-foreground leading-relaxed">{p.description}</span>
-              <span className="mt-2 inline-block text-xs text-primary">Read policy →</span>
             </Link>
           ))}
         </div>

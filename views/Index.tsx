@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import RecentArticlesSlideshow from "@/components/RecentArticlesSlideshow";
 import ExploreResources from "@/components/home/ExploreResources";
 import HeroSearch from "@/components/home/HeroSearch";
-import { JournalShelf, EditorialBoard } from "@/components/brand/Illustrations";
+import { JournalShelf, EditorialBoard, JOURNAL_ART } from "@/components/brand/Illustrations";
 import { useJournals } from "@/hooks/useJournals";
 import type { Journal } from "@/lib/types";
 
@@ -139,7 +139,10 @@ const Index = ({ initialJournals = [], initialArticles = [], articleCount = 0, e
                     <li key={journal.abbrev} className="flex flex-col overflow-hidden rounded-lg border border-border bg-card transition-shadow hover:shadow-md">
                       <div aria-hidden className="h-1 bg-ep-orange" />
                       <div className="flex flex-1 flex-col p-4">
-                        <p className="text-xs font-semibold tracking-wide text-ep-orange">{journal.abbrev}</p>
+                        <div className="flex items-center gap-3">
+                          {(() => { const Art = JOURNAL_ART[journal.abbrev as keyof typeof JOURNAL_ART]; return Art ? <span className="w-16 shrink-0" aria-hidden><Art className="h-auto w-full" /></span> : null; })()}
+                          <p className="text-xs font-semibold tracking-wide text-ep-orange">{journal.abbrev}</p>
+                        </div>
                         <Link to={`/journals/${journal.abbrev.toLowerCase()}`} className="mt-1 font-heading text-base font-semibold leading-snug text-foreground hover:text-primary">
                           {journal.title}
                         </Link>

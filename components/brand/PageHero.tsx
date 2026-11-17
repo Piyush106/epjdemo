@@ -1,34 +1,53 @@
 import { ILLUSTRATIONS, type IllustrationName } from "@/components/brand/Illustrations";
 
-// Shared page header used across the site (same treatment as /indexing):
-// cream band, orange top rule, serif heading, optional illustration.
-// Existing hero content is passed through as children, so page wording and
-// links are unchanged; headings and lead text are restyled consistently.
+// Shared compact page header: cream band, orange top rule, serif heading,
+// a small illustration and optional key facts. Content starts right below,
+// so the header says what the page is without taking the screen.
+
+export interface HeroFact {
+  label: string;
+  value: React.ReactNode;
+}
 
 export default function PageHero({
   illustration,
+  art,
   children,
+  facts,
   narrow = false,
 }: {
   illustration?: IllustrationName;
+  /** A specific illustration component (e.g. a journal or policy theme). */
+  art?: (p: { className?: string }) => React.ReactNode;
   children: React.ReactNode;
+  facts?: HeroFact[];
   narrow?: boolean;
 }) {
-  const Art = illustration ? ILLUSTRATIONS[illustration] : null;
+  const Art = art ?? (illustration ? ILLUSTRATIONS[illustration] : null);
   return (
-    <section className="relative overflow-hidden border-b border-border bg-ep-cream">
-      <div aria-hidden className="absolute inset-x-0 top-0 h-1 bg-ep-orange" />
-      <div className={`container mx-auto grid items-center gap-8 px-4 py-9 sm:py-12 ${Art ? "md:grid-cols-[1fr_260px] lg:grid-cols-[1fr_320px]" : ""}`}>
-        <div
-          className={`min-w-0 ${narrow ? "max-w-4xl" : "max-w-3xl"} [&_h1]:font-heading [&_h1]:text-[1.75rem] [&_h1]:font-semibold [&_h1]:leading-tight [&_h1]:text-ep-brown sm:[&_h1]:text-[2.25rem] [&_h1]:mb-3 [&_h1+p]:text-base [&_h1+p]:leading-relaxed [&_h1+p]:text-foreground/80`}
-        >
-          {children}
-        </div>
+    <section className="relative border-b border-border bg-ep-cream">
+      <div aria-hidden className="absolute inset-x-0 top-0 h-[3px] bg-ep-orange" />
+      <div className="container mx-auto flex items-center gap-6 px-4 py-5 sm:py-6">
         {Art && (
-          <div className="hidden md:block">
-            <Art className="h-auto w-full max-w-[320px]" />
+          <div className="hidden w-[132px] shrink-0 sm:block lg:w-[150px]" aria-hidden>
+            <Art className="h-auto w-full" />
           </div>
         )}
+        <div
+          className={`min-w-0 flex-1 ${narrow ? "max-w-4xl" : ""} [&_h1]:font-heading [&_h1]:text-2xl [&_h1]:font-semibold [&_h1]:leading-tight [&_h1]:text-ep-brown sm:[&_h1]:text-[1.75rem] [&_h1]:mb-1.5 [&_h1+p]:max-w-3xl [&_h1+p]:text-sm [&_h1+p]:leading-relaxed [&_h1+p]:text-foreground/75`}
+        >
+          {children}
+          {facts && facts.length > 0 && (
+            <dl className="mt-3 flex flex-wrap gap-2 text-xs">
+              {facts.map((f) => (
+                <div key={f.label} className="flex items-center gap-1.5 rounded-sm border border-border bg-card px-2.5 py-1">
+                  <dt className="text-muted-foreground">{f.label}</dt>
+                  <dd className="font-medium text-foreground">{f.value}</dd>
+                </div>
+              ))}
+            </dl>
+          )}
+        </div>
       </div>
     </section>
   );

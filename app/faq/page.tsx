@@ -102,7 +102,7 @@ export default async function FaqPage() {
       <JsonLd data={breadcrumbLd} />
       <Header />
 
-      <PageHero illustration="knowledge" narrow>
+      <PageHero illustration="knowledge" narrow facts={[{ label: "Questions", value: String(FAQS.length) }, { label: "Contact", value: "editor@ep-journals.org" }]}>
           <h1 className="text-2xl sm:text-3xl font-heading font-semibold text-foreground mb-3">
             EP Journals Group — frequently asked questions
           </h1>

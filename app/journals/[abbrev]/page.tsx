@@ -10,6 +10,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { ArchiveArticleList } from "@/components/ArchiveList";
 import PageHero from "@/components/brand/PageHero";
+import { JOURNAL_ART } from "@/components/brand/Illustrations";
 import { issueKey, issuePath } from "@/lib/issues";
 
 export const revalidate = 3600;
@@ -99,16 +100,23 @@ export default async function JournalPage({ params }: { params: Promise<{ abbrev
       {templateLd ? <JsonLd data={templateLd} /> : null}
       <Header />
 
-      <PageHero illustration="journals">
+      <PageHero
+        illustration="journals"
+        art={JOURNAL_ART[journal.abbrev as keyof typeof JOURNAL_ART]}
+        facts={[
+          ...(journal.electronic_issn ? [{ label: "e-ISSN", value: journal.electronic_issn }] : []),
+          ...(journal.print_issn ? [{ label: "p-ISSN", value: journal.print_issn }] : []),
+          { label: "Frequency", value: journal.frequency },
+          { label: "Licence", value: "CC BY 4.0" },
+          { label: "APC", value: "USD 30 after acceptance" },
+        ]}
+      >
           <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-ep-orange">
             <Link href="/journals" className="hover:underline">Journals</Link> · {journal.abbrev}
           </p>
           <h1 className="text-2xl font-heading font-semibold text-foreground">{journal.title}</h1>
           {journal.subtitle && <p className="text-sm text-muted-foreground mt-1">{journal.subtitle}</p>}
-          <p className="mt-2 text-sm text-muted-foreground">
-            {[journal.electronic_issn && `e-ISSN ${journal.electronic_issn}`, journal.print_issn && `p-ISSN ${journal.print_issn}`, journal.frequency, "Open access · CC BY 4.0"].filter(Boolean).join(" · ")}
-          </p>
-          <div className="flex flex-wrap gap-3 mt-4">
+          <div className="flex flex-wrap gap-2 mt-3">
             <a href={site} target="_blank" rel="noopener noreferrer" className="inline-flex items-center bg-primary text-primary-foreground px-4 py-2 text-sm font-medium rounded-sm hover:bg-primary-hover">
               Visit journal site &rarr;
             </a>

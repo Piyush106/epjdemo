@@ -15,7 +15,7 @@ const Authors = () => {
       <Header />
 
       {/* Page Header */}
-      <PageHero illustration="manuscript">
+      <PageHero illustration="manuscript" facts={[{ label: "Submission fee", value: "None" }, { label: "APC", value: "USD 30 after acceptance" }, { label: "Review", value: "Double-blind, 2+ reviewers" }, { label: "Templates", value: "Word (.docx)" }]}>
           <h1 className="text-xl font-heading font-semibold text-foreground mb-1">
             Author Guidelines — How to Publish a Research Paper
           </h1>

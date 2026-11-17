@@ -111,7 +111,7 @@ const Articles = ({ initialArticles = [], archiveNav }: ArticlesProps) => {
     <div className="min-h-screen bg-background">
       <Header />
 
-      <PageHero illustration="research">
+      <PageHero illustration="research" facts={[{ label: "Journals", value: "6" }, { label: "Access", value: "Free to read" }, { label: "Identifiers", value: "Crossref DOI per article" }]}>
           <h1 className="text-xl font-heading font-semibold text-foreground mb-1">Peer-Reviewed Research Articles</h1>
           <p className="text-muted-foreground text-sm">
             Browse open access, peer-reviewed journal articles across all six EP Journals Group publications. Every

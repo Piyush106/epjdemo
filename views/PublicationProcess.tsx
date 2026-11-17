@@ -66,7 +66,7 @@ const PublicationProcess = () => {
     <div className="min-h-screen bg-background">
       <Header />
 
-      <PageHero illustration="peerReview">
+      <PageHero illustration="peerReview" facts={[{ label: "Screening", value: "Within 2 working days" }, { label: "Peer review", value: "Double-blind, 2 reviewers" }, { label: "APC", value: "USD 30 after acceptance" }]}>
           <h1 className="text-xl font-heading font-semibold text-foreground mb-1">Peer Review Process & Publication Timeline</h1>
           <p className="text-muted-foreground text-sm">
             How peer review works at EP Journals Group: initial editorial screening within 2 working days, double-blind

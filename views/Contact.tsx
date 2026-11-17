@@ -12,7 +12,7 @@ const Contact = () => {
       <Header />
 
       {/* Page Header */}
-      <PageHero illustration="contact">
+      <PageHero illustration="contact" facts={[{ label: "Email", value: "editor@ep-journals.org" }, { label: "Acknowledgement", value: "Typically within 24 hours" }]}>
           <h1 className="text-xl font-heading font-semibold text-foreground mb-1">Contact</h1>
           <p className="text-muted-foreground text-sm">Information for contacting the EP Journals Group editorial office.</p>
         </PageHero>

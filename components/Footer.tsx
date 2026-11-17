@@ -1,6 +1,7 @@
 "use client";
 import { Link } from "react-router-dom";
 import { useJournals } from "@/hooks/useJournals";
+import { JOURNAL_ART } from "@/components/brand/Illustrations";
 
 // Strip the /index.php/<slug> portion of an OJS URL to get the journal homepage.
 const journalHomepage = (externalUrl: string) => externalUrl.replace(/\/index\.php\/.*$/, "");
@@ -9,15 +10,43 @@ const Footer = () => {
   const { data: journals = [] } = useJournals();
   return (
     <footer className="bg-primary text-primary-foreground border-t border-border">
+      {/* Journal strip: one illustrated tile per journal. */}
+      {journals.length > 0 && (
+        <div className="border-b border-primary-foreground/15">
+          <ul className="container mx-auto grid grid-cols-3 gap-2 px-4 py-4 sm:grid-cols-6">
+            {journals.map((j) => {
+              const Art = JOURNAL_ART[j.abbrev as keyof typeof JOURNAL_ART];
+              return (
+                <li key={j.abbrev}>
+                  <Link
+                    to={`/journals/${j.abbrev.toLowerCase()}`}
+                    className="group flex items-center gap-2 rounded-md bg-ep-cream/95 px-2 py-1.5 text-ep-brown transition-colors hover:bg-ep-cream"
+                    title={j.title}
+                  >
+                    {Art ? <span className="w-10 shrink-0" aria-hidden><Art className="h-auto w-full" /></span> : null}
+                    <span className="text-xs font-semibold tracking-wide">{j.abbrev}</span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
       <div className="container mx-auto px-4 py-7">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-xs">
           <div>
             <h3 className="font-heading font-semibold text-primary-foreground mb-2 text-sm border-b border-primary-foreground/20 pb-1.5">
               Publisher
             </h3>
-            <p className="text-primary-foreground/90 leading-relaxed mb-2">
-              <strong>EP Journals Group</strong>
-            </p>
+            <div className="mb-2 flex items-center gap-3">
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-ep-cream">
+                <img src="/ep-journals-logo.png" alt="EP Journals Group logo" width={111} height={120} className="h-9 w-auto" loading="lazy" decoding="async" />
+              </span>
+              <p className="text-primary-foreground/90 leading-relaxed">
+                <strong className="block text-sm">EP Journals Group</strong>
+                <span className="text-primary-foreground/70">Academic Publishing Organisation</span>
+              </p>
+            </div>
             <p className="text-primary-foreground/75 leading-relaxed">
               Publisher of peer-reviewed scholarly journals operating under a documented governance framework. Editorial
               decisions are based on scholarly merit and peer review, and the portfolio is published on a monthly frequency.

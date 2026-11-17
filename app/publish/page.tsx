@@ -64,7 +64,7 @@ export default async function PublishPage() {
       <Header />
 
       {/* Hero */}
-      <PageHero illustration="manuscript" narrow>
+      <PageHero illustration="manuscript" narrow facts={[{ label: "APC", value: "USD 30 after acceptance" }, { label: "Decision", value: "Typically 1–2 weeks" }, { label: "Licence", value: "CC BY 4.0" }]}>
           <h1 className="text-2xl sm:text-3xl font-heading font-semibold text-foreground mb-3">
             Publish your research — peer-reviewed, open access, indexed
           </h1>

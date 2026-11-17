@@ -11,7 +11,7 @@ const Policies = () => {
     <div className="min-h-screen bg-background">
       <Header />
 
-      <PageHero illustration="integrity">
+      <PageHero illustration="integrity" facts={[{ label: "Applies to", value: "All six journals" }, { label: "Framework", value: "COPE guidance" }]}>
           <h1 className="text-xl font-heading font-semibold text-foreground mb-1">Policies & Governance</h1>
           <p className="text-muted-foreground text-sm leading-relaxed max-w-4xl">
             EP Journals Group maintains publisher-level policies governing editorial practice, peer review, research

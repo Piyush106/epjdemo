@@ -6,14 +6,7 @@ import JsonLd from "@/components/JsonLd";
 import { SITE } from "@/lib/seo";
 import PageHero from "@/components/brand/PageHero";
 import OnThisPage from "@/components/brand/OnThisPage";
-import type { IllustrationName } from "@/components/brand/Illustrations";
-
-const POLICY_ART: Record<string, IllustrationName> = {
-  "open-access": "openAccess", "copyright-licensing": "openAccess", "archiving-preservation": "research",
-  "peer-review-process": "peerReview", "reviewer-guidelines": "peerReview", "editorial-workflow": "peerReview",
-  "author-responsibilities": "manuscript", "editorial-policies": "editorial", "publisher-governance": "editorial",
-  "diversity-inclusion": "global",
-};
+import { POLICY_ART } from "@/components/brand/Illustrations";
 
 export type PolicyKey =
   | "publication-ethics"
@@ -87,7 +80,16 @@ export default function PolicyLayout({ title, subtitle, lastRevised, policyKey, 
       <JsonLd data={breadcrumbLd} />
       <Header />
 
-      <PageHero illustration={POLICY_ART[route] ?? "integrity"}>
+      <PageHero
+        art={POLICY_ART[route]}
+        illustration="integrity"
+        facts={[
+          { label: "Last revised", value: lastRevised },
+          { label: "Applies to", value: "All six journals" },
+          { label: "Enquiries", value: "editor@ep-journals.org" },
+        ]}
+      >
+          <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-ep-orange">Policies &amp; governance</p>
           <h1 className="text-xl font-heading font-semibold text-foreground mb-1">{title}</h1>
           {subtitle ? <p className="text-muted-foreground text-sm leading-relaxed max-w-4xl">{subtitle}</p> : null}
         </PageHero>

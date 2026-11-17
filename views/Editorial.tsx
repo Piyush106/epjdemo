@@ -14,7 +14,7 @@ const Editorial = ({ members = [] }: { members?: BoardMemberRow[] }) => {
       <Header />
 
       {/* Page Header */}
-      <PageHero illustration="editorial">
+      <PageHero illustration="editorial" facts={[{ label: "Board members", value: String(editorialBoard.length) }, { label: "Structure", value: "Equal standing, collective" }, { label: "Applications", value: "Open" }]}>
           <h1 className="text-xl font-heading font-semibold text-foreground mb-1">
             Editorial Board
           </h1>
