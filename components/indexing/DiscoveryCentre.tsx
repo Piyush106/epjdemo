@@ -174,7 +174,7 @@ export default function DiscoveryCentre({
           <ol className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {FLOW.map((f, i) => (
               <li key={f.title} className="relative overflow-hidden rounded-lg border border-border bg-card p-5 shadow-sm">
-                <span aria-hidden className="absolute right-3 top-2 font-heading text-5xl font-semibold text-ep-cream-dark">{i + 1}</span>
+                <span aria-hidden className="absolute right-3 top-2 font-heading text-5xl font-semibold text-ep-orange/15">{i + 1}</span>
                 <span className="relative flex h-11 w-11 items-center justify-center rounded-full bg-ep-cream text-ep-orange ring-1 ring-border">
                   <f.icon className="h-5 w-5" aria-hidden />
                 </span>

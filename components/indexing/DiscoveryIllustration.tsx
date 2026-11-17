@@ -23,11 +23,11 @@ const pos = (i: number, n: number, r: number, offset = -90) => {
 
 export default function DiscoveryIllustration() {
   const inner = JOURNALS.map((_, i) => pos(i, JOURNALS.length, 23, -60));
-  const outer = OUTER.map((_, i) => pos(i, OUTER.length, 43, -90));
+  const outer = OUTER.map((_, i) => pos(i, OUTER.length, 37, -90));
   return (
     <div className="relative mx-auto aspect-square w-full max-w-[460px]" aria-hidden>
       <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full">
-        <circle cx="50" cy="50" r="43" fill="none" stroke="hsl(var(--ep-orange) / 0.25)" strokeWidth="0.25" strokeDasharray="1 1.2" />
+        <circle cx="50" cy="50" r="37" fill="none" stroke="hsl(var(--ep-orange) / 0.25)" strokeWidth="0.25" strokeDasharray="1 1.2" />
         <circle cx="50" cy="50" r="23" fill="none" stroke="hsl(var(--ep-brown) / 0.2)" strokeWidth="0.25" />
         {inner.map((p, i) => (
           <line key={`c${i}`} x1="50" y1="50" x2={p.x} y2={p.y} stroke="hsl(var(--ep-brown) / 0.25)" strokeWidth="0.3" />
@@ -58,7 +58,7 @@ export default function DiscoveryIllustration() {
       {OUTER.map((p, i) => (
         <span
           key={p.name}
-          className="absolute flex h-[13%] w-[23%] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-md border border-border bg-card px-1.5 shadow-sm"
+          className="absolute flex h-[12%] w-[22%] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-md border border-border bg-card px-1.5 shadow-sm"
           style={{ left: `${outer[i].x}%`, top: `${outer[i].y}%` }}
         >
           {p.src ? (
