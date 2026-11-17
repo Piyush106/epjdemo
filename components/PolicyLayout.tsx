@@ -96,7 +96,7 @@ export default function PolicyLayout({ title, subtitle, lastRevised, policyKey, 
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-[1fr_340px] gap-8">
             <main className="min-w-0">
-              <div id="policy-body" className="prose-academic rounded-lg border border-border bg-card p-5 text-[15px] shadow-sm sm:p-8 [&_h2]:scroll-mt-28 [&_h2]:!text-xl [&_h2]:!text-ep-brown [&_h2]:!mb-3 [&_section]:mt-8 [&_p]:leading-7">
+              <div id="policy-body" className="prose-academic !max-w-none rounded-lg border border-border bg-card p-5 text-[15px] shadow-sm sm:p-8 [&_h2]:scroll-mt-28 [&_h2]:!text-xl [&_h2]:!text-ep-brown [&_h2]:!mb-3 [&_section]:mt-8 [&_p]:leading-7">
                 <p className="text-foreground leading-relaxed">
                   The following document constitutes a formal policy of EP Journals Group. It is intended to be read together
                   with related policies and guidance notes published by the organisation. This policy applies to all journals

@@ -161,7 +161,9 @@
 
   /* Academic document styles */
   .prose-academic {
-    max-width: 70ch;
+    /* Fill the column so text cards meet the sidebar; line length stays
+       readable because the main column is already bounded by the layout. */
+    max-width: none;
     text-align: left;
   }
 
