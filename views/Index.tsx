@@ -137,7 +137,7 @@ const Index = ({ initialJournals = [], initialArticles = [], articleCount = 0, e
                 <ul className="grid gap-4 sm:grid-cols-2">
                   {journals.map((journal) => (
                     <li key={journal.abbrev} className="flex flex-col overflow-hidden rounded-lg border border-border bg-card transition-shadow hover:shadow-md">
-                      <div aria-hidden className="h-1.5 bg-gradient-to-r from-ep-brown to-ep-orange" />
+                      <div aria-hidden className="h-1 bg-ep-orange" />
                       <div className="flex flex-1 flex-col p-4">
                         <p className="text-xs font-semibold tracking-wide text-ep-orange">{journal.abbrev}</p>
                         <Link to={`/journals/${journal.abbrev.toLowerCase()}`} className="mt-1 font-heading text-base font-semibold leading-snug text-foreground hover:text-primary">

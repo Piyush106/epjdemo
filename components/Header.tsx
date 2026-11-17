@@ -80,11 +80,11 @@ const Header = () => {
             <button
               type="button"
               onClick={() => setSearchOpen(true)}
-              className="mr-2 hidden h-8 w-56 items-center gap-2 rounded-sm border border-border bg-ep-cream px-2.5 text-left text-xs text-muted-foreground transition-colors hover:border-primary xl:flex"
+              className="mr-2 hidden h-8 w-52 items-center gap-2 rounded-sm border border-border bg-ep-cream px-2.5 text-left text-xs text-muted-foreground transition-colors hover:border-primary xl:flex"
               aria-label="Search the website"
             >
               <Search className="h-3.5 w-3.5 text-ep-orange" aria-hidden />
-              <span className="flex-1">Search journals, articles…</span>
+              <span className="flex-1 truncate">Search the site…</span>
               <kbd className="rounded border border-border bg-card px-1 font-mono text-[10px]">Ctrl K</kbd>
             </button>
             <Button asChild size="sm" variant="outline" className="hidden sm:inline-flex h-8 text-xs mr-1">

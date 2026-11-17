@@ -349,10 +349,10 @@ export default async function ArticlePage(
         <JsonLd data={scholarlyArticleLd} />
         <JsonLd data={faqLd} />
         <JsonLd data={breadcrumbLd} />
-        <article className="prose-academic">
+        <article>
           <header className="relative border-b border-border bg-ep-cream">
             <div aria-hidden className="absolute inset-x-0 top-0 h-1 bg-ep-orange" />
-            <div className="container py-8 sm:py-10">
+            <div className="container mx-auto px-4 py-8 sm:py-10">
               <nav aria-label="Breadcrumb" className="mb-3 text-xs text-muted-foreground">
                 <Link href="/" className="hover:underline">Home</Link> <span aria-hidden>/</span>{" "}
                 <Link href="/articles" className="hover:underline">Articles</Link> <span aria-hidden>/</span>{" "}
@@ -404,8 +404,8 @@ export default async function ArticlePage(
             </div>
           </header>
 
-          <div className="container grid gap-10 py-10 lg:grid-cols-[minmax(0,1fr)_300px]">
-          <div className="min-w-0">
+          <div className="container mx-auto grid gap-10 px-4 py-10 lg:grid-cols-[minmax(0,1fr)_300px]">
+          <div className="min-w-0 prose-academic !max-w-none">
           {/* Answer-first summary: the lead of the abstract, quoted verbatim. */}
           <section id="article-summary" aria-labelledby="summary-heading" className="rounded-lg border border-border bg-ep-cream p-5">
             <h2 id="summary-heading" className="font-heading text-base font-semibold text-foreground mb-1">
