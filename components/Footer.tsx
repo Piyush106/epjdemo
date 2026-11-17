@@ -140,7 +140,7 @@ const Footer = () => {
             Indexing claims are subject to verification by the respective agencies.
           </p>
           <p className="mt-1 text-primary-foreground/45">
-            Last site update: April 2026
+            Last site update: November 2026
           </p>
         </div>
       </div>

@@ -19,7 +19,7 @@ export const metadata: Metadata = buildMetadata({
 const FAQS = [
   { q: "How much does it cost to publish?", a: "A single, transparent article-processing charge of USD 30, payable only if your manuscript is accepted. There are no submission fees." },
   { q: "How long does review take?", a: "Initial editorial screening is completed within a few days, and an editorial decision is typically communicated within one to two weeks, following double-blind peer review by two independent reviewers." },
-  { q: "Is my article indexed and citable?", a: "Every published article receives a Crossref DOI and is discoverable via Google Scholar, Crossref, OpenAIRE, Zenodo, Index Copernicus, and Scilit." },
+  { q: "Is my article indexed and citable?", a: "Every published article receives a Crossref DOI, and all six journals are listed in OpenAlex, Scilit, Index Copernicus and the ISSN Portal. Article pages carry Google Scholar citation metadata; verified Scholar coverage is shown on our Indexing page." },
   { q: "Do I keep copyright?", a: "Yes. Authors retain full copyright; articles are published open access under the Creative Commons Attribution 4.0 (CC BY 4.0) licence." },
 ];
 
@@ -49,7 +49,7 @@ export default async function PublishPage() {
 
   const reasons = [
     { h: "Rigorous double-blind review", p: "Two independent reviewers assess every manuscript on scholarly merit — the same standard readers and institutions expect." },
-    { h: "Indexed & discoverable", p: "Google Scholar, Crossref, OpenAIRE, Zenodo, Index Copernicus, and Scilit — your work is findable and citable." },
+    { h: "Indexed & discoverable", p: "Crossref DOI, OpenAlex, Scilit, Index Copernicus and OpenAIRE — your work is findable and citable." },
     { h: "Crossref DOI · CC BY 4.0", p: "A permanent DOI on every article, published open access. Authors retain full copyright." },
     { h: "Fast, transparent process", p: "Initial screening in days; an editorial decision typically within one to two weeks." },
     { h: "Low, acceptance-only APC", p: "A single article-processing charge of USD 30 — payable only if your paper is accepted. No submission fees." },

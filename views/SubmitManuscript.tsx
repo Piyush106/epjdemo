@@ -463,7 +463,7 @@ const SubmitManuscript = () => {
               {
                 icon: "📑",
                 label: "Indexing & Discoverability",
-                desc: "Articles are submitted to CrossRef (enabling Google Scholar indexation), with DOAJ listing underway for all six journals.",
+                desc: "Every article is registered with Crossref and carries Google Scholar citation metadata. Journals are listed in OpenAlex, Scilit and Index Copernicus.",
               },
               {
                 icon: "✅",

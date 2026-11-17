@@ -352,7 +352,7 @@ const Index = ({ initialJournals = [], initialArticles = [], articleCount = 0, e
                     <div className="border border-border p-3 bg-card">
                       <p className="font-heading font-semibold text-foreground text-xs mb-1">Discoverable and Verifiable</p>
                       <p className="text-xs text-muted-foreground">
-                        Articles are discoverable through Google Scholar, Crossref, OpenAIRE, Zenodo, Index Copernicus, and Scilit.{" "}
+                        Crossref DOIs for every article; journals listed in OpenAlex, Scilit, Index Copernicus and the ISSN Portal.{" "}
                         <Link to="/indexing" className="text-primary hover:underline">Check each listing</Link>.
                       </p>
                     </div>

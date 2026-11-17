@@ -31,12 +31,12 @@ type Faq = { q: string; a: string; links?: { href: string; label: string }[] };
 const FAQS: Faq[] = [
   {
     q: "Is EP Journals Group indexed in Scopus or Web of Science?",
-    a: "No. EP Journals Group journals are not currently indexed in Scopus or Web of Science. They are indexed or listed in Google Scholar, Crossref, OpenAIRE, Zenodo, Index Copernicus and Scilit. We will update this answer only when an index confirms inclusion.",
+    a: "No. EP Journals Group journals are not currently indexed in Scopus or Web of Science. All six are listed in OpenAlex, Scilit, Index Copernicus (ICI World of Journals) and the ISSN Portal, and every article has a Crossref DOI. Google Scholar coverage is checked article by article on our Indexing page. We will update this answer only when an index confirms inclusion.",
     links: [{ href: "/indexing", label: "Full indexing table" }],
   },
   {
     q: "Where are EP Journals Group journals indexed?",
-    a: "Google Scholar, Crossref (DOI registration), OpenAIRE, Zenodo, Index Copernicus and Scilit. Each journal's ISSNs and DOI prefix are listed below so you can check the records yourself.",
+    a: "OpenAlex, Scilit, Index Copernicus (ICI World of Journals) and the ISSN Portal list all six journals; Crossref registers every article DOI; OpenAIRE, Semantic Scholar and Zenodo hold article records. Google Scholar indexes individual articles, and our Indexing page shows which ones we have verified. Each journal's ISSNs and DOI prefix are listed below so you can check the records yourself.",
     links: [{ href: "/indexing", label: "Indexing & abstracting" }],
   },
   {
@@ -54,7 +54,7 @@ const FAQS: Faq[] = [
   },
   {
     q: "Is EP Journals Group indexed in SINTA or Garuda?",
-    a: "No. SINTA and Garuda index journals published in Indonesia, and EP Journals Group journals are international journals that are not listed there. Indonesian authors can cite the Crossref DOI and Google Scholar record of each article.",
+    a: "No. SINTA and Garuda index journals published in Indonesia, and EP Journals Group journals are international journals that are not listed there. Indonesian authors can cite the Crossref DOI of each article.",
   },
   {
     q: "How long does peer review take?",
