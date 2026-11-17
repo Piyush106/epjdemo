@@ -48,7 +48,7 @@ function Mark({ p, size = "md" }: { p: Platform; size?: "md" | "sm" }) {
     );
   // No official logo supplied: set the name as type rather than drawing a mark.
   return (
-    <span className={`flex items-center ${box} font-heading ${size === "md" ? "text-xl" : "text-base"} font-semibold tracking-tight text-[#0b1f3a] dark:text-slate-100`}>
+    <span className={`flex items-center whitespace-nowrap ${size === "md" ? "h-10" : "h-7"} font-heading ${size === "md" ? "text-xl" : "text-base"} font-semibold tracking-tight text-[#0b1f3a] dark:text-slate-100`}>
       {p.name}
     </span>
   );
@@ -78,12 +78,14 @@ export default function DiscoveryCentre({
   withDoi,
   scholar,
   scholarLastChecked,
+  crossrefDois,
 }: {
   journals: Journal[];
   published: number;
   withDoi: number;
   scholar: ScholarSummary[];
   scholarLastChecked: string | null;
+  crossrefDois: number | null;
 }) {
   const byAbbrev = new Map(journals.map((j) => [j.abbrev, j]));
   const order = JOURNAL_ORDER.filter((j) => byAbbrev.has(j));
@@ -98,7 +100,7 @@ export default function DiscoveryCentre({
   const stats = [
     { value: String(order.length), label: "Peer-reviewed open access journals" },
     { value: published.toLocaleString("en-GB"), label: "Published articles" },
-    { value: withDoi.toLocaleString("en-GB"), label: "Articles with a Crossref DOI" },
+    { value: (crossrefDois ?? withDoi).toLocaleString("en-GB"), label: crossrefDois ? "DOIs registered with Crossref" : "Articles assigned a DOI" },
     { value: String(journalLevel.length), label: "Platforms listing all six journals" },
   ];
 
@@ -295,7 +297,7 @@ export default function DiscoveryCentre({
             })}
             <li className="rounded-lg border border-dashed border-slate-300 bg-slate-50/60 p-5 dark:border-slate-700 dark:bg-slate-900/40">
               <div className="flex items-start justify-between gap-3">
-                <div className="opacity-80 grayscale"><Mark p={platform("ici")} size="sm" /></div>
+                <p className="font-heading text-base font-semibold text-[#0b1f3a] dark:text-slate-100">Index Copernicus Value (ICV)</p>
                 <Pill kind="preparing" />
               </div>
               <p className="mt-3 text-sm leading-relaxed text-slate-700 dark:text-slate-300">
@@ -321,7 +323,7 @@ export default function DiscoveryCentre({
               <li>A Crossref DOI makes an article citable and its metadata reusable. It is not indexing.</li>
               <li>A Zenodo copy is an archived deposit, and OpenAIRE or Semantic Scholar records are aggregated from other sources.</li>
               <li>Google Scholar is reported per article. A title not found on a given date is recorded as &ldquo;not found yet&rdquo;, never as a rejection.</li>
-              <li>We do not show logos or badges for platforms where no record exists. Corrections: <a className="text-[#1d4ed8] underline" href="mailto:editor@ep-journals.org">editor@ep-journals.org</a>.</li>
+              <li>Platforms without a record appear only under evaluation, in grey and without a status badge of inclusion. Corrections: <a className="text-[#1d4ed8] underline" href="mailto:editor@ep-journals.org">editor@ep-journals.org</a>.</li>
             </ul>
           </div>
         </section>

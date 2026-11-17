@@ -23,6 +23,11 @@ export default async function Page() {
     supabase.from("articles").select("id", { count: "exact", head: true }).eq("status", "published"),
     supabase.from("articles").select("id", { count: "exact", head: true }).eq("status", "published").not("doi", "is", null),
   ]);
+  let crossrefDois: number | null = null;
+  try {
+    const r = await fetch("https://api.crossref.org/members/54641", { next: { revalidate: 86400 } });
+    if (r.ok) crossrefDois = (await r.json())?.message?.counts?.["total-dois"] ?? null;
+  } catch { /* fall back to the database count */ }
 
   const webPageLd = {
     "@context": "https://schema.org",
@@ -51,7 +56,7 @@ export default async function Page() {
     <>
       <JsonLd data={webPageLd} />
       <JsonLd data={breadcrumbLd} />
-      <DiscoveryCentre journals={journals} published={published ?? 0} withDoi={withDoi ?? 0} scholar={scholar} scholarLastChecked={scholarLastChecked} />
+      <DiscoveryCentre journals={journals} published={published ?? 0} withDoi={withDoi ?? 0} scholar={scholar} scholarLastChecked={scholarLastChecked} crossrefDois={crossrefDois} />
     </>
   );
 }
