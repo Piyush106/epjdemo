@@ -72,14 +72,14 @@ const ExploreResources = ({ initialByCat }: { initialByCat?: Record<string, Page
 
   return (
     <div className="mb-8">
-      <h2 className="text-lg font-heading font-semibold text-foreground mb-3 border-b border-border pb-2">
+      <h2 className="text-xl font-heading font-semibold text-ep-brown mb-4 border-b border-border pb-3">
         Explore Publishing Resources
       </h2>
       <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
         The knowledge centre maintains a growing library of editorial references organised by purpose. Entries
         below are drawn dynamically from the published collection and rotate as new material is added.
       </p>
-      <div className="border border-border bg-card p-4">
+      <div className="rounded-lg border border-border bg-card p-4 shadow-sm">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
           {COLUMNS.map((col) => {
             const items = byCat[col.key] || [];

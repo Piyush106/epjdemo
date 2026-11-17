@@ -14,8 +14,8 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const SKIP = [
-  /^\/articles\//, /^\/articles\/page\//, /^\/guides\/./, /^\/comparisons\/./, /^\/publishing\/./, /^\/resources\/./,
-  /^\/journals\/[^/]+\/(archive|\d+)/, /^\/login/, /^\/signup/, /^\/admin/, /^\/unsubscribe/, /^\/search/,
+  /^\/articles\//, /^\/guides\/./, /^\/comparisons\/./, /^\/publishing\/./, /^\/resources\/./,
+  /^\/journals\/[^/]+\/(archive|v\d+)/, /^\/journals\/[^/]+$/, /^\/login/, /^\/signup/, /^\/admin/, /^\/unsubscribe/, /^\/search/,
 ];
 
 const decode = (s: string) =>

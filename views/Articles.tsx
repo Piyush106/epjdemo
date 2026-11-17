@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useJournals } from "@/hooks/useJournals";
 import { fetchWithRetry } from "@/lib/supabaseRetry";
 import ArticleCard from "@/components/ArticleCard";
+import PageHero from "@/components/brand/PageHero";
 
 interface Article {
   id: string;
@@ -110,16 +111,14 @@ const Articles = ({ initialArticles = [], archiveNav }: ArticlesProps) => {
     <div className="min-h-screen bg-background">
       <Header />
 
-      <section className="py-6 bg-ep-cream border-b border-border">
-        <div className="container mx-auto px-4">
+      <PageHero illustration="research">
           <h1 className="text-xl font-heading font-semibold text-foreground mb-1">Peer-Reviewed Research Articles</h1>
           <p className="text-muted-foreground text-sm">
             Browse open access, peer-reviewed journal articles across all six EP Journals Group publications. Every
             article is free to read, citable via a CrossRef DOI, and licensed under Creative Commons Attribution 4.0
             (CC BY 4.0).
           </p>
-        </div>
-      </section>
+        </PageHero>
 
       <main className="py-8 bg-background">
         <div className="container mx-auto px-4">
@@ -149,7 +148,7 @@ const Articles = ({ initialArticles = [], archiveNav }: ArticlesProps) => {
               {loading ? (
                 <div className="space-y-4">
                   {[...Array(4)].map((_, i) => (
-                    <div key={i} className="border border-border bg-card p-4 animate-pulse">
+                    <div key={i} className="rounded-lg border border-border bg-card p-4 shadow-sm animate-pulse">
                       <div className="h-4 bg-muted rounded w-3/4 mb-2" />
                       <div className="h-3 bg-muted rounded w-1/2 mb-3" />
                       <div className="h-3 bg-muted rounded w-full mb-1" />

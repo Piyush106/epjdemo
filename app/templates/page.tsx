@@ -7,6 +7,7 @@ import JsonLd from "@/components/JsonLd";
 import { buildMetadata, buildBreadcrumbLd, SITE } from "@/lib/seo";
 import { getJournals } from "@/lib/data";
 import { JOURNAL_TEMPLATES, templateDownloadName, DOCX_MIME } from "@/lib/templates";
+import PageHero from "@/components/brand/PageHero";
 
 export const revalidate = 3600;
 
@@ -61,8 +62,7 @@ export default async function Page() {
       <JsonLd data={breadcrumbLd} />
       <Header />
 
-      <section className="py-6 bg-ep-cream border-b border-border">
-        <div className="container mx-auto px-4">
+      <PageHero illustration="manuscript">
           <p className="text-[11px] uppercase tracking-wide text-muted-foreground mb-1">
             <Link href="/authors" className="hover:underline">For Authors</Link> · Downloads
           </p>
@@ -72,13 +72,12 @@ export default async function Page() {
             structure, headings, and reference style. Preparing your paper in the correct template helps it pass
             initial screening quickly and keeps double-blind peer review focused on the research.
           </p>
-        </div>
-      </section>
+        </PageHero>
 
       <main className="container mx-auto px-4 py-8">
         <div className="grid sm:grid-cols-2 gap-4">
           {rows.map(({ journal, tpl }) => (
-            <div key={journal.abbrev} className="border border-border bg-card p-4 flex flex-col">
+            <div key={journal.abbrev} className="rounded-lg border border-border bg-card p-4 shadow-sm flex flex-col">
               <h2 className="text-sm font-heading font-semibold text-foreground leading-snug">
                 {journal.title} <span className="text-muted-foreground font-mono">({journal.abbrev})</span>
               </h2>

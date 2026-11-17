@@ -6,6 +6,7 @@ import JsonLd from "@/components/JsonLd";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SubmitCTA from "@/components/SubmitCTA";
+import PageHero from "@/components/brand/PageHero";
 
 export const revalidate = 3600;
 
@@ -63,8 +64,7 @@ export default async function PublishPage() {
       <Header />
 
       {/* Hero */}
-      <section className="py-10 bg-secondary border-b border-border">
-        <div className="container mx-auto px-4 max-w-4xl">
+      <PageHero illustration="manuscript" narrow>
           <h1 className="text-2xl sm:text-3xl font-heading font-semibold text-foreground mb-3">
             Publish your research — peer-reviewed, open access, indexed
           </h1>
@@ -94,8 +94,7 @@ export default async function PublishPage() {
               </div>
             ))}
           </div>
-        </div>
-      </section>
+        </PageHero>
 
       <main className="container mx-auto px-4 py-10 max-w-4xl">
         {/* Why publish */}
@@ -103,7 +102,7 @@ export default async function PublishPage() {
           <h2 className="font-heading text-lg font-semibold text-foreground mb-4 border-b border-border pb-2">Why publish with EP Journals Group</h2>
           <div className="grid sm:grid-cols-2 gap-4">
             {reasons.map((r) => (
-              <div key={r.h} className="border border-border bg-card p-4 rounded-sm">
+              <div key={r.h} className="rounded-lg border border-border bg-card p-4 shadow-sm rounded-sm">
                 <p className="font-heading font-semibold text-foreground text-sm mb-1">{r.h}</p>
                 <p className="text-xs text-muted-foreground leading-relaxed">{r.p}</p>
               </div>
@@ -116,7 +115,7 @@ export default async function PublishPage() {
           <h2 className="font-heading text-lg font-semibold text-foreground mb-4 border-b border-border pb-2">Choose your journal</h2>
           <div className="grid sm:grid-cols-2 gap-3">
             {journals.map((j) => (
-              <Link key={j.abbrev} href={`/journals/${j.abbrev.toLowerCase()}`} className="group block border border-border bg-card p-4 rounded-sm hover:border-ep-orange transition-colors">
+              <Link key={j.abbrev} href={`/journals/${j.abbrev.toLowerCase()}`} className="group block rounded-lg border border-border bg-card p-4 shadow-sm rounded-sm hover:border-ep-orange transition-colors">
                 <span className="font-heading font-semibold text-foreground text-sm group-hover:text-ep-orange transition-colors">{j.title} ({j.abbrev})</span>
                 <span className="block text-xs text-muted-foreground mt-1 leading-relaxed">{j.scope_short}</span>
               </Link>
@@ -134,7 +133,7 @@ export default async function PublishPage() {
               ["3", "Peer review", "Double-blind review by two independent reviewers."],
               ["4", "Publish", "On acceptance, pay the APC; your article goes live with a DOI."],
             ].map(([n, h, p]) => (
-              <div key={n} className="border border-border bg-card p-4 rounded-sm text-center">
+              <div key={n} className="rounded-lg border border-border bg-card p-4 shadow-sm rounded-sm text-center">
                 <div className="w-7 h-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-semibold mx-auto mb-2">{n}</div>
                 <p className="font-heading font-semibold text-foreground text-xs mb-1">{h}</p>
                 <p className="text-[11px] text-muted-foreground leading-relaxed">{p}</p>

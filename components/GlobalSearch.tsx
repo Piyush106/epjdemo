@@ -82,6 +82,17 @@ export default function GlobalSearch({ open, onOpenChange }: GlobalSearchProps) 
     }
   }, [open]);
 
+  // Other search fields (homepage hero) hand their text over to this dialog.
+  useEffect(() => {
+    const onOpen = (e: Event) => {
+      onOpenChange(true);
+      const q = (e as CustomEvent<string>).detail;
+      if (typeof q === "string" && q) setTimeout(() => setQuery(q), 0);
+    };
+    window.addEventListener("ep:open-search", onOpen);
+    return () => window.removeEventListener("ep:open-search", onOpen);
+  }, [onOpenChange]);
+
   // Ctrl/Cmd+K or "/" opens search from anywhere.
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {

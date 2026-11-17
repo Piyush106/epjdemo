@@ -4,6 +4,7 @@ import Footer from "@/components/Footer";
 import InstitutionalSidebar from "@/components/InstitutionalSidebar";
 import { Link } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
+import PageHero from "@/components/brand/PageHero";
 
 const About = () => {
   return (
@@ -11,16 +12,14 @@ const About = () => {
       <Header />
       
       {/* Page Header */}
-      <section className="py-8 bg-ep-cream border-b border-border">
-        <div className="container mx-auto px-4">
+      <PageHero illustration="global">
           <h1 className="text-2xl font-heading font-semibold text-foreground mb-1">
             About the Publisher
           </h1>
           <p className="text-muted-foreground text-sm">
             EP Journals Group — Academic Publishing Organisation
           </p>
-        </div>
-      </section>
+        </PageHero>
 
       {/* Two-Column Academic Layout */}
       <main className="py-10 bg-background">

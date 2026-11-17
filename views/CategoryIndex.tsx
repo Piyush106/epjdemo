@@ -6,6 +6,7 @@ import InstitutionalSidebar from "@/components/InstitutionalSidebar";
 import { Badge } from "@/components/ui/badge";
 import { Clock } from "lucide-react";
 import type { ContentListRow } from "@/lib/data";
+import PageHero from "@/components/brand/PageHero";
 
 type Category = "guide" | "comparison" | "publishing" | "user-focused";
 
@@ -62,8 +63,7 @@ const CategoryIndex = ({ category, initialPages = [] }: Props) => {
     <div className="min-h-screen bg-background">
       <Header />
 
-      <section className="py-6 bg-ep-cream border-b border-border">
-        <div className="container mx-auto px-4">
+      <PageHero illustration="knowledge">
           <p className="text-[11px] uppercase tracking-wide text-muted-foreground mb-1">
             Knowledge Centre
           </p>
@@ -73,8 +73,7 @@ const CategoryIndex = ({ category, initialPages = [] }: Props) => {
           <p className="text-muted-foreground text-sm leading-relaxed max-w-4xl">
             {meta.description}
           </p>
-        </div>
-      </section>
+        </PageHero>
 
       <section className="py-8 bg-background">
         <div className="container mx-auto px-4">
@@ -98,7 +97,7 @@ const CategoryIndex = ({ category, initialPages = [] }: Props) => {
                     {pages.map((p) => (
                       <article
                         key={p.slug}
-                        className="border border-border bg-card p-4 hover:bg-muted/30 transition-colors"
+                        className="rounded-lg border border-border bg-card p-4 shadow-sm hover:bg-muted/30 transition-colors"
                       >
                         <Link to={`${meta.routePrefix}/${p.slug}`} className="group">
                           <h2 className="text-sm font-heading font-semibold text-foreground group-hover:text-primary transition-colors leading-snug mb-1">

@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
 import { POLICIES } from "@/components/PolicyLayout";
 import { buildMetadata, buildBreadcrumbLd, SITE } from "@/lib/seo";
+import PageHero from "@/components/brand/PageHero";
 
 export const metadata: Metadata = buildMetadata({
   title: "Policies & Governance",
@@ -41,22 +42,20 @@ export default function PoliciesIndex() {
       <JsonLd data={collectionLd} />
       <JsonLd data={breadcrumbLd} />
       <Header />
-      <section className="py-6 bg-secondary border-b border-border">
-        <div className="container mx-auto px-4">
+      <PageHero illustration="integrity">
           <h1 className="text-xl font-heading font-semibold text-foreground mb-1">Policies &amp; Governance</h1>
           <p className="text-muted-foreground text-sm max-w-4xl">
             The formal policy framework applied across every EP Journals Group journal. Each policy is maintained as a
             single canonical document and reviewed on a continuing basis.
           </p>
-        </div>
-      </section>
+        </PageHero>
       <section className="container mx-auto px-4 py-8">
         <div className="grid gap-3 md:grid-cols-2">
           {POLICIES.map((p) => (
             <Link
               key={p.route}
               href={`/policies/${p.route}`}
-              className="group block border border-border bg-card p-4 rounded-sm hover:border-ep-orange hover:shadow-card transition-all"
+              className="group block rounded-lg border border-border bg-card p-4 shadow-sm rounded-sm hover:border-ep-orange hover:shadow-card transition-all"
             >
               <span className="font-heading font-semibold text-foreground group-hover:text-ep-orange transition-colors">
                 {p.label}

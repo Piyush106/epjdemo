@@ -88,7 +88,7 @@ export default async function JournalArchivePage({ params }: { params: Promise<{
         </p>
 
         {/* Issue index first, so every issue page is linked near the top. */}
-        <nav aria-label={`${journal.abbrev} issues`} className="mt-6 border border-border bg-secondary p-4">
+        <nav aria-label={`${journal.abbrev} issues`} className="mt-6 rounded-lg border border-border bg-ep-cream p-4">
           <h2 className="font-heading text-sm font-semibold text-foreground mb-2">Issues</h2>
           <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-1 text-sm">
             {issues.map((g) => (

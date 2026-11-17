@@ -33,7 +33,7 @@ export default function Page() {
           Standard processing stages
         </h2>
 
-        <div className="border border-border bg-card p-4 mb-4">
+        <div className="rounded-lg border border-border bg-card p-4 shadow-sm mb-4">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
             <div className="text-center p-2">
               <p className="font-heading font-semibold text-foreground">1. Initial Screening</p>

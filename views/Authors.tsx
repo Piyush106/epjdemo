@@ -7,6 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { Download } from "lucide-react";
 import { JOURNALS } from "@/lib/editorialBoardConfig";
 import { JOURNAL_TEMPLATES, templateDownloadName } from "@/lib/templates";
+import PageHero from "@/components/brand/PageHero";
 
 const Authors = () => {
   return (
@@ -14,8 +15,7 @@ const Authors = () => {
       <Header />
 
       {/* Page Header */}
-      <section className="py-6 bg-ep-cream border-b border-border">
-        <div className="container mx-auto px-4">
+      <PageHero illustration="manuscript">
           <h1 className="text-xl font-heading font-semibold text-foreground mb-1">
             Author Guidelines — How to Publish a Research Paper
           </h1>
@@ -24,8 +24,7 @@ const Authors = () => {
             journal at EP Journals Group: formatting, structure, references, manuscript submission, peer review, and
             publication. Read this before submitting your paper.
           </p>
-        </div>
-      </section>
+        </PageHero>
 
       {/* Two-Column Academic Layout */}
       <main className="py-8 bg-background">
@@ -49,7 +48,7 @@ const Authors = () => {
 
               {/* Manuscript Templates */}
               <div className="mb-8" id="manuscript-templates">
-                <h2 className="text-lg font-heading font-semibold text-foreground mb-3 border-b border-border pb-2">
+                <h2 className="text-xl font-heading font-semibold text-ep-brown mb-4 border-b border-border pb-3">
                   Manuscript Templates
                 </h2>
                 <p className="text-foreground leading-relaxed mb-3">
@@ -106,7 +105,7 @@ const Authors = () => {
 
               {/* Manuscript Types */}
               <div className="mb-8">
-                <h2 className="text-lg font-heading font-semibold text-foreground mb-3 border-b border-border pb-2">
+                <h2 className="text-xl font-heading font-semibold text-ep-brown mb-4 border-b border-border pb-3">
                   Types of Manuscripts
                 </h2>
                 <p className="text-foreground leading-relaxed mb-3">
@@ -151,7 +150,7 @@ const Authors = () => {
 
               {/* Manuscript Preparation */}
               <div className="mb-8">
-                <h2 className="text-lg font-heading font-semibold text-foreground mb-3 border-b border-border pb-2">
+                <h2 className="text-xl font-heading font-semibold text-ep-brown mb-4 border-b border-border pb-3">
                   Manuscript Preparation
                 </h2>
                 
@@ -256,7 +255,7 @@ const Authors = () => {
 
               {/* Submission Process */}
               <div className="mb-8">
-                <h2 className="text-lg font-heading font-semibold text-foreground mb-3 border-b border-border pb-2">
+                <h2 className="text-xl font-heading font-semibold text-ep-brown mb-4 border-b border-border pb-3">
                   Submission Process
                 </h2>
                 <p className="text-foreground leading-relaxed">
@@ -293,7 +292,7 @@ const Authors = () => {
 
               {/* Peer Review */}
               <div className="mb-8">
-                <h2 className="text-lg font-heading font-semibold text-foreground mb-3 border-b border-border pb-2">
+                <h2 className="text-xl font-heading font-semibold text-ep-brown mb-4 border-b border-border pb-3">
                   Peer Review Process
                 </h2>
                 <p className="text-foreground leading-relaxed">
@@ -332,7 +331,7 @@ const Authors = () => {
 
               {/* Publication Ethics */}
               <div className="mb-8">
-                <h2 className="text-lg font-heading font-semibold text-foreground mb-3 border-b border-border pb-2">
+                <h2 className="text-xl font-heading font-semibold text-ep-brown mb-4 border-b border-border pb-3">
                   Ethical Requirements
                 </h2>
                 <p className="text-foreground leading-relaxed">
@@ -366,7 +365,7 @@ const Authors = () => {
 
               {/* Contact */}
               <div>
-                <h2 className="text-lg font-heading font-semibold text-foreground mb-3 border-b border-border pb-2">
+                <h2 className="text-xl font-heading font-semibold text-ep-brown mb-4 border-b border-border pb-3">
                   Editorial Contact
                 </h2>
                 <p className="text-foreground leading-relaxed">

@@ -9,6 +9,7 @@ import { templateFor, templateDownloadName } from "@/lib/templates";
 import { articlePath } from "@/lib/articleUrl";
 import { issueKey } from "@/lib/issues";
 import type { Article, Journal } from "@/lib/types";
+import PageHero from "@/components/brand/PageHero";
 
 // Journals page: the six journals as one portfolio (3 × 2 cards on desktop),
 // each card led by its newest article, fetched server-side from the articles
@@ -208,15 +209,13 @@ const Journals = ({
     <div className="min-h-screen bg-background">
       <Header />
 
-      <section className="border-b border-border bg-ep-cream py-6">
-        <div className="container mx-auto px-4">
+      <PageHero illustration="journals">
           <h1 className="mb-1 font-heading text-xl font-semibold text-foreground">Six peer-reviewed open access journals</h1>
           <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">
             EP Journals Group publishes six journals, each in its own discipline. All use double-blind peer review,
             assign Crossref DOIs, publish monthly and are open access under CC BY 4.0.
           </p>
-        </div>
-      </section>
+        </PageHero>
 
       <main className="bg-background py-8">
         <div className="container mx-auto px-4">

@@ -4,6 +4,7 @@ import Footer from "@/components/Footer";
 import InstitutionalSidebar from "@/components/InstitutionalSidebar";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "react-router-dom";
+import PageHero from "@/components/brand/PageHero";
 
 const Contact = () => {
   return (
@@ -11,12 +12,10 @@ const Contact = () => {
       <Header />
 
       {/* Page Header */}
-      <section className="py-6 bg-secondary border-b border-border">
-        <div className="container mx-auto px-4">
+      <PageHero illustration="contact">
           <h1 className="text-xl font-heading font-semibold text-foreground mb-1">Contact</h1>
           <p className="text-muted-foreground text-sm">Information for contacting the EP Journals Group editorial office.</p>
-        </div>
-      </section>
+        </PageHero>
 
       {/* Two-Column Academic Layout */}
       <main className="py-8 bg-background">
@@ -26,7 +25,7 @@ const Contact = () => {
             <div className="min-w-0">
               {/* Contact Information */}
               <div className="mb-8 prose-academic text-sm">
-                <h2 className="text-lg font-heading font-semibold text-foreground mb-3 border-b border-border pb-2">
+                <h2 className="text-xl font-heading font-semibold text-ep-brown mb-4 border-b border-border pb-3">
                   Editorial Office
                 </h2>
                 <p className="text-foreground leading-relaxed">
@@ -76,7 +75,7 @@ const Contact = () => {
 
               {/* Response Times */}
               <div className="mb-8 prose-academic text-sm">
-                <h2 className="text-lg font-heading font-semibold text-foreground mb-3 border-b border-border pb-2">
+                <h2 className="text-xl font-heading font-semibold text-ep-brown mb-4 border-b border-border pb-3">
                   Response times
                 </h2>
                 <p className="text-foreground leading-relaxed">
@@ -118,7 +117,7 @@ const Contact = () => {
 
               {/* Submission Guidelines */}
               <div className="mb-8 prose-academic text-sm">
-                <h2 className="text-lg font-heading font-semibold text-foreground mb-3 border-b border-border pb-2">
+                <h2 className="text-xl font-heading font-semibold text-ep-brown mb-4 border-b border-border pb-3">
                   Manuscript submission
                 </h2>
                 <p className="text-foreground leading-relaxed">
@@ -137,7 +136,7 @@ const Contact = () => {
 
               {/* Office Hours */}
               <div>
-                <h2 className="text-lg font-heading font-semibold text-foreground mb-3 border-b border-border pb-2">Office hours</h2>
+                <h2 className="text-xl font-heading font-semibold text-ep-brown mb-4 border-b border-border pb-3">Office hours</h2>
                 <p className="text-foreground text-sm leading-relaxed">The editorial office operates during the following hours:</p>
                 <div className="mt-3 text-muted-foreground text-sm">
                   <p>

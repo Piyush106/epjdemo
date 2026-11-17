@@ -65,6 +65,7 @@ begin
      order by levenshtein_less_equal(tok, v.word, lim), v.ndoc desc, v.word
      limit 1;
     outw := outw || coalesce(best, tok);
+    best := null;
   end loop;
   return array_to_string(outw, ' ');
 end;
@@ -88,10 +89,8 @@ $$;
 -- match > author > keyword/abstract > site pages > spelling-corrected matches.
 create or replace function public.search_site(q text, p_limit int default 8, p_offset int default 0, p_full boolean default false)
 returns jsonb
-language plpgsql stable
+language plpgsql volatile
 set search_path = public, extensions
-set pg_trgm.word_similarity_threshold = 0.5
-set pg_trgm.similarity_threshold = 0.3
 as $$
 declare
   nq text := left(coalesce(public.search_norm(q), ''), 120);
@@ -104,8 +103,10 @@ declare
   total int;
 begin
   if length(nq) < 2 then
-    return jsonb_build_object('query', q, 'results', '[]'::jsonb, 'total', 0);
+    return jsonb_build_object('query', q, 'results', '[]'::jsonb, 'total', 0, 'terms', '[]'::jsonb);
   end if;
+  perform set_config('pg_trgm.word_similarity_threshold', '0.5', true);
+  perform set_config('pg_trgm.similarity_threshold', '0.3', true);
   p_limit := least(greatest(p_limit, 1), 50);
   p_offset := least(greatest(p_offset, 0), 500);
   raw_compact := replace(nq, ' ', '');

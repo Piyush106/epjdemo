@@ -471,7 +471,7 @@ const SubmitManuscript = () => {
                 desc: "All journals follow COPE guidelines for publication ethics. Plagiarism checking, conflict of interest disclosure, and data transparency are required.",
               },
             ].map((item) => (
-              <div key={item.label} className="border border-border bg-card p-4">
+              <div key={item.label} className="rounded-lg border border-border bg-card p-4 shadow-sm">
                 <div className="text-2xl mb-2">{item.icon}</div>
                 <p className="text-sm font-semibold text-foreground mb-1">{item.label}</p>
                 <p className="text-xs text-muted-foreground leading-relaxed">{item.desc}</p>

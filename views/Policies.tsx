@@ -4,21 +4,20 @@ import Footer from "@/components/Footer";
 import InstitutionalSidebar from "@/components/InstitutionalSidebar";
 import { Link } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
+import PageHero from "@/components/brand/PageHero";
 
 const Policies = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
 
-      <section className="py-6 bg-secondary border-b border-border">
-        <div className="container mx-auto px-4">
+      <PageHero illustration="integrity">
           <h1 className="text-xl font-heading font-semibold text-foreground mb-1">Policies & Governance</h1>
           <p className="text-muted-foreground text-sm leading-relaxed max-w-4xl">
             EP Journals Group maintains publisher-level policies governing editorial practice, peer review, research
             integrity, and correction of the scholarly record. Each policy is published as a separate document.
           </p>
-        </div>
-      </section>
+        </PageHero>
 
       <section className="py-8 bg-background">
         <div className="container mx-auto px-4">

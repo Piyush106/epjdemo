@@ -4,6 +4,7 @@ import Footer from "@/components/Footer";
 import InstitutionalSidebar from "@/components/InstitutionalSidebar";
 import { Separator } from "@/components/ui/separator";
 import type { BoardMemberRow } from "@/lib/data";
+import PageHero from "@/components/brand/PageHero";
 
 const Editorial = ({ members = [] }: { members?: BoardMemberRow[] }) => {
   const editorialBoard = members;
@@ -13,8 +14,7 @@ const Editorial = ({ members = [] }: { members?: BoardMemberRow[] }) => {
       <Header />
 
       {/* Page Header */}
-      <section className="py-6 bg-ep-cream border-b border-border">
-        <div className="container mx-auto px-4">
+      <PageHero illustration="editorial">
           <h1 className="text-xl font-heading font-semibold text-foreground mb-1">
             Editorial Board
           </h1>
@@ -27,8 +27,7 @@ const Editorial = ({ members = [] }: { members?: BoardMemberRow[] }) => {
           >
             Become an Editorial Board Member →
           </a>
-        </div>
-      </section>
+        </PageHero>
 
       {/* Two-Column Academic Layout */}
       <main className="py-8 bg-background">
@@ -40,7 +39,7 @@ const Editorial = ({ members = [] }: { members?: BoardMemberRow[] }) => {
 
               {/* Introduction */}
               <div className="mb-6">
-                <h2 className="text-lg font-heading font-semibold text-foreground mb-3 border-b border-border pb-2">
+                <h2 className="text-xl font-heading font-semibold text-ep-brown mb-4 border-b border-border pb-3">
                   Editorial Advisory Board
                 </h2>
                 <div className="prose-academic text-foreground text-sm">
@@ -57,7 +56,7 @@ const Editorial = ({ members = [] }: { members?: BoardMemberRow[] }) => {
 
               {/* Editorial Board Members Table */}
               <div className="mb-6">
-                <h2 className="text-lg font-heading font-semibold text-foreground mb-3 border-b border-border pb-2">
+                <h2 className="text-xl font-heading font-semibold text-ep-brown mb-4 border-b border-border pb-3">
                   Board Members
                 </h2>
 
@@ -112,7 +111,7 @@ const Editorial = ({ members = [] }: { members?: BoardMemberRow[] }) => {
 
               {/* Editorial Process */}
               <div className="mb-6">
-                <h2 className="text-lg font-heading font-semibold text-foreground mb-3 border-b border-border pb-2">
+                <h2 className="text-xl font-heading font-semibold text-ep-brown mb-4 border-b border-border pb-3">
                   Editorial Process
                 </h2>
                 <div className="prose-academic text-foreground text-sm">
@@ -153,7 +152,7 @@ const Editorial = ({ members = [] }: { members?: BoardMemberRow[] }) => {
 
               {/* Contact */}
               <div>
-                <h2 className="text-lg font-heading font-semibold text-foreground mb-3 border-b border-border pb-2">
+                <h2 className="text-xl font-heading font-semibold text-ep-brown mb-4 border-b border-border pb-3">
                   Contact the Editorial Office
                 </h2>
                 <div className="prose-academic text-foreground text-sm">

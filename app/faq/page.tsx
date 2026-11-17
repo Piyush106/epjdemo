@@ -5,6 +5,7 @@ import { buildMetadata, buildBreadcrumbLd } from "@/lib/seo";
 import JsonLd from "@/components/JsonLd";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import PageHero from "@/components/brand/PageHero";
 
 // Answers the questions people actually type into Google and AI assistants about
 // the publisher (taken from Search Console query data, Sep 2026): "is it Scopus
@@ -101,8 +102,7 @@ export default async function FaqPage() {
       <JsonLd data={breadcrumbLd} />
       <Header />
 
-      <section className="py-10 bg-secondary border-b border-border">
-        <div className="container mx-auto px-4 max-w-4xl">
+      <PageHero illustration="knowledge" narrow>
           <h1 className="text-2xl sm:text-3xl font-heading font-semibold text-foreground mb-3">
             EP Journals Group — frequently asked questions
           </h1>
@@ -110,8 +110,7 @@ export default async function FaqPage() {
             Direct answers about indexing, fees, peer review and legitimacy — with the ISSNs and DOI prefix you
             need to check every claim yourself.
           </p>
-        </div>
-      </section>
+        </PageHero>
 
       <main className="container mx-auto px-4 py-10 max-w-4xl">
         <section className="mb-10 space-y-6">
