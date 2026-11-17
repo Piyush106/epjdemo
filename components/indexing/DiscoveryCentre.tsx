@@ -185,7 +185,7 @@ export default function DiscoveryCentre({
           </SectionHead>
 
           {/* Desktop/tablet: compact table */}
-          <div className="mt-5 hidden overflow-x-auto rounded-lg border border-slate-200 md:block dark:border-slate-800">
+          <div className="relative mt-5 hidden overflow-x-auto rounded-lg border border-slate-200 md:block dark:border-slate-800">
             <table className="w-full border-collapse text-left text-sm">
               <thead className="bg-slate-50 text-xs text-slate-600 dark:bg-slate-900 dark:text-slate-400">
                 <tr>
