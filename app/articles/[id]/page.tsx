@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { factualDescription } from "@/lib/articleText";
 import { notFound, permanentRedirect } from "next/navigation";
 import type { Metadata } from "next";
 import {
@@ -90,6 +91,8 @@ export async function generateMetadata(
   const { first, last } = parsePages(article.pages);
   const authors = authorList(article.authors);
   const abstract = decodeEntities(article.abstract);
+  // Articles without an abstract get a factual description from their own fields.
+  const description = abstract || factualDescription(article);
   const path = articlePath(article);
   const url = `${SITE.origin}${path}`;
   const scholarDate = article.publication_date.substring(0, 10).split("-").join("/");
@@ -105,8 +108,8 @@ export async function generateMetadata(
     citation_online_date: scholarDate,
     citation_language: "en",
     citation_abstract_html_url: url,
-    citation_abstract: abstract,
   };
+  if (abstract) citation.citation_abstract = abstract;
   const issns = [journal?.electronic_issn, journal?.print_issn].filter((x): x is string => Boolean(x));
   if (issns.length) citation.citation_issn = issns;
   if (article.volume) citation.citation_volume = article.volume;
@@ -135,7 +138,7 @@ export async function generateMetadata(
     "DC.language": "en",
     "DC.rights": "https://creativecommons.org/licenses/by/4.0/",
     "DC.source": article.journal_name,
-    "DC.description": clampDescription(abstract, 500),
+    "DC.description": clampDescription(description, 500),
     "prism.publicationName": article.journal_name,
     "prism.publicationDate": isoDate,
     "prism.rightsAgent": SITE.email,
@@ -163,7 +166,7 @@ export async function generateMetadata(
   // Title tag carries the journal and publisher so the brand shows in results.
   const meta = buildMetadata({
     title: `${article.title} | ${article.journal_abbrev}`,
-    description: clampDescription(abstract, 160),
+    description: clampDescription(description, 160),
     path,
     ogType: "article",
     other: { ...citation, ...dcPrism, ...twitterLabels },
@@ -216,7 +219,8 @@ export default async function ArticlePage(
   const published = formatDate(article.publication_date);
   const year = article.publication_date.slice(0, 4);
   const keywords = (article.keywords ?? []).map((k) => (k ?? "").trim()).filter(Boolean);
-  const summary = leadSentences(abstract);
+  const description = abstract || factualDescription(article);
+  const summary = abstract ? leadSentences(abstract) : description;
 
   const where = [
     article.journal_name,
@@ -256,8 +260,8 @@ export default async function ArticlePage(
     name: article.title,
     author: authors.map((name) => ({ "@type": "Person", name })),
     datePublished: article.publication_date,
-    abstract,
-    description: clampDescription(abstract, 300),
+    ...(abstract ? { abstract } : {}),
+    description: clampDescription(description, 300),
     inLanguage: "en",
     license: "https://creativecommons.org/licenses/by/4.0/",
     isAccessibleForFree: true,
@@ -420,7 +424,13 @@ export default async function ArticlePage(
             <h2 id="abstract-heading" className="font-heading text-xl font-semibold text-ep-brown px-5 py-3 border-b border-border">
               Abstract
             </h2>
-            <p id="article-abstract" className="text-foreground px-5 py-4 text-[15px] leading-7">{abstract}</p>
+            {abstract ? (
+              <p id="article-abstract" className="text-foreground px-5 py-4 text-[15px] leading-7">{abstract}</p>
+            ) : (
+              <p id="article-abstract" className="text-muted-foreground px-5 py-4 text-[15px] leading-7">
+                The authors did not supply a separate abstract for this article. The full text is available as a PDF.
+              </p>
+            )}
             {keywords.length > 0 && (
               <div className="px-4 py-3 border-t border-border">
                 <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Keywords</p>

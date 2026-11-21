@@ -30,7 +30,8 @@ const ArticleCite = ({ title, authors, journalName, year, volume, issue, pages, 
   const pp = pages ? `, ${pages}` : "";
   const apa = `${apaAuthors(authors)} (${year}). ${title}. ${journalName}${vol}${iss}${pp}. ${doiUrl}`;
 
-  const bibKey = (authors[0]?.split(/[ ,]/)[0] || "ref").replace(/[^a-zA-Z]/g, "") + year;
+  // Key from the first author's last name part, e.g. "Chiwuba2026".
+  const bibKey = ((authors[0] ?? "").trim().split(/\s+/).pop() || "ref").normalize("NFKD").replace(/[^a-zA-Z]/g, "") + year;
   const bibtex = `@article{${bibKey},
   title   = {${title}},
   author  = {${authors.join(" and ")}},

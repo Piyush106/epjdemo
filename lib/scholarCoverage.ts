@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/data";
+import { cleanAuthorList } from "@/lib/articleText";
 import { articlePath } from "@/lib/articleUrl";
 
 // Article-level Google Scholar coverage. Checks are recorded in the
@@ -89,7 +90,7 @@ export async function getScholarArticles(journal: string): Promise<ScholarRow[]>
       return {
         id: a.id,
         title: a.title,
-        authors: a.authors,
+        authors: cleanAuthorList(a.authors).join(", "),
         date: a.publication_date?.slice(0, 10) ?? "",
         path: articlePath(a),
         status: c?.status ?? "not_checked",

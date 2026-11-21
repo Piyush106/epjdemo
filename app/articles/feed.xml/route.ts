@@ -1,6 +1,7 @@
 import { SITE, clampDescription } from "@/lib/seo";
 import { getRecentArticles } from "@/lib/data";
 import { articlePath } from "@/lib/articleUrl";
+import { factualDescription } from "@/lib/articleText";
 
 // RSS 2.0 feed of the latest articles at /articles/feed.xml. Feed readers,
 // research aggregators and AI crawlers poll feeds to find new papers quickly.
@@ -24,7 +25,7 @@ export async function GET() {
       <pubDate>${new Date(a.publication_date).toUTCString()}</pubDate>
       <dc:creator>${esc(a.authors)}</dc:creator>
       <category>${esc(a.journal_name)}</category>
-      <description>${esc(clampDescription(a.abstract, 500))}</description>${a.doi ? `\n      <dc:identifier>doi:${esc(a.doi)}</dc:identifier>` : ""}
+      <description>${esc(clampDescription(a.abstract || factualDescription(a), 500))}</description>${a.doi ? `\n      <dc:identifier>doi:${esc(a.doi)}</dc:identifier>` : ""}
     </item>`;
     })
     .join("\n");

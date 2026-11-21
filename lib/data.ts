@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Article, Journal } from "@/lib/types";
+import { tidyArticle } from "@/lib/articleText";
 
 /**
  * Read-only Supabase client for Server Components.
@@ -40,7 +41,7 @@ export async function getArticle(id: string): Promise<Article | null> {
     .select("*")
     .eq("id", id)
     .maybeSingle();
-  return (data as Article | null) ?? null;
+  return data ? tidyArticle(data as Article) : null;
 }
 
 /**
@@ -56,7 +57,7 @@ export async function getArticleByIdPrefix(prefix: string, slug?: string): Promi
     .gte("id", `${prefix}-0000-0000-0000-000000000000`)
     .lte("id", `${prefix}-ffff-ffff-ffff-ffffffffffff`)
     .limit(5);
-  const rows = (data as Article[] | null) ?? [];
+  const rows = ((data as Article[] | null) ?? []).map(tidyArticle);
   if (rows.length <= 1 || !slug) return rows[0] ?? null;
   const { articleSlug } = await import("@/lib/articleUrl");
   return rows.find((r) => articleSlug(r) === slug) ?? rows[0];
@@ -74,7 +75,7 @@ export async function getRecentArticles(limit = 12): Promise<Article[]> {
     .order("id", { ascending: true })
     .limit(limit);
   if (error) throw error;
-  return (data as Article[]) ?? [];
+  return ((data as Article[]) ?? []).map(tidyArticle);
 }
 
 /** Count of published articles (for homepage trust stats). */
@@ -95,7 +96,7 @@ export async function getJournalArticles(journalAbbrev: string, limit = 10): Pro
     .eq("journal_abbrev", journalAbbrev)
     .order("publication_date", { ascending: false })
     .limit(limit);
-  return (data as Article[] | null) ?? [];
+  return ((data as Article[] | null) ?? []).map(tidyArticle);
 }
 
 /** Other recent published articles from the same journal (for "related articles"). */
@@ -112,7 +113,7 @@ export async function getRelatedArticles(
     .neq("id", excludeId)
     .order("publication_date", { ascending: false })
     .limit(limit);
-  return (data as Article[] | null) ?? [];
+  return ((data as Article[] | null) ?? []).map(tidyArticle);
 }
 
 // ---- archive pages (every article reachable by a crawlable link) -----------
@@ -133,7 +134,7 @@ export async function getArticlesPage(page: number, perPage: number): Promise<{ 
     .order("publication_date", { ascending: false })
     .order("id", { ascending: true })
     .range(from, from + perPage - 1);
-  return { rows: (data as ArchiveArticle[] | null) ?? [], total: count ?? 0 };
+  return { rows: ((data as ArchiveArticle[] | null) ?? []).map(tidyArticle), total: count ?? 0 };
 }
 
 /** Every published article of one journal, newest first (journal archive + issue pages). */
@@ -145,7 +146,7 @@ export async function getJournalArchive(journalAbbrev: string): Promise<ArchiveA
     .eq("journal_abbrev", journalAbbrev)
     .order("publication_date", { ascending: false })
     .limit(2000);
-  return (data as ArchiveArticle[] | null) ?? [];
+  return ((data as ArchiveArticle[] | null) ?? []).map(tidyArticle);
 }
 
 /** All article ids + titles — used by generateStaticParams to pre-render article pages. */
